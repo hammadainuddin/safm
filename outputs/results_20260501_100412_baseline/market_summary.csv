@@ -1,0 +1,7 @@
+year,total_demand_mt,total_produced_mt,total_traded_mt,market_balanced,expansion_triggered,expansion_npv_usd_m
+2025,26.54302995,26.54303,23.814688,True,True,0.215
+2026,40.875501019999994,40.875501,36.124894,True,True,0.106
+2027,138.50925524,0.0,0.0,False,True,0.0
+2028,186.92534052999997,0.0,0.0,False,True,0.0
+2029,236.32882104,0.0,0.0,False,True,0.0
+2030,289.1064515,0.0,0.0,False,True,0.0

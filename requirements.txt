@@ -1,0 +1,9 @@
+pyomo>=6.9.0
+pydantic>=2.10.0
+pandas>=1.5.0
+numpy>=1.26.0
+networkx>=3.2.0
+scipy>=1.13.0
+openpyxl>=3.1.0
+pytest>=7.4.0
+python-dotenv>=1.0.0

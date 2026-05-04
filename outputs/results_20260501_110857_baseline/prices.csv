@@ -1,0 +1,13 @@
+year,region,clearing_price_usd_per_mt,pricing_regime,shadow_price_usd_per_mt,supply_cost_usd_per_mt,transport_premium_usd_per_mt,mandate_premium_usd_per_mt,carbon_offset_usd_per_mt,margin_usd_per_mt
+2025,EU,2500.0,wtp_priority_allocation,597.58,549.82,47.76,0.0,0.0,1902.42
+2025,US,775.0,wtp_priority_allocation,693.28,645.61,47.67,0.0,0.0,81.72
+2025,APAC,795.0,wtp_priority_allocation,638.08,616.55,21.52,0.0,0.0,156.92
+2025,MENA,755.0,wtp_priority_allocation,680.61,645.61,35.0,0.0,0.0,74.39
+2025,LATAM,835.0,wtp_priority_allocation,661.25,591.25,70.0,0.0,0.0,173.75
+2025,ROW,875.0,wtp_priority_allocation,637.21,591.25,45.96,0.0,0.0,237.79
+2026,EU,2550.0,wtp_priority_allocation,577.63,529.8,47.83,0.0,0.0,1972.37
+2026,US,786.0,wtp_priority_allocation,679.48,631.55,47.93,0.0,0.0,106.52
+2026,APAC,806.0,wtp_priority_allocation,630.92,612.36,18.56,0.0,0.0,175.08
+2026,MENA,765.0,wtp_priority_allocation,666.55,631.55,35.0,0.0,0.0,98.45
+2026,LATAM,846.0,wtp_priority_allocation,625.2,555.2,70.0,0.0,0.0,220.8
+2026,ROW,886.0,wtp_priority_allocation,606.08,555.2,50.88,0.0,0.0,279.92
