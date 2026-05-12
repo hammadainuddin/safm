@@ -15,10 +15,15 @@ import streamlit as st
 from ui import charts
 
 _MOCK_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "mock")
+_TMPL_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "templates")
 
 
 def _mock_path(filename: str) -> str:
     return os.path.join(_MOCK_DIR, filename)
+
+
+def _tmpl_path(filename: str) -> str:
+    return os.path.join(_TMPL_DIR, filename)
 
 
 def _load(filename: str) -> pd.DataFrame:
@@ -36,15 +41,28 @@ def _save(df: pd.DataFrame, filename: str) -> None:
 
 def _upload_widget(filename: str, ss_key: str) -> pd.DataFrame:
     """
-    Show a CSV file-uploader and return the DataFrame to use in the editor.
+    Show a download-template button + CSV file-uploader.
 
-    Priority order:
+    Priority order for the returned DataFrame:
       1. A newly uploaded file (stored in session state).
       2. A previously uploaded file still in session state (survives reruns).
       3. The on-disk mock CSV (default).
 
     Call _clear_upload(ss_key) after a successful save to reset to on-disk state.
     """
+    tmpl_path = _tmpl_path(filename)
+    if os.path.exists(tmpl_path):
+        with open(tmpl_path, "rb") as f:
+            tmpl_bytes = f.read()
+        st.download_button(
+            label=f"📥 Download template: `{filename}`",
+            data=tmpl_bytes,
+            file_name=filename,
+            mime="text/csv",
+            key=f"_dl_{ss_key}",
+            help="Download the baseline template CSV (with example data) as a starting point.",
+        )
+
     uploaded = st.file_uploader(
         f"📂 Upload replacement CSV for `{filename}`",
         type="csv",

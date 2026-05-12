@@ -1,0 +1,21 @@
+airline_id,airline_name,home_country,home_region,hub_airport,hub_country,hub_region
+LH,Lufthansa,Germany,EU,FRA,Germany,EU
+AF,Air France,France,EU,CDG,France,EU
+BA,British Airways,UK,EU,LHR,UK,EU
+KL,KLM,Netherlands,EU,AMS,Netherlands,EU
+IB,Iberia,Spain,EU,MAD,Spain,EU
+UA,United Airlines,USA,US,EWR,USA,US
+AA,American Airlines,USA,US,DFW,USA,US
+DL,Delta Air Lines,USA,US,ATL,USA,US
+WN,Southwest Airlines,USA,US,DAL,USA,US
+SQ,Singapore Airlines,Singapore,APAC,SIN,Singapore,APAC
+NH,ANA,Japan,APAC,NRT,Japan,APAC
+CX,Cathay Pacific,Hong Kong,APAC,HKG,Hong Kong,APAC
+CA,Air China,China,APAC,PEK,China,APAC
+QF,Qantas,Australia,APAC,SYD,Australia,APAC
+EK,Emirates,UAE,MENA,DXB,UAE,MENA
+SV,Saudia,Saudi Arabia,MENA,RUH,Saudi Arabia,MENA
+QR,Qatar Airways,Qatar,MENA,DOH,Qatar,MENA
+LA,LATAM Airlines,Brazil,LATAM,GRU,Brazil,LATAM
+ET,Ethiopian Airlines,Ethiopia,ROW,ADD,Ethiopia,ROW
+TK,Turkish Airlines,Turkey,ROW,IST,Turkey,ROW
