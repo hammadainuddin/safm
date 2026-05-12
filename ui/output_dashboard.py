@@ -32,7 +32,6 @@ def _history_to_prices_df(history: list) -> pd.DataFrame:
             })
 
     # Add volume-weighted global price row per year
-    _wtp_tmp = WTPModel()
     for s in history:
         if not s.market.market_balanced:
             continue
@@ -124,12 +123,33 @@ def render(history: Optional[list] = None) -> None:
     summary_df  = _history_to_summary_df(history)
 
     tab_summary, tab_prices, tab_capacity, tab_trade = st.tabs([
-        "📊 Market Summary", "💰 Prices", "🏭 Capacity", "🚢 Trade Flows"
+        "📊 Market Summary", "💰 Prices & WTP", "🏭 Capacity", "🚢 Trade Flows"
     ])
 
-    # ── Market Summary ───────────────────────────────────────────────────────
+    # ════════════════════════════════════════════════════════════════════════
+    # 📊  MARKET SUMMARY
+    # ════════════════════════════════════════════════════════════════════════
     with tab_summary:
         st.subheader("Annual Market Summary")
+        st.markdown(
+            """
+            ### Methodology
+            The market summary consolidates the key aggregate outcomes from each model year into
+            a single view. **Total demand** is the sum of CORSIA-driven and mandate-driven SAF
+            requirements across all regions, as estimated by the bottom-up demand module.
+            **Total produced** is the volume of SAF actually dispatched from committed and
+            endogenously-built plants during the clearing step — it equals total demand in
+            balanced years and is zero in supply-shortfall years. **Total traded** is the
+            subset of produced SAF that crosses a regional boundary, reflecting the inter-
+            regional allocation decisions made by the cheapest-CIF clearing algorithm.
+
+            The `market_balanced` flag is `True` when inflow to every region meets or exceeds
+            its demand within a tolerance of 0.1 kt (0.0001 MT). The `expansion_triggered`
+            flag indicates whether the LP solver built any new endogenous plants in that year.
+            Years where the market does not balance — typically early in the horizon before
+            sufficient capacity has been built — produce no price or trade-flow data.
+            """
+        )
         st.dataframe(summary_df.style.format({
             "year": "{:.0f}",
             "total_demand_mt": "{:.3f}",
@@ -140,19 +160,62 @@ def render(history: Optional[list] = None) -> None:
 
         st.plotly_chart(charts.market_balance_bar(summary_df), use_container_width=True)
 
-    # ── Prices ───────────────────────────────────────────────────────────────
+    # ════════════════════════════════════════════════════════════════════════
+    # 💰  PRICES & WTP
+    # ════════════════════════════════════════════════════════════════════════
     with tab_prices:
         if prices_df.empty:
             st.warning("No price data available — some years may have had supply shortfalls.")
         else:
-            # Global volume-weighted price (primary view)
-            st.subheader("Global Market Price")
-            st.caption("Volume-weighted average across all served regions.")
+            # ── Global volume-weighted price ──────────────────────────────────
+            st.subheader("Global Market Clearing Price")
+            st.markdown(
+                """
+                ### Methodology
+                The global SAF market price is reported as the **demand-volume-weighted average**
+                of all regional clearing prices in years when the market is balanced. This gives
+                a single representative market price that reflects the relative size of each
+                regional market:
+
+                > **Global Price = Σ (Clearing Priceᵣ × Demand Volumeᵣ) / Σ Demand Volumeᵣ**
+
+                Only regions that are fully served (`pricing_regime = wtp_priority_allocation`)
+                contribute to this average; unserved regions are excluded. The global price is
+                therefore a demand-side signal: it rises as high-WTP regions (particularly the
+                EU under ReFuelEU) grow as a share of total demand, and falls as supply scales
+                up and competition pushes clearing prices towards the investment floor (Case 2
+                LCOSAF).
+                """
+            )
             st.plotly_chart(charts.global_price_chart(prices_df), use_container_width=True)
 
-            # WTP multi-year trend
+            # ── WTP multi-year trend ──────────────────────────────────────────
             st.subheader("Willingness-to-Pay by Region")
-            st.caption("Final WTP (max of Case 1/2/3) per region across all model years.")
+            st.markdown(
+                """
+                ### Methodology
+                Willingness-to-pay (WTP) is the maximum price each region is prepared to pay for
+                SAF in a given year. It is computed as the maximum of three independent cases:
+
+                - **Case 1 (Market floor):** `Jet Fuel Price + CORSIA Credit × 2.5 tCO₂/MT SAF`
+                  Reflects the value of SAF as a drop-in fuel plus the avoided cost of purchasing
+                  conventional CORSIA offsets. Rising carbon credit prices over time push this
+                  value upward.
+                - **Case 2 (Investment floor):** `min_pathway[ (CRF(IRR, 20yr) × CAPEX + OPEX) / Utilisation ]`
+                  The minimum price at which a rational investor would build new capacity, using
+                  the cheapest available pathway (typically Co-processing or HEFA). This sets the
+                  long-run equilibrium price floor — no new capacity is built below this level.
+                - **Case 3 (Policy ceiling):** `non_compliance_penalty_usd_per_mt`
+                  The regulatory penalty for failing to meet a blending mandate. For the EU this
+                  is $2,500/MT under ReFuelEU, making Case 3 the binding constraint for EU
+                  buyers. For non-regulated regions, Case 3 is zero and Case 2 dominates.
+
+                > **Final WTP = max(Case 1, Case 2, Case 3)**
+
+                The multi-year line chart shows how each region's WTP evolves as jet fuel prices,
+                carbon credit prices, and technology costs change across the 2025–2045 horizon.
+                """
+            )
             balanced_states = [s for s in history if s.market.market_balanced]
             if balanced_states:
                 _wtp_model = WTPModel()
@@ -173,13 +236,39 @@ def render(history: Optional[list] = None) -> None:
                     wtp_trend_df = pd.DataFrame(wtp_rows)
                     st.plotly_chart(charts.wtp_trend_chart(wtp_trend_df), use_container_width=True)
 
-            # Supply-demand MAC curve
+            # ── Supply-demand MAC curve ───────────────────────────────────────
             st.subheader("Supply-Demand (MAC) Curve")
-            st.caption("Supply bars sorted by cost ascending (cheapest supply first). Demand bars sorted by WTP descending.")
+            st.markdown(
+                """
+                ### Methodology
+                The Marginal Abatement Cost (MAC) curve visualises the market clearing
+                equilibrium for a single year by plotting supply and demand as stacked bar
+                charts along a common cumulative volume axis.
+
+                **Supply side** (solid bars, sorted left-to-right by ascending LCOSAF): each bar
+                represents one region's effective supply capacity — nameplate capacity multiplied
+                by the utilisation factor (0.85). The bar height is the region's
+                capacity-weighted average LCOSAF:
+
+                > **Supply Cost = Σ (LCOSAF_plant × Capacity_plant) / Σ Capacity_plant**
+
+                The cheapest supply source sits at the left; more expensive sources are added
+                progressively to the right, reflecting the merit-order dispatch principle.
+
+                **Demand side** (hatched bars, sorted left-to-right by descending WTP): each bar
+                represents one region's SAF demand volume at its WTP price. The highest-WTP
+                region (EU) is served first; lower-WTP regions are served from the remaining
+                supply. The **clearing price** for each served region equals its WTP — not the
+                marginal supply cost — because the model uses WTP-priority allocation rather
+                than a competitive auction. The visual intersection of the two curves indicates
+                the volume at which supply is exhausted.
+                """
+            )
             balanced_years = sorted({s.year for s in history if s.market.market_balanced})
             if balanced_years:
-                sd_year = st.selectbox("Year for S-D curve", balanced_years,
-                                       index=0, key="sd_year_out")
+                sd_year = st.selectbox(
+                    "Year for S-D curve", balanced_years, index=0, key="sd_year_out"
+                )
                 sd_state = next((s for s in history if s.year == sd_year), None)
                 if sd_state:
                     _wtp_model2 = WTPModel()
@@ -198,12 +287,26 @@ def render(history: Optional[list] = None) -> None:
             else:
                 st.info("Supply-demand curve available only for years when market balanced.")
 
-            # Per-region price decomposition
+            # ── Per-region price decomposition ────────────────────────────────
             with st.expander("Per-Region Price Decomposition"):
+                st.markdown(
+                    """
+                    The stacked bar chart decomposes the clearing price for a selected region
+                    into its constituent components: **supply cost** (LCOSAF of the dispatched
+                    supply source), **transport premium** (CIF cost of shipping from the origin
+                    region), **mandate premium** (additional cost borne by regulated buyers),
+                    **carbon offset** (value of avoided CORSIA offset purchases), and **margin**
+                    (producer surplus above break-even). In the current WTP-priority clearing
+                    model, the clearing price equals the region's WTP, so the sum of components
+                    equals WTP by construction.
+                    """
+                )
                 region_prices_df = prices_df[prices_df["region"] != "Global (vol-wtd)"]
                 if not region_prices_df.empty:
                     regions = sorted(region_prices_df["region"].unique())
-                    sel_region = st.selectbox("Region for price decomposition", regions, key="price_region")
+                    sel_region = st.selectbox(
+                        "Region for price decomposition", regions, key="price_region"
+                    )
                     st.plotly_chart(
                         charts.price_decomposition_bar(region_prices_df, sel_region),
                         use_container_width=True,
@@ -211,45 +314,117 @@ def render(history: Optional[list] = None) -> None:
 
             st.subheader("Raw Price Data")
             st.dataframe(
-                prices_df.style.format({"year": "{:.0f}", "clearing_price_usd_per_mt": "{:.2f}"}),
+                prices_df.style.format({
+                    "year": "{:.0f}",
+                    "clearing_price_usd_per_mt": "{:.2f}",
+                }),
                 use_container_width=True,
             )
             _download_csv(prices_df, "prices.csv", "⬇ Download prices.csv")
 
-    # ── Capacity ─────────────────────────────────────────────────────────────
+    # ════════════════════════════════════════════════════════════════════════
+    # 🏭  CAPACITY
+    # ════════════════════════════════════════════════════════════════════════
     with tab_capacity:
         if capacity_df.empty:
             st.warning("No capacity data available.")
         else:
-            # Planned vs Modelled split (primary view)
+            st.subheader("SAF Production Capacity")
+            st.markdown(
+                """
+                ### Methodology
+                Capacity is tracked as **nameplate capacity** (MT/yr) — the rated annual output
+                at 100% utilisation. Effective supply available for dispatch equals nameplate
+                capacity multiplied by the utilisation factor (0.85), reflecting planned
+                maintenance, feedstock variability, and operational downtime.
+
+                Capacity is split into two types:
+
+                - **Planned (Planned):** Plants with known or announced online dates from
+                  `committed_capacity.csv`. These enter the model in their specified `online_year`
+                  regardless of the LP expansion decision. They represent the deterministic
+                  pipeline of facilities already under construction or with confirmed final
+                  investment decisions.
+                - **Modelled (Modelled):** Plants built endogenously by the least-cost capacity
+                  expansion LP when committed supply is insufficient to meet projected demand.
+                  The LP minimises the net present value of new capacity investment subject to
+                  supply-demand balance, feedstock availability, and regional capacity
+                  constraints. New plants come online with a one-year construction lag.
+
+                Capacity accumulates year-over-year: once a plant is built — whether planned or
+                modelled — it remains in the capacity state for the remainder of the horizon.
+                The area charts show how the regional and pathway mix evolves over 2025–2045.
+                """
+            )
+
             st.plotly_chart(charts.capacity_stacked_split(capacity_df), use_container_width=True)
 
             col1, col2 = st.columns(2)
             with col1:
-                st.plotly_chart(charts.capacity_stacked_area(capacity_df), use_container_width=True)
+                st.plotly_chart(
+                    charts.capacity_stacked_area(capacity_df), use_container_width=True
+                )
             with col2:
-                st.plotly_chart(charts.capacity_by_pathway(capacity_df), use_container_width=True)
+                st.plotly_chart(
+                    charts.capacity_by_pathway(capacity_df), use_container_width=True
+                )
 
             st.subheader("Raw Capacity Data")
             st.dataframe(
-                capacity_df.style.format({"year": "{:.0f}", "total_capacity_mt_yr": "{:.4f}"}),
+                capacity_df.style.format({
+                    "year": "{:.0f}",
+                    "total_capacity_mt_yr": "{:.4f}",
+                }),
                 use_container_width=True,
             )
             _download_csv(capacity_df, "capacity.csv", "⬇ Download capacity.csv")
 
-    # ── Trade Flows ──────────────────────────────────────────────────────────
+    # ════════════════════════════════════════════════════════════════════════
+    # 🚢  TRADE FLOWS
+    # ════════════════════════════════════════════════════════════════════════
     with tab_trade:
         if flows_df.empty:
             st.warning("No trade flow data available.")
         else:
+            st.subheader("Inter-Regional SAF Trade Flows")
+            st.markdown(
+                """
+                ### Methodology
+                SAF trade flows arise from the **cheapest-CIF dispatch** algorithm in the market
+                clearing step. Each destination region is served by the supply source that
+                minimises the delivered cost — the producing region's LCOSAF plus the transport
+                cost from the transport cost matrix:
+
+                > **CIF Cost (origin → destination) = LCOSAF_origin + Transport Cost_origin→destination**
+
+                Regions are served in descending order of WTP (highest-WTP region first), and
+                within each destination the cheapest available origin is selected until the
+                region's demand is met. This produces an allocation that is efficient from a
+                cost perspective but not necessarily a competitive equilibrium — clearing prices
+                are set by WTP, not by marginal supply cost, so producers earn rents above their
+                break-even LCOSAF.
+
+                A trade flow is recorded for every origin-destination pair with non-zero volume.
+                Flows within the same region (self-supply) appear as diagonal entries in the
+                heatmap and as left-to-right self-loops in the Sankey diagram (export node →
+                import node of the same region). The Sankey uses a **double-node layout** —
+                exporter nodes on the left, importer nodes on the right — so no arrows loop
+                back, making the direction of all flows immediately legible.
+                """
+            )
+
             years = sorted(flows_df["year"].unique())
             sel_year = st.selectbox("Year", years, index=len(years) - 1, key="trade_year")
 
             col1, col2 = st.columns(2)
             with col1:
-                st.plotly_chart(charts.trade_heatmap(flows_df, sel_year), use_container_width=True)
+                st.plotly_chart(
+                    charts.trade_heatmap(flows_df, sel_year), use_container_width=True
+                )
             with col2:
-                st.plotly_chart(charts.trade_sankey(flows_df, sel_year), use_container_width=True)
+                st.plotly_chart(
+                    charts.trade_sankey(flows_df, sel_year), use_container_width=True
+                )
 
             st.subheader("Raw Trade Flow Data")
             st.dataframe(
