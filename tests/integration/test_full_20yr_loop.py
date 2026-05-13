@@ -99,9 +99,9 @@ class TestPriceValidity:
                 )
 
     def test_eu_has_wtp_pricing_regime_when_cleared(self, full_run):
-        """When EU market clears, pricing regime must be WTP-based or unserved."""
+        """When EU market clears, pricing regime must be WTP-based or corsia_offset."""
         history, _ = full_run
-        valid_regimes = {"wtp_priority_allocation", "unserved"}
+        valid_regimes = {"wtp_priority_allocation", "corsia_offset"}
         for state in history:
             eu_price = state.market.price_for_region("EU")
             if eu_price is not None:
@@ -116,7 +116,7 @@ class TestPriceValidity:
                 continue
             eu = state.market.price_for_region("EU")
             us = state.market.price_for_region("US")
-            if eu and us and eu.pricing_regime != "unserved" and us.pricing_regime != "unserved":
+            if eu and us and eu.pricing_regime != "corsia_offset" and us.pricing_regime != "corsia_offset":
                 assert eu.clearing_price_usd_per_mt >= us.clearing_price_usd_per_mt, \
                     f"Year {state.year}: EU price {eu.clearing_price_usd_per_mt:.0f} < US {us.clearing_price_usd_per_mt:.0f}"
 

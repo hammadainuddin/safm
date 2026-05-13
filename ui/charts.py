@@ -138,14 +138,22 @@ def trade_sankey(df: pd.DataFrame, year: int) -> go.Figure:
 
 
 def market_balance_bar(df: pd.DataFrame) -> go.Figure:
-    """Demand vs produced vs traded by year."""
+    """CORSIA demand vs produced vs CORSIA offset demand vs traded by year."""
     fig = go.Figure()
-    fig.add_trace(go.Bar(x=df["year"], y=df["total_demand_mt"], name="Demand"))
-    fig.add_trace(go.Bar(x=df["year"], y=df["total_produced_mt"], name="Produced"))
+    fig.add_trace(go.Bar(x=df["year"], y=df["total_demand_mt"], name="CORSIA Demand"))
+    fig.add_trace(go.Bar(x=df["year"], y=df["total_produced_mt"], name="Physical SAF Produced"))
     fig.add_trace(go.Bar(x=df["year"], y=df["total_traded_mt"], name="Traded", opacity=0.7))
+    if "corsia_offset_demand_mt" in df.columns:
+        fig.add_trace(go.Bar(
+            x=df["year"], y=df["corsia_offset_demand_mt"],
+            name="CORSIA Offset Demand",
+            marker_color="#aaaaaa",
+            marker_pattern_shape="\\",
+            opacity=0.8,
+        ))
     fig.update_layout(
         barmode="group",
-        title="Market Balance: Demand vs Produced vs Traded (MT)",
+        title="Market Balance: CORSIA Demand vs Physical SAF vs Offset (MT)",
         xaxis_title="Year", yaxis_title="MT",
         legend_title="Metric",
         xaxis=dict(tickformat="d"),

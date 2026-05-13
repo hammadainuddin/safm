@@ -91,10 +91,12 @@ def _history_to_capacity_df(history: list) -> pd.DataFrame:
 def _history_to_summary_df(history: list) -> pd.DataFrame:
     rows = []
     for s in history:
+        offset_mt = sum(s.market.offset_demand_mt_by_region.values())
         rows.append({
             "year": s.year,
             "total_demand_mt": s.demand.total_volume_mt(s.year),
             "total_produced_mt": s.market.total_saf_produced_mt,
+            "corsia_offset_demand_mt": round(offset_mt, 6),
             "total_traded_mt": s.market.total_saf_traded_mt,
             "market_balanced": s.market.market_balanced,
             "expansion_triggered": s.expansion.build_triggered,
@@ -161,6 +163,7 @@ def render(history: Optional[list] = None) -> None:
             "year": "{:.0f}",
             "total_demand_mt": "{:.3f}",
             "total_produced_mt": "{:.3f}",
+            "corsia_offset_demand_mt": "{:.3f}",
             "total_traded_mt": "{:.3f}",
         }), use_container_width=True)
         _download_csv(summary_df, "market_summary.csv", "⬇ Download")

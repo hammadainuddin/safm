@@ -205,7 +205,7 @@ class TestClearingPrices:
         assert eu_price.clearing_price_usd_per_mt == pytest.approx(eu_wtp, abs=0.01)
 
     def test_unserved_region_price_is_zero(self, clearing):
-        """Unserved region must have clearing_price = 0 and pricing_regime = 'unserved'."""
+        """Unserved region must have clearing_price = 0 and pricing_regime = 'corsia_offset'."""
         demand = _demand_matrix(YEAR, {"EU": 0.5, "US": 1.0})
         cap    = _capacity([_plant("EU", _eff(0.5))])   # effective = 0.5 MT, only enough for EU
         wtp    = _wtp_matrix(YEAR, {"EU": 2500.0, "US": 800.0})
@@ -214,7 +214,7 @@ class TestClearingPrices:
 
         us_price = next(p for p in result.prices if p.region == "US")
         assert us_price.clearing_price_usd_per_mt == pytest.approx(0.0)
-        assert us_price.pricing_regime == "unserved"
+        assert us_price.pricing_regime == "corsia_offset"
 
     def test_margin_non_negative_for_served_region(self, clearing):
         """Producer margin (WTP - supply_cost - transport) must be ≥ 0 for served region."""

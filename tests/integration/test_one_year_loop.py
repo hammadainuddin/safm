@@ -105,11 +105,11 @@ class TestMarketClearing:
             f"Unexpected market solver status: {year_2025_state.market.solver_status}"
 
     def test_wtp_pricing_regime_when_cleared(self, year_2025_state):
-        """Prices produced by WTP clearing use wtp_priority_allocation or unserved."""
+        """Prices produced by WTP clearing use wtp_priority_allocation or corsia_offset."""
         if not year_2025_state.market.market_balanced:
             pytest.skip("Market not balanced — clearing was skipped")
         for p in year_2025_state.market.prices:
-            assert p.pricing_regime in {"wtp_priority_allocation", "unserved"}, \
+            assert p.pricing_regime in {"wtp_priority_allocation", "corsia_offset"}, \
                 f"Unexpected pricing regime for {p.region}: {p.pricing_regime}"
 
     def test_clearing_price_equals_wtp_for_served_region(self, year_2025_state):
@@ -123,7 +123,7 @@ class TestMarketClearing:
         )
 
         for price in year_2025_state.market.prices:
-            if price.pricing_regime == "unserved":
+            if price.pricing_regime == "corsia_offset":
                 continue
             wtp_entry = wtp_matrix.wtp_for_region(price.region)
             if wtp_entry:
@@ -137,7 +137,7 @@ class TestMarketClearing:
             pytest.skip("Market not balanced — clearing was skipped")
         eu = year_2025_state.market.price_for_region("EU")
         us = year_2025_state.market.price_for_region("US")
-        if eu and us and eu.pricing_regime != "unserved" and us.pricing_regime != "unserved":
+        if eu and us and eu.pricing_regime != "corsia_offset" and us.pricing_regime != "corsia_offset":
             assert eu.clearing_price_usd_per_mt > us.clearing_price_usd_per_mt
 
 

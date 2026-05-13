@@ -43,7 +43,8 @@ class RegionalPrice(BaseModel):
     @field_validator("pricing_regime")
     @classmethod
     def valid_regime(cls, v: str) -> str:
-        valid = {"regulated_refueleu", "voluntary_cost_plus", "wtp_priority_allocation", "unserved"}
+        valid = {"regulated_refueleu", "voluntary_cost_plus", "wtp_priority_allocation",
+                 "unserved", "corsia_offset"}
         if v not in valid:
             raise ValueError(f"pricing_regime must be one of {valid}")
         return v
@@ -60,6 +61,7 @@ class MarketClearingResult(BaseModel):
     market_balanced: bool
     solver_status: str
     objective_value: float        # LP objective (minimised total supply + transport cost)
+    offset_demand_mt_by_region: Dict[str, float] = {}  # unserved demand covered by CORSIA offsets
 
     def price_for_region(self, region: str) -> Optional[RegionalPrice]:
         for p in self.prices:

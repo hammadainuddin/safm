@@ -105,11 +105,12 @@ def render() -> None:
         st.subheader("Bottom-Up Demand Module")
         st.markdown(
             """
-            SAF demand is estimated from first principles using a bottom-up flight-activity model
-            rather than a simple top-down trajectory. The module combines four independent data
-            streams — flight routes, aircraft fuel efficiency, CORSIA international offsetting
-            obligations, and domestic blending mandates — to produce an annual regional SAF demand
-            figure that responds dynamically to policy changes, fleet renewal, and traffic growth.
+            CORSIA-mandated SAF demand is estimated from first principles using a bottom-up
+            flight-activity model rather than a simple top-down trajectory. The module combines
+            four independent data streams — flight routes, aircraft fuel efficiency, CORSIA
+            international offsetting obligations, and domestic blending mandates — to produce an
+            annual regional CORSIA-mandated SAF demand figure that responds dynamically to policy
+            changes, fleet renewal, and traffic growth.
             The 64 representative routes in the dataset approximate **5% of global scheduled
             traffic** (`ROUTE_SAMPLE_FRACTION = 0.05`); CORSIA demand is scaled by this factor,
             while mandate demand represents absolute policy targets and is not scaled.
@@ -264,9 +265,9 @@ def render() -> None:
                 a full credit against this obligation because its lifecycle emissions are
                 substantially lower than fossil jet fuel. The **mandatory fraction** defines
                 the share of international fuel burn above the 2019 baseline that must be
-                covered by offsets or SAF credits in each year. CORSIA SAF demand is therefore:
+                covered by offsets or SAF credits in each year. CORSIA-mandated SAF demand is therefore:
 
-                > **CORSIA SAF Demand (MT) = International Fuel Burn (MT) × mandatory_fraction**
+                > **CORSIA-Mandated SAF Demand (MT) = International Fuel Burn (MT) × mandatory_fraction**
 
                 The carbon credit price (`carbon_credit_usd_per_tco2`) determines the value of
                 a SAF credit in Case 1 of the WTP calculation:
@@ -322,9 +323,9 @@ def render() -> None:
                 economic incentive to purchase SAF credits during the voluntary phase
                 (2021–2026). The EU is always assigned a suppression factor of **1.0** because
                 ReFuelEU mandates apply independently of CORSIA voluntary status. Regions with
-                suppression factors below 1.0 have their CORSIA-driven SAF demand reduced:
+                suppression factors below 1.0 have their CORSIA-mandated SAF demand reduced:
 
-                > **Effective CORSIA Demand (region, year) = Raw CORSIA Demand × suppression_factor**
+                > **Effective CORSIA-Mandated Demand (region, year) = Raw CORSIA-Mandated Demand × suppression_factor**
 
                 As CORSIA transitions from voluntary to mandatory (post-2027), suppression
                 factors for participating regions should be raised towards 1.0. This table
@@ -354,7 +355,7 @@ def render() -> None:
                 above a baseline — mandates apply to the **total domestic fuel burn** in
                 each year. Mandate demand is therefore:
 
-                > **Mandate SAF Demand (MT) = Domestic Fuel Burn (MT) × mandate_fraction**
+                > **Mandate-Driven SAF Demand (MT) = Domestic Fuel Burn (MT) × mandate_fraction**
 
                 Only domestic routes contribute to mandate demand; international routes are
                 covered by CORSIA instead. The EU ReFuelEU regulation is the primary driver
@@ -760,13 +761,6 @@ def render() -> None:
                 ),
                 use_container_width=True,
             )
-
-        st.info(
-            f"**Route sample fraction:** {_RSF:.0%} — "
-            "the 64 representative routes represent this fraction of global scheduled traffic. "
-            "CORSIA SAF demand is scaled by this factor; mandate demand is not. "
-            "Edit `config/settings.py` → `ROUTE_SAMPLE_FRACTION` to adjust."
-        )
 
         st.markdown("**Edit WTP Parameters**")
         with st.expander("Edit full table"):

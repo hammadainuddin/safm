@@ -87,16 +87,24 @@ class PriceQuantityClearing:
         inflow_totals: Dict[str, float] = {}
         for f in trade_flows:
             inflow_totals[f.destination_region] = inflow_totals.get(f.destination_region, 0.0) + f.volume_mt
-        unserved = [
-            r for r, d in demand_by_region.items()
-            if d > MARKET_BALANCE_TOL and inflow_totals.get(r, 0.0) < d - MARKET_BALANCE_TOL
-        ]
+
+        # Regions where physical SAF cannot meet demand — shortfall covered by CORSIA offsets
+        offset_demand_mt_by_region: Dict[str, float] = {}
+        for r, d in demand_by_region.items():
+            if d > MARKET_BALANCE_TOL:
+                inflow = inflow_totals.get(r, 0.0)
+                shortfall = d - inflow
+                if shortfall > MARKET_BALANCE_TOL:
+                    offset_demand_mt_by_region[r] = round(shortfall, 6)
+
+        unserved = list(offset_demand_mt_by_region.keys())
         market_balanced = len(unserved) == 0
 
         logger.info(
             "Year %d — PQ clearing: balanced=%s, produced=%.4f MT, "
-            "traded=%.4f MT, unserved=%s",
-            year, market_balanced, total_produced, total_traded, unserved or "none",
+            "traded=%.4f MT, corsia_offset=%s",
+            year, market_balanced, total_produced, total_traded,
+            {r: f"{v:.4f}" for r, v in offset_demand_mt_by_region.items()} or "none",
         )
 
         return MarketClearingResult(
@@ -108,6 +116,7 @@ class PriceQuantityClearing:
             market_balanced=market_balanced,
             solver_status="optimal" if market_balanced else "partial",
             objective_value=0.0,
+            offset_demand_mt_by_region=offset_demand_mt_by_region,
         )
 
     # ── Allocation algorithm ─────────────────────────────────────────────────
@@ -203,11 +212,11 @@ class PriceQuantityClearing:
             is_served  = served_vol >= demand_vol - MARKET_BALANCE_TOL
 
             if not is_served:
-                # Unserved region: clearing price = 0, market_balanced flags this
+                # Demand unmet by physical SAF — falls to CORSIA offset credits
                 prices.append(RegionalPrice(
                     year=year, region=d_region,
                     clearing_price_usd_per_mt=0.0,
-                    pricing_regime="unserved",
+                    pricing_regime="corsia_offset",
                     shadow_price_usd_per_mt=wtp,
                     supply_cost_usd_per_mt=0.0,
                     transport_premium_usd_per_mt=0.0,
