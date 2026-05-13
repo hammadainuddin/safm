@@ -655,21 +655,25 @@ def render() -> None:
         fig.update_layout(xaxis=dict(tickformat=""))
         st.plotly_chart(fig, use_container_width=True)
 
-        # ── LCOSAF cost inputs (full region × pathway grid) ──────────────────
-        st.subheader("Cost Inputs for LCOSAF Calculator")
+        # ── LCOSAF by Region and Pathway ─────────────────────────────────────
+        st.subheader("LCOSAF by Region and Pathway")
         st.markdown(
             """
-            Edit CAPEX, Processing OPEX, and Feedstock cost per pathway and region.
-            These values override the model defaults **for the LCOSAF charts below only**
-            and do not affect a model run (use Committed Capacity or `config/settings.py`
-            to change cost assumptions that feed into the actual run).
+            The Levelised Cost of SAF (LCOSAF) is the minimum long-run price at which a
+            producer can recover all capital and operating costs at a given required rate of
+            return:
 
             > **LCOSAF (USD/MT SAF) = CRF(IRR, life) × CAPEX / Utilisation + Processing OPEX + Feedstock cost**
+
+            Use the inputs below to set **CAPEX**, **Processing OPEX**, and **Feedstock cost**
+            per pathway and region, then adjust the IRR slider to see how investor return
+            requirements shift the investment floor. These values update the charts on this
+            page only and do not affect a model run.
 
             - **CAPEX** — capital cost in USD per MT/yr of nameplate capacity
             - **Processing OPEX** — non-feedstock operating cost in USD per MT SAF produced
             - **Feedstock cost** — delivered feedstock cost in USD per MT SAF produced
-              (= feedstock price × pathway intensity, e.g. UCO $600/t × 1.25 t/MT SAF = $750/MT SAF)
+              (e.g. UCO $600/t × 1.25 t/MT SAF = $750/MT SAF for HEFA)
             """
         )
 
@@ -690,9 +694,11 @@ def render() -> None:
 
         grid = st.session_state["lcosaf_cost_grid"]
 
-        if st.button("↺ Reset to model defaults", key="lcosaf_reset"):
-            st.session_state.pop("lcosaf_cost_grid", None)
-            st.rerun()
+        col_reset, _ = st.columns([1, 4])
+        with col_reset:
+            if st.button("↺ Reset to model defaults", key="lcosaf_reset"):
+                st.session_state.pop("lcosaf_cost_grid", None)
+                st.rerun()
 
         region_tabs_lc = st.tabs(_REGIONS)
         for rtab, region in zip(region_tabs_lc, _REGIONS):
@@ -733,22 +739,7 @@ def render() -> None:
             for r in _REGIONS
         }
 
-        # ── LCOSAF heatmap & bar ──────────────────────────────────────────────
-        st.subheader("LCOSAF by Region and Pathway")
-        st.markdown(
-            """
-            The Levelised Cost of SAF (LCOSAF) is the minimum long-run price at which a
-            producer can recover all capital and operating costs at a given required rate of
-            return. It is computed as:
-
-            > **LCOSAF = (CRF(IRR, project_life) × CAPEX + OPEX) / Utilisation**
-
-            where OPEX includes full feedstock, processing, and logistics costs per MT of
-            installed nameplate capacity per year, and CRF is the Capital Recovery Factor.
-            Use the IRR slider to explore how investor return requirements shift the
-            investment floor across regions and pathways.
-            """
-        )
+        st.markdown("---")
         irr_sel = st.slider("Target IRR (%)", 8, 20, 12, key="lcosaf_irr") / 100.0
         col_h, col_b = st.columns(2)
         with col_h:
