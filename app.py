@@ -45,7 +45,9 @@ if "active_tab" not in st.session_state:
     st.session_state.active_tab = 0
 
 # ── Tab layout ───────────────────────────────────────────────────────────────
-tab_inputs, tab_run, tab_outputs = st.tabs(["📊 Inputs", "▶ Run Model", "📈 Outputs"])
+tab_inputs, tab_run, tab_outputs, tab_scenarios = st.tabs([
+    "📊 Inputs", "▶ Run Model", "📈 Outputs", "🎭 Scenarios"
+])
 
 
 # ============================================================================
@@ -168,3 +170,11 @@ with tab_run:
 # ============================================================================
 with tab_outputs:
     output_dashboard.render(st.session_state.history)
+
+
+# ============================================================================
+# TAB 4 — Scenarios
+# ============================================================================
+with tab_scenarios:
+    from ui import scenario_builder
+    scenario_builder.render(st.session_state.history)

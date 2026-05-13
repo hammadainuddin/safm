@@ -148,6 +148,13 @@ def render(history: Optional[list] = None) -> None:
             flag indicates whether the LP solver built any new endogenous plants in that year.
             Years where the market does not balance — typically early in the horizon before
             sufficient capacity has been built — produce no price or trade-flow data.
+
+            **Note on CORSIA demand and carbon offsets:** Total SAF demand reported here
+            represents the full CORSIA-mandated and blending-mandate obligation. In years where
+            physical SAF supply cannot meet this obligation at a cost below the regional WTP,
+            the shortfall is assumed to be covered by **CORSIA-eligible carbon offset credits**
+            rather than physical SAF. This offset demand appears separately in the
+            Supply-Demand (MAC) Curve chart.
             """
         )
         st.dataframe(summary_df.style.format({
@@ -246,22 +253,28 @@ def render(history: Optional[list] = None) -> None:
                 charts along a common cumulative volume axis.
 
                 **Supply side** (solid bars, sorted left-to-right by ascending LCOSAF): each bar
-                represents one region's effective supply capacity — nameplate capacity multiplied
-                by the utilisation factor (0.85). The bar height is the region's
-                capacity-weighted average LCOSAF:
+                represents one individual plant's effective supply — its nameplate capacity
+                multiplied by the utilisation factor (0.85). Each bar is labelled by
+                **region and pathway** (e.g. EU — HEFA, US — Co-processing). Bars are
+                ordered cheapest-first, reflecting merit-order dispatch. The bar height is the
+                plant's full LCOSAF including capital recovery:
 
-                > **Supply Cost = Σ (LCOSAF_plant × Capacity_plant) / Σ Capacity_plant**
+                > **LCOSAF = (CRF(IRR, 20yr) × CAPEX + OPEX) / Utilisation**
 
-                The cheapest supply source sits at the left; more expensive sources are added
-                progressively to the right, reflecting the merit-order dispatch principle.
+                Dispatched plants (coloured solid) are those whose cumulative volume falls
+                within the total SAF produced in the clearing step. Undispatched plants (shown
+                with cross-hatching, hidden by default via the *Show Unbuilt Cap* toggle) have
+                LCOSAF too high to be economically dispatched.
 
                 **Demand side** (hatched bars, sorted left-to-right by descending WTP): each bar
-                represents one region's SAF demand volume at its WTP price. The highest-WTP
-                region (EU) is served first; lower-WTP regions are served from the remaining
-                supply. The **clearing price** for each served region equals its WTP — not the
-                marginal supply cost — because the model uses WTP-priority allocation rather
-                than a competitive auction. The visual intersection of the two curves indicates
-                the volume at which supply is exhausted.
+                represents one region's SAF demand (CORSIA + blending mandate) at its WTP.
+                The highest-WTP region is served first. Clearing price = WTP of each served
+                region (WTP-priority allocation, not a competitive auction).
+
+                **CORSIA Offset Demand** (grey cross-hatched bar): the portion of total CORSIA
+                demand that cannot be met by physical SAF at or below the regional WTP. Airlines
+                in this segment are assumed to purchase CORSIA-eligible carbon offset credits
+                instead of physical SAF.
                 """
             )
             balanced_years = sorted({s.year for s in history if s.market.market_balanced})
@@ -274,13 +287,16 @@ def render(history: Optional[list] = None) -> None:
                     _wtp_model2 = WTPModel()
                     demand_by_region = sd_state.demand.volume_by_region(sd_year)
                     sd_data = _wtp_model2.build_sd_curve_data(
-                        sd_year, sd_state.capacity, demand_by_region
+                        sd_year, sd_state.capacity, demand_by_region,
+                        market_result=sd_state.market,
                     )
                     st.plotly_chart(
                         charts.supply_demand_curve(
                             sd_data["demand_steps"],
                             sd_data["supply_steps"],
                             sd_year,
+                            offset_mt=sd_data["offset_mt"],
+                            max_wtp=sd_data["max_wtp"],
                         ),
                         use_container_width=True,
                     )

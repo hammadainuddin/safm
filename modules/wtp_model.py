@@ -100,34 +100,71 @@ class WTPModel:
         capacity_state: CapacityState,
         demand_by_region: Dict[str, float],
         wtp_matrix: Optional[WTPMatrix] = None,
+        market_result=None,
     ) -> dict:
         """
-        Return data for the aggregate supply-demand step chart.
+        Return data for the pathway-level supply-demand MAC curve.
 
         Returns
         -------
         dict with keys:
-          demand_steps: [(wtp, volume, region), ...]  sorted by wtp desc
-          supply_steps: [(avg_opex, volume, region), ...] sorted by opex asc
+          demand_steps : [(wtp, volume, region), ...]  sorted by wtp desc
+          supply_steps : [(lcosaf, volume, region, pathway, dispatched), ...]
+                         sorted by lcosaf asc; dispatched=True when the plant's
+                         cumulative volume falls within total_saf_produced_mt.
+          offset_mt    : demand volume unserved by physical SAF (→ CORSIA offsets)
+          max_wtp      : highest regional WTP (used as offset-bar height)
         """
+        from utils.economics import levelised_cost as _lc
+
         if wtp_matrix is None:
             wtp_matrix = self.compute_wtp(year, capacity_state)
 
         wtp_dict = wtp_matrix.to_dict()
-        supply = capacity_state.effective_supply_by_region(UTILIZATION_FACTOR)
-        supply_costs = self._capacity_weighted_lcosaf(capacity_state)
 
+        # ── Demand steps (unchanged structure) ───────────────────────────────
         demand_steps = sorted(
             [(wtp_dict.get(r, 0.0), demand_by_region.get(r, 0.0), r)
              for r in wtp_dict],
             key=lambda x: -x[0],
         )
-        supply_steps = sorted(
-            [(supply_costs.get(r, 0.0), supply.get(r, 0.0), r)
-             for r in supply],
-            key=lambda x: x[0],
+
+        # ── Supply steps: one entry per plant (pathway-level granularity) ────
+        raw_supply = []
+        for plant in capacity_state.plants:
+            lc = _lc(
+                plant.capex_usd_per_mt, plant.opex_usd_per_mt,
+                UTILIZATION_FACTOR, DISCOUNT_RATE, PROJECT_LIFE_YR,
+            )
+            vol = plant.capacity_mt_yr * UTILIZATION_FACTOR
+            raw_supply.append((lc, vol, plant.region, plant.pathway))
+        raw_supply.sort(key=lambda x: x[0])  # cheapest first
+
+        # Mark dispatch status: cheapest plants fill dispatched_vol first
+        dispatched_vol = (
+            market_result.total_saf_produced_mt
+            if market_result is not None
+            else float("inf")
         )
-        return {"demand_steps": demand_steps, "supply_steps": supply_steps}
+        supply_steps = []
+        cum = 0.0
+        for lc, vol, region, pathway in raw_supply:
+            dispatched = (cum + vol) <= dispatched_vol + 1e-6
+            supply_steps.append((lc, vol, region, pathway, dispatched))
+            cum += vol
+
+        # ── Offset demand ────────────────────────────────────────────────────
+        total_demand = sum(demand_by_region.values())
+        actual_dispatched = min(dispatched_vol, cum)
+        offset_mt = max(0.0, total_demand - actual_dispatched)
+        max_wtp = max(wtp_dict.values(), default=0.0)
+
+        return {
+            "demand_steps": demand_steps,
+            "supply_steps": supply_steps,
+            "offset_mt":    offset_mt,
+            "max_wtp":      max_wtp,
+        }
 
     # ── Case calculations ────────────────────────────────────────────────────
 

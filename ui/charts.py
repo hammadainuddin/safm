@@ -186,12 +186,14 @@ def corsia_suppression_chart(df: pd.DataFrame) -> go.Figure:
     return fig
 
 
-def supply_demand_curve(demand_steps, supply_steps, year):
+def supply_demand_curve(demand_steps, supply_steps, year, offset_mt=0.0, max_wtp=0.0):
     """
-    MAC bar chart supply-demand curve with toggle buttons for supply/demand/region.
+    Pathway-level MAC bar chart with dispatched/undispatched supply and CORSIA offset demand.
 
-    supply_steps: [(cost, volume_mt, region), ...] sorted ascending by cost
-    demand_steps: [(wtp, volume_mt, region), ...] sorted descending by WTP
+    supply_steps : [(lcosaf, vol, region, pathway, dispatched), ...] sorted asc by lcosaf
+    demand_steps : [(wtp, vol, region), ...] sorted desc by WTP
+    offset_mt    : unserved demand volume covered by CORSIA carbon offsets
+    max_wtp      : highest regional WTP (height of the offset demand bar)
     """
     _REGION_COLORS = {
         "EU": "#e6194b", "US": "#3cb44b", "APAC": "#4363d8",
@@ -199,64 +201,123 @@ def supply_demand_curve(demand_steps, supply_steps, year):
     }
     _default_colors = ["#e6194b", "#3cb44b", "#4363d8", "#f58231", "#911eb4", "#42d4f4"]
 
-    def _color(region, idx):
+    def _color(region, idx=0):
         return _REGION_COLORS.get(region, _default_colors[idx % len(_default_colors)])
 
     fig = go.Figure()
-
-    # Track trace metadata: (trace_index, "supply"|"demand", region)
+    # trace_meta: (type, region)  where type ∈ "supply"|"undispatched"|"demand"|"offset"
     trace_meta = []
 
-    # Supply bars — solid fill, sorted ascending by cost (cheapest first)
-    cum = 0.0
-    for i, (cost, vol, region) in enumerate(supply_steps):
-        mid = cum + vol / 2
+    # ── Supply bars: dispatched (solid) ─────────────────────────────────────
+    cum_s = 0.0
+    for lc, vol, region, pathway, dispatched in supply_steps:
+        if not dispatched:
+            cum_s += vol
+            continue
+        mid = cum_s + vol / 2
         fig.add_trace(go.Bar(
-            x=[mid], y=[cost], width=[vol],
-            name=f"Supply: {region}", legendgroup=f"region_{region}",
-            marker_color=_color(region, i), opacity=0.9,
+            x=[mid], y=[lc], width=[vol],
+            name=f"{region} — {pathway}",
+            legendgroup=f"supply_{region}",
+            marker_color=_color(region),
+            opacity=0.9,
             showlegend=True,
-            hovertemplate=f"<b>{region} Supply</b><br>Cost: ${cost:.0f}/MT<br>Vol: {vol:.3f} MT<extra></extra>",
+            hovertemplate=(
+                f"<b>{region} — {pathway}</b><br>"
+                f"LCOSAF: ${lc:.0f}/MT<br>Vol: {vol:.3f} MT"
+                f"<extra>Dispatched Supply</extra>"
+            ),
         ))
         trace_meta.append(("supply", region))
-        cum += vol
+        cum_s += vol
 
-    # Demand bars — hatched fill, sorted descending by WTP
-    cum = 0.0
+    # ── Supply bars: undispatched (low opacity, default hidden) ─────────────
+    cum_s2 = 0.0
+    for lc, vol, region, pathway, dispatched in supply_steps:
+        mid = cum_s2 + vol / 2
+        if not dispatched:
+            fig.add_trace(go.Bar(
+                x=[mid], y=[lc], width=[vol],
+                name=f"{region} — {pathway} (unbuilt)",
+                legendgroup=f"undispatched_{region}",
+                marker_color=_color(region),
+                marker_pattern_shape="x",
+                opacity=0.22,
+                visible=False,
+                showlegend=True,
+                hovertemplate=(
+                    f"<b>{region} — {pathway}</b><br>"
+                    f"LCOSAF: ${lc:.0f}/MT<br>Vol: {vol:.3f} MT"
+                    f"<extra>Unbuilt / Undispatched</extra>"
+                ),
+            ))
+            trace_meta.append(("undispatched", region))
+        cum_s2 += vol
+
+    # ── Demand bars: SAF demand per region (hatched) ─────────────────────────
+    cum_d = 0.0
     for i, (wtp, vol, region) in enumerate(demand_steps):
-        mid = cum + vol / 2
+        mid = cum_d + vol / 2
         fig.add_trace(go.Bar(
             x=[mid], y=[wtp], width=[vol],
-            name=f"Demand: {region}", legendgroup=f"region_{region}",
+            name=f"SAF Demand: {region}",
+            legendgroup=f"demand_{region}",
             marker_color=_color(region, i),
             marker_pattern_shape="/",
             opacity=0.55,
             showlegend=True,
-            hovertemplate=f"<b>{region} Demand</b><br>WTP: ${wtp:.0f}/MT<br>Vol: {vol:.3f} MT<extra></extra>",
+            hovertemplate=(
+                f"<b>{region} SAF Demand (CORSIA/mandate)</b><br>"
+                f"WTP: ${wtp:.0f}/MT<br>Vol: {vol:.3f} MT"
+                f"<extra></extra>"
+            ),
         ))
         trace_meta.append(("demand", region))
-        cum += vol
+        cum_d += vol
 
-    n = len(trace_meta)
-    all_regions = sorted({r for _, r in trace_meta})
+    # ── CORSIA Offset demand bar (grey hatched, appended to demand axis) ─────
+    if offset_mt > 1e-6:
+        off_height = max_wtp if max_wtp > 0 else (demand_steps[0][0] if demand_steps else 1000)
+        mid_off = cum_d + offset_mt / 2
+        fig.add_trace(go.Bar(
+            x=[mid_off], y=[off_height], width=[offset_mt],
+            name="CORSIA Offset Demand (unserved)",
+            legendgroup="offset",
+            marker_color="#aaaaaa",
+            marker_pattern_shape="\\",
+            opacity=0.65,
+            showlegend=True,
+            hovertemplate=(
+                f"<b>CORSIA Carbon Offset Demand</b><br>"
+                f"Unserved by physical SAF<br>Vol: {offset_mt:.3f} MT"
+                f"<extra></extra>"
+            ),
+        ))
+        trace_meta.append(("offset", "offset"))
 
-    def _vis(keep_type=None, keep_region=None):
-        """Build a visibility list: show trace if it matches both filters (None = any)."""
+    all_regions = sorted({r for _, r in trace_meta if r != "offset"})
+
+    def _vis(keep_type=None, keep_region=None, show_undispatched=False):
         vis = []
         for t_type, t_region in trace_meta:
-            show = (keep_type is None or t_type == keep_type) and \
-                   (keep_region is None or t_region == keep_region)
+            if t_type == "undispatched":
+                show = show_undispatched and (keep_type in (None, "supply", "undispatched")) and \
+                       (keep_region is None or t_region == keep_region)
+            elif t_type == "offset":
+                show = (keep_type is None or keep_type == "demand")
+            else:
+                show = (keep_type is None or t_type == keep_type) and \
+                       (keep_region is None or t_region == keep_region)
             vis.append(show)
         return vis
 
-    # ── Toggle buttons (Supply / Demand / All) ───────────────────────────────
     type_buttons = [
-        dict(label="All",         method="restyle", args=[{"visible": _vis()}]),
-        dict(label="Supply only", method="restyle", args=[{"visible": _vis(keep_type="supply")}]),
-        dict(label="Demand only", method="restyle", args=[{"visible": _vis(keep_type="demand")}]),
+        dict(label="All",              method="restyle", args=[{"visible": _vis()}]),
+        dict(label="Supply only",      method="restyle", args=[{"visible": _vis(keep_type="supply")}]),
+        dict(label="Demand only",      method="restyle", args=[{"visible": _vis(keep_type="demand")}]),
+        dict(label="Show Unbuilt Cap", method="restyle", args=[{"visible": _vis(show_undispatched=True)}]),
     ]
 
-    # ── Per-region dropdown ──────────────────────────────────────────────────
     region_buttons = [
         dict(label="All regions", method="restyle", args=[{"visible": _vis()}]),
     ] + [
@@ -269,27 +330,22 @@ def supply_demand_curve(demand_steps, supply_steps, year):
         title=f"SAF Supply-Demand (MAC) Curve — {year}",
         xaxis_title="Cumulative Volume (MT)",
         yaxis_title="Price / Cost (USD/MT SAF)",
-        xaxis=dict(tickformat=".1f"),
-        legend=dict(orientation="h", yanchor="bottom", y=1.12, xanchor="right", x=1),
+        xaxis=dict(tickformat=".2f"),
+        legend=dict(orientation="h", yanchor="bottom", y=1.18, xanchor="right", x=1),
         hovermode="closest",
         updatemenus=[
             dict(
-                type="buttons",
-                direction="right",
-                x=0.0, xanchor="left",
-                y=1.15, yanchor="top",
-                showactive=True,
-                buttons=type_buttons,
+                type="buttons", direction="right",
+                x=0.0, xanchor="left", y=1.22, yanchor="top",
+                showactive=True, buttons=type_buttons,
             ),
             dict(
                 type="dropdown",
-                x=0.55, xanchor="left",
-                y=1.15, yanchor="top",
-                showactive=True,
-                buttons=region_buttons,
+                x=0.72, xanchor="left", y=1.22, yanchor="top",
+                showactive=True, buttons=region_buttons,
             ),
         ],
-        margin=dict(t=120),
+        margin=dict(t=140),
     )
     return fig
 

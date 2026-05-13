@@ -655,6 +655,84 @@ def render() -> None:
         fig.update_layout(xaxis=dict(tickformat=""))
         st.plotly_chart(fig, use_container_width=True)
 
+        # ── LCOSAF cost inputs (full region × pathway grid) ──────────────────
+        st.subheader("Cost Inputs for LCOSAF Calculator")
+        st.markdown(
+            """
+            Edit CAPEX, Processing OPEX, and Feedstock cost per pathway and region.
+            These values override the model defaults **for the LCOSAF charts below only**
+            and do not affect a model run (use Committed Capacity or `config/settings.py`
+            to change cost assumptions that feed into the actual run).
+
+            > **LCOSAF (USD/MT SAF) = CRF(IRR, life) × CAPEX / Utilisation + Processing OPEX + Feedstock cost**
+
+            - **CAPEX** — capital cost in USD per MT/yr of nameplate capacity
+            - **Processing OPEX** — non-feedstock operating cost in USD per MT SAF produced
+            - **Feedstock cost** — delivered feedstock cost in USD per MT SAF produced
+              (= feedstock price × pathway intensity, e.g. UCO $600/t × 1.25 t/MT SAF = $750/MT SAF)
+            """
+        )
+
+        # Initialise grid from settings defaults on first load (75/25 feedstock/processing split)
+        if "lcosaf_cost_grid" not in st.session_state:
+            grid: dict = {}
+            for r in _REGIONS:
+                grid[r] = {}
+                for p in SAF_PATHWAYS:
+                    opex_cap = REGIONAL_OPEX.get(r, {}).get(p, 600)
+                    opex_saf = opex_cap / UTILIZATION_FACTOR
+                    grid[r][p] = {
+                        "capex":     float(REGIONAL_CAPEX.get(r, {}).get(p, 2000)),
+                        "proc_opex": round(opex_saf * 0.25, 0),
+                        "feedstock": round(opex_saf * 0.75, 0),
+                    }
+            st.session_state["lcosaf_cost_grid"] = grid
+
+        grid = st.session_state["lcosaf_cost_grid"]
+
+        if st.button("↺ Reset to model defaults", key="lcosaf_reset"):
+            st.session_state.pop("lcosaf_cost_grid", None)
+            st.rerun()
+
+        region_tabs_lc = st.tabs(_REGIONS)
+        for rtab, region in zip(region_tabs_lc, _REGIONS):
+            with rtab:
+                hdr = st.columns([2, 1.5, 1.5, 1.5])
+                hdr[0].markdown("**Pathway**")
+                hdr[1].markdown("**CAPEX** $/MT cap/yr")
+                hdr[2].markdown("**Proc. OPEX** $/MT SAF")
+                hdr[3].markdown("**Feedstock** $/MT SAF")
+                for pathway in SAF_PATHWAYS:
+                    kp = f"lc_{region}_{pathway}"
+                    row = st.columns([2, 1.5, 1.5, 1.5])
+                    row[0].write(pathway)
+                    grid[region][pathway]["capex"] = float(row[1].number_input(
+                        "capex", value=grid[region][pathway]["capex"],
+                        min_value=0.0, step=50.0, key=f"{kp}_capex",
+                        label_visibility="collapsed",
+                    ))
+                    grid[region][pathway]["proc_opex"] = float(row[2].number_input(
+                        "proc_opex", value=grid[region][pathway]["proc_opex"],
+                        min_value=0.0, step=10.0, key=f"{kp}_proc",
+                        label_visibility="collapsed",
+                    ))
+                    grid[region][pathway]["feedstock"] = float(row[3].number_input(
+                        "feedstock", value=grid[region][pathway]["feedstock"],
+                        min_value=0.0, step=10.0, key=f"{kp}_feed",
+                        label_visibility="collapsed",
+                    ))
+
+        # Build overridden dicts for the charts (OPEX in USD/MT capacity/yr)
+        custom_capex = {
+            r: {p: grid[r][p]["capex"] for p in SAF_PATHWAYS}
+            for r in _REGIONS
+        }
+        custom_opex = {
+            r: {p: (grid[r][p]["proc_opex"] + grid[r][p]["feedstock"]) * UTILIZATION_FACTOR
+                for p in SAF_PATHWAYS}
+            for r in _REGIONS
+        }
+
         # ── LCOSAF heatmap & bar ──────────────────────────────────────────────
         st.subheader("LCOSAF by Region and Pathway")
         st.markdown(
@@ -677,7 +755,7 @@ def render() -> None:
             st.plotly_chart(
                 charts.lcosaf_heatmap(
                     _REGIONS, SAF_PATHWAYS,
-                    REGIONAL_CAPEX, REGIONAL_OPEX,
+                    custom_capex, custom_opex,
                     UTILIZATION_FACTOR, irr_sel, PROJECT_LIFE_YR,
                 ),
                 use_container_width=True,
@@ -686,7 +764,7 @@ def render() -> None:
             st.plotly_chart(
                 charts.lcosaf_bar(
                     _REGIONS, SAF_PATHWAYS,
-                    REGIONAL_CAPEX, REGIONAL_OPEX,
+                    custom_capex, custom_opex,
                     UTILIZATION_FACTOR, irr_sel, PROJECT_LIFE_YR,
                 ),
                 use_container_width=True,
