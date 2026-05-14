@@ -76,6 +76,35 @@ def load_committed_capacity(year: int, path: str = None) -> CapacityState:
 
 
 # ---------------------------------------------------------------------------
+# Refinery co-processing capacity caps
+# ---------------------------------------------------------------------------
+
+def load_coprocessing_caps(path: str = None) -> Dict[str, float]:
+    """
+    Return {region: max_coprocessing_mt_yr}.
+
+    Co-processing SAF capacity is physically limited to a small share (typically
+    5–10%) of the host refinery's middle-distillate throughput. The CSV captures
+    that share per region:
+
+        max_coprocessing = refinery_throughput × (coprocessing_share_max_pct / 100)
+
+    Returns an empty dict if the file is missing, which disables the constraint
+    (backwards-compatible behaviour).
+    """
+    path = path or _mock_path("refinery_capacity.csv")
+    if not os.path.exists(path):
+        return {}
+    df = pd.read_csv(path)
+    caps: Dict[str, float] = {}
+    for _, row in df.iterrows():
+        throughput = float(row.get("refinery_throughput_mt_yr", 0.0))
+        share_pct  = float(row.get("coprocessing_share_max_pct", 0.0))
+        caps[str(row["region"])] = throughput * share_pct / 100.0
+    return caps
+
+
+# ---------------------------------------------------------------------------
 # Feedstock availability
 # ---------------------------------------------------------------------------
 

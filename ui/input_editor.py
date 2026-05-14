@@ -443,6 +443,76 @@ def render() -> None:
             _clear_upload("ss_committed_capacity")
             st.success("committed_capacity.csv saved.")
 
+        st.divider()
+
+        # ── Refinery throughput → co-processing cap ─────────────────────────
+        st.subheader("Refinery Co-Processing Capacity Cap")
+        st.markdown(
+            """
+            ### Methodology
+            Co-processing SAF is produced by blending bio-based feedstock (e.g. hydrotreated
+            vegetable oils, pyrolysis oil) into an **existing petroleum refinery's** middle-
+            distillate processing units — typically the FCC, hydrotreater, or jet hydrocracker.
+            Physically, the renewable feed is limited to **5–10%** of the host unit's
+            throughput; beyond that share, catalyst activity, product quality, and yield
+            degrade rapidly.
+
+            The capacity-expansion LP enforces this physical limit per region:
+
+            > **Max Co-Processing SAF (MT/yr) = Refinery Throughput (MT/yr) × Share Max (%)**
+
+            New endogenous co-processing builds are capped at the **headroom** between the
+            regional limit and any already-committed co-processing capacity in
+            `committed_capacity.csv`. If a region has no row in this table, the constraint
+            is disabled for that region (effectively unlimited). Other SAF pathways
+            (HEFA, ATJ, FT-MSW, PtL) are not affected by this cap.
+            """
+        )
+        rc_df = _upload_widget("refinery_capacity.csv", "ss_refinery_capacity")
+        rc_calc = rc_df.copy()
+        rc_calc["max_coprocessing_mt_yr"] = (
+            rc_calc["refinery_throughput_mt_yr"]
+            * rc_calc["coprocessing_share_max_pct"] / 100.0
+        ).round(2)
+
+        col_r1, col_r2 = st.columns(2)
+        with col_r1:
+            fig_rc = px.bar(
+                rc_calc, x="region", y="refinery_throughput_mt_yr",
+                title="Refinery Middle-Distillate Throughput by Region (MT/yr)",
+                labels={"refinery_throughput_mt_yr": "Throughput (MT/yr)", "region": "Region"},
+                color="refinery_throughput_mt_yr", color_continuous_scale="Greys",
+            )
+            fig_rc.update_layout(showlegend=False, xaxis=dict(tickformat=""))
+            st.plotly_chart(fig_rc, use_container_width=True)
+        with col_r2:
+            fig_cp = px.bar(
+                rc_calc, x="region", y="max_coprocessing_mt_yr",
+                title="Implied Max Co-Processing SAF Capacity by Region (MT/yr)",
+                labels={"max_coprocessing_mt_yr": "Max Co-Processing (MT/yr)", "region": "Region"},
+                color="coprocessing_share_max_pct", color_continuous_scale="Oranges",
+            )
+            fig_cp.update_layout(xaxis=dict(tickformat=""))
+            st.plotly_chart(fig_cp, use_container_width=True)
+
+        st.markdown("**Edit refinery throughput and co-processing share**")
+        edited_rc = st.data_editor(
+            rc_df, use_container_width=True, num_rows="dynamic", key="refinery_editor",
+            column_config={
+                "refinery_throughput_mt_yr": st.column_config.NumberColumn(
+                    "Refinery Throughput (MT/yr)", min_value=0.0, step=10.0, format="%.1f",
+                ),
+                "coprocessing_share_max_pct": st.column_config.NumberColumn(
+                    "Co-Processing Share Max (%)", min_value=0.0, max_value=100.0,
+                    step=0.5, format="%.1f",
+                ),
+            },
+        )
+        if st.button("💾 Save Refinery Capacity", key="save_refinery"):
+            _save(edited_rc, "refinery_capacity.csv")
+            _clear_upload("ss_refinery_capacity")
+            st.success("refinery_capacity.csv saved.")
+
     # ════════════════════════════════════════════════════════════════════════
     # 🌿  FEEDSTOCK AVAILABILITY
     # ════════════════════════════════════════════════════════════════════════

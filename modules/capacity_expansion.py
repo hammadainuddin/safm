@@ -15,7 +15,7 @@ from __future__ import annotations
 from typing import List, Optional, Tuple
 
 from config.settings import SUPPLY_DEMAND_BALANCE_TOLERANCE
-from data.loaders import load_feedstock_bundles
+from data.loaders import load_coprocessing_caps, load_feedstock_bundles
 from modules.supply_model import SupplyModel
 from schemas.demand_schema import DemandMatrix
 from schemas.expansion_schema import CapacityExpansionResult
@@ -68,7 +68,12 @@ class CapacityExpansionModule:
         gaps = self._sm.assess_gap(demand_matrix, capacity_state, year)
 
         if any(g > 0 for g in gaps.values()):
-            expansion = self._sm.build_expansion_lp(gaps, feedstock_bundles, year)
+            coprocessing_caps = load_coprocessing_caps()
+            expansion = self._sm.build_expansion_lp(
+                gaps, feedstock_bundles, year,
+                existing_capacity=capacity_state,
+                coprocessing_caps=coprocessing_caps,
+            )
             if expansion.solver_status != "infeasible":
                 capacity_state = self._sm.apply_expansion(capacity_state, expansion)
             else:

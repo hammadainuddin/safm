@@ -40,7 +40,7 @@ from config.settings import (
     UTILIZATION_FACTOR,
 )
 from config.solver_config import get_solver
-from data.loaders import load_committed_capacity, load_feedstock_bundles
+from data.loaders import load_committed_capacity, load_coprocessing_caps, load_feedstock_bundles
 from schemas.feedstock_schema import RegionalFeedstockBundle
 from schemas.supply_schema import CapacityState, ExpansionDecision, PlantRecord
 from schemas.demand_schema import DemandMatrix
@@ -115,6 +115,8 @@ class SupplyModel:
         year: int,
         regional_capex: Dict[str, Dict[str, float]] = None,
         regional_opex: Dict[str, Dict[str, float]] = None,
+        existing_capacity: Optional[CapacityState] = None,
+        coprocessing_caps: Optional[Dict[str, float]] = None,
     ) -> ExpansionDecision:
         """
         Solve a least-cost capacity expansion LP.
@@ -185,6 +187,27 @@ class SupplyModel:
                 return pyo.Constraint.Skip   # no pathway uses this feedstock in this region
             return lhs <= rhs
         m.feedstock_availability = pyo.Constraint(m.R, m.F, rule=feedstock_rule)
+
+        # C3: co-processing capacity cap (refinery-throughput limit).
+        # Co-processing SAF is physically constrained by the host refinery's
+        # middle-distillate throughput (typically 5–10%). Includes any existing
+        # committed Co-processing capacity already deployed in the region.
+        if coprocessing_caps:
+            existing_coprocess: Dict[str, float] = {}
+            if existing_capacity is not None:
+                for plant in existing_capacity.plants:
+                    if plant.pathway == "Co-processing":
+                        existing_coprocess[plant.region] = (
+                            existing_coprocess.get(plant.region, 0.0) + plant.capacity_mt_yr
+                        )
+
+            def coprocess_rule(m, r):
+                cap_r = coprocessing_caps.get(r)
+                if cap_r is None or "Co-processing" not in SAF_PATHWAYS:
+                    return pyo.Constraint.Skip
+                headroom = max(0.0, cap_r - existing_coprocess.get(r, 0.0))
+                return m.x[r, "Co-processing"] <= headroom
+            m.coprocessing_cap = pyo.Constraint(m.R, rule=coprocess_rule)
 
         # Activate dual suffix so GLPK returns shadow prices
         m.dual = pyo.Suffix(direction=pyo.Suffix.IMPORT)

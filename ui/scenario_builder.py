@@ -33,6 +33,7 @@ INPUT_CSVS = [
     "corsia_suppression.csv",
     "national_blending_mandates.csv",
     "committed_capacity.csv",
+    "refinery_capacity.csv",
     "feedstock_availability.csv",
     "transport_costs.csv",
     "regulatory_params.csv",
