@@ -487,38 +487,38 @@ def supply_demand_curve(demand_steps, supply_steps, year,
 
     fig.update_layout(
         barmode="overlay",
-        # Title sits above the toggle row so it does not clash with the buttons.
+        # Title placed in paper coords clearly above the toggle row.
         title=dict(
             text=f"SAF Supply-Demand Curve — {year}",
             x=0.5, xanchor="center",
-            y=0.985, yanchor="top",
+            y=0.99, yanchor="top",
+            yref="container",
         ),
         xaxis_title="Cumulative Volume (MT)",
         yaxis_title="Price / Cost (USD/MT SAF)",
         xaxis=dict(tickformat=".2f"),
-        # Legend pushed further below the plot so it does not collide with the
-        # x-axis title.
+        # Legend pushed further below the x-axis title so they do not collide.
         legend=dict(
             orientation="h",
-            yanchor="top", y=-0.30,
+            yanchor="top", y=-0.32,
             xanchor="center", x=0.5,
         ),
         hovermode="closest",
         updatemenus=[
             dict(
                 type="buttons", direction="right",
-                x=0.0, xanchor="left", y=1.10, yanchor="bottom",
+                x=0.0, xanchor="left", y=1.06, yanchor="bottom",
                 pad=dict(t=2, b=2, l=2, r=2),
                 showactive=True, buttons=type_buttons,
             ),
             dict(
                 type="dropdown",
-                x=0.78, xanchor="left", y=1.10, yanchor="bottom",
+                x=0.78, xanchor="left", y=1.06, yanchor="bottom",
                 pad=dict(t=2, b=2, l=2, r=2),
                 showactive=True, buttons=region_buttons,
             ),
         ],
-        margin=dict(t=130, b=160),
+        margin=dict(t=150, b=170),
         annotations=sd_annotations,
     )
     return fig
