@@ -236,52 +236,48 @@ class PriceQuantityClearing:
                 demand_remaining[d_region] -= take
                 marginal_supplier[d_region] = d_region
 
-        # ── PHASE 2: cross-region imports for residual demand ───────────────────
-        # Each plant offers exp_remaining + unused dom_remaining to the
-        # import pool — so a region's reserved share is not wasted if its
-        # own demand was already met.
-        for d_region in priority_order:
+        # ── PHASE 2: cheapest-CIF allocation across ALL destinations ────────────
+        # Each plant's export_pool + unused domestic remainder is available to
+        # any destination (including its own region — so a plant whose home
+        # market still has unmet demand serves it FIRST at zero transport,
+        # before its output ships to a higher-WTP foreign destination).
+        # Allocation is greedy by global cheapest CIF, which under transport=0
+        # for own-region keeps SAF close to where it was made until local
+        # demand is saturated.
+        pairs = []
+        for pl in plants:
+            if pl[3] + pl[4] <= MARKET_BALANCE_TOL:
+                continue
+            for d_region in demand_by_region:
+                if pl[0] > wtp_dict.get(d_region, 0.0):
+                    continue
+                transport = 0.0 if pl[1] == d_region else tc.get((pl[1], d_region), 0.0)
+                cif = pl[0] + transport
+                pairs.append((cif, pl, d_region, transport))
+        pairs.sort(key=lambda x: x[0])
+        for _cif, pl, d_region, transport in pairs:
             if demand_remaining.get(d_region, 0.0) <= MARKET_BALANCE_TOL:
                 continue
-            wtp_d = wtp_dict.get(d_region, 0.0)
-            candidates = []
-            for pl in plants:
-                if pl[1] == d_region:
-                    continue
-                available = pl[3] + pl[4]
-                if available <= MARKET_BALANCE_TOL:
-                    continue
-                if pl[0] > wtp_d:
-                    continue
-                cif = pl[0] + tc.get((pl[1], d_region), 0.0)
-                candidates.append((cif, pl, available))
-            candidates.sort(key=lambda x: x[0])
-            for _cif, pl, available in candidates:
-                if demand_remaining[d_region] <= MARKET_BALANCE_TOL:
-                    break
-                # Recompute available — earlier iterations may have drained
-                # this plant via a different destination.
-                avail_now = pl[3] + pl[4]
-                if avail_now <= MARKET_BALANCE_TOL:
-                    continue
-                take = min(avail_now, demand_remaining[d_region])
-                # Draw from the export pool first; if export pool is empty,
-                # spill into the unused domestic remainder.
-                from_exp = min(take, pl[4])
-                from_dom = take - from_exp
-                pl[4] -= from_exp
-                pl[3] -= from_dom
-                transport = tc.get((pl[1], d_region), 0.0)
-                trade_flows.append(TradeFlow(
-                    year=year,
-                    origin_region=pl[1],
-                    destination_region=d_region,
-                    volume_mt=round(take, 8),
-                    transport_cost_usd_per_mt=transport,
-                    pathway=pl[2],
-                ))
-                demand_remaining[d_region] -= take
-                marginal_supplier[d_region] = pl[1]
+            avail_now = pl[3] + pl[4]
+            if avail_now <= MARKET_BALANCE_TOL:
+                continue
+            take = min(avail_now, demand_remaining[d_region])
+            # Draw from the export pool first; spill into unused domestic
+            # remainder only if the export pool is exhausted.
+            from_exp = min(take, pl[4])
+            from_dom = take - from_exp
+            pl[4] -= from_exp
+            pl[3] -= from_dom
+            trade_flows.append(TradeFlow(
+                year=year,
+                origin_region=pl[1],
+                destination_region=d_region,
+                volume_mt=round(take, 8),
+                transport_cost_usd_per_mt=transport,
+                pathway=pl[2],
+            ))
+            demand_remaining[d_region] -= take
+            marginal_supplier[d_region] = pl[1]
 
         return trade_flows, marginal_supplier
 

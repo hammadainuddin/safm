@@ -475,17 +475,19 @@ def render(history: Optional[list] = None) -> None:
                   filtered by **LCOSAF ≤ regional WTP**. Higher-WTP regions are tie-broken
                   first, but no region's domestic supply leaves the country until every
                   region has had a chance to clear locally.
-                - **Phase 2 — Cross-region imports.** Residual demand is filled by each
-                  plant's export pool plus any unused domestic remainder. Candidates are
-                  filtered by **LCOSAF + transport ≤ destination WTP** and sorted by
-                  cheapest CIF:
+                - **Phase 2 — Cheapest-CIF allocation.** Residual demand is filled from
+                  each plant's export pool plus any unused domestic remainder. All
+                  (plant → destination) pairs — **including back to the plant's own
+                  region** — are evaluated and sorted globally by cheapest CIF:
 
                 > **CIF Cost (origin → destination) = LCOSAF_origin + Transport Cost_origin→destination**
 
-                Phase 2 destinations are processed in WTP-descending order, so the highest-
-                paying market gets first call on the global export pool. Demand that no
-                plant can clear within the WTP filter falls to **CORSIA-eligible carbon
-                offsets** (visible in the Market Summary), priced at
+                Because own-region transport is zero, a plant's first call in Phase 2 is
+                always its **own market** if that market still has unmet demand. SAF
+                ships abroad only after its home market is saturated, and longer routes
+                only after closer markets are filled. Demand left unserved at every CIF
+                tier (because no plant has LCOSAF ≤ that region's WTP, or all near-by
+                plants are exhausted) falls to **CORSIA-eligible carbon offsets** at
                 `corsia_credit_usd_per_tco2 × 3.1 tCO₂/MT SAF`.
 
                 Each trade flow carries a **pathway** label (HEFA, Co-processing, etc.) in
