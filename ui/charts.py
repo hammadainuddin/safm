@@ -217,19 +217,23 @@ def supply_demand_curve(demand_steps, supply_steps, year, offset_mt=0.0, max_wtp
     trace_meta = []
 
     # ── Supply bars: dispatched (solid) ─────────────────────────────────────
+    # Legend shows one entry per region; same-region plants share the legendgroup
     cum_s = 0.0
+    seen_dispatched: set = set()
     for lc, vol, region, pathway, dispatched in supply_steps:
         if not dispatched:
             cum_s += vol
             continue
         mid = cum_s + vol / 2
+        first_for_region = region not in seen_dispatched
+        seen_dispatched.add(region)
         fig.add_trace(go.Bar(
             x=[mid], y=[lc], width=[vol],
-            name=f"{region} — {pathway}",
+            name=f"{region} Supply",
             legendgroup=f"supply_{region}",
             marker_color=_color(region),
             opacity=0.9,
-            showlegend=True,
+            showlegend=first_for_region,
             hovertemplate=(
                 f"<b>{region} — {pathway}</b><br>"
                 f"LCOSAF: ${lc:.0f}/MT<br>Vol: {vol:.3f} MT"
@@ -241,18 +245,21 @@ def supply_demand_curve(demand_steps, supply_steps, year, offset_mt=0.0, max_wtp
 
     # ── Supply bars: undispatched (low opacity, default hidden) ─────────────
     cum_s2 = 0.0
+    seen_undispatched: set = set()
     for lc, vol, region, pathway, dispatched in supply_steps:
         mid = cum_s2 + vol / 2
         if not dispatched:
+            first_for_region = region not in seen_undispatched
+            seen_undispatched.add(region)
             fig.add_trace(go.Bar(
                 x=[mid], y=[lc], width=[vol],
-                name=f"{region} — {pathway} (unbuilt)",
+                name=f"{region} Unbuilt Capacity",
                 legendgroup=f"undispatched_{region}",
                 marker_color=_color(region),
                 marker_pattern_shape="x",
                 opacity=0.22,
                 visible=False,
-                showlegend=True,
+                showlegend=first_for_region,
                 hovertemplate=(
                     f"<b>{region} — {pathway}</b><br>"
                     f"LCOSAF: ${lc:.0f}/MT<br>Vol: {vol:.3f} MT"
