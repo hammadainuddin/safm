@@ -522,6 +522,7 @@ def supply_demand_curve(demand_steps, supply_steps, year,
         ],
         margin=dict(t=150, b=210),
         annotations=sd_annotations,
+        height=720,
     )
     return fig
 
