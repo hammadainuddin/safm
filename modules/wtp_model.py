@@ -103,7 +103,7 @@ class WTPModel:
         market_result=None,
     ) -> dict:
         """
-        Return data for the pathway-level supply-demand MAC curve.
+        Return data for the pathway-level supply-demand curve.
 
         Returns
         -------

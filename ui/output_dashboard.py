@@ -156,7 +156,7 @@ def render(history: Optional[list] = None) -> None:
             physical SAF supply cannot meet this obligation at a cost below the regional WTP,
             the shortfall is assumed to be covered by **CORSIA-eligible carbon offset credits**
             rather than physical SAF. This offset demand appears separately in the
-            Supply-Demand (MAC) Curve chart.
+            Supply-Demand Curve chart.
             """
         )
         st.dataframe(summary_df.style.format({
@@ -246,14 +246,14 @@ def render(history: Optional[list] = None) -> None:
                     wtp_trend_df = pd.DataFrame(wtp_rows)
                     st.plotly_chart(charts.wtp_trend_chart(wtp_trend_df), use_container_width=True)
 
-            # ── Supply-demand MAC curve ───────────────────────────────────────
-            st.subheader("Supply-Demand (MAC) Curve")
+            # ── Supply-demand curve ───────────────────────────────────────────
+            st.subheader("Supply-Demand Curve")
             st.markdown(
                 """
                 ### Methodology
-                The Marginal Abatement Cost (MAC) curve visualises the market clearing
-                equilibrium for a single year by plotting supply and demand as stacked bar
-                charts along a common cumulative volume axis.
+                The supply-demand curve visualises the market clearing equilibrium for a single
+                year by plotting supply and demand as stacked bar charts along a common cumulative
+                volume axis.
 
                 **Supply side** (solid bars, sorted left-to-right by ascending LCOSAF): each bar
                 represents one individual plant's effective supply — its nameplate capacity

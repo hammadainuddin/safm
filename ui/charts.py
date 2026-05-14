@@ -196,7 +196,7 @@ def corsia_suppression_chart(df: pd.DataFrame) -> go.Figure:
 
 def supply_demand_curve(demand_steps, supply_steps, year, offset_mt=0.0, max_wtp=0.0):
     """
-    Pathway-level MAC bar chart with dispatched/undispatched supply and CORSIA offset demand.
+    Pathway-level supply-demand bar chart with dispatched/undispatched supply and CORSIA offset demand.
 
     supply_steps : [(lcosaf, vol, region, pathway, dispatched), ...] sorted asc by lcosaf
     demand_steps : [(wtp, vol, region), ...] sorted desc by WTP
@@ -335,7 +335,7 @@ def supply_demand_curve(demand_steps, supply_steps, year, offset_mt=0.0, max_wtp
 
     fig.update_layout(
         barmode="overlay",
-        title=f"SAF Supply-Demand (MAC) Curve — {year}",
+        title=f"SAF Supply-Demand Curve — {year}",
         xaxis_title="Cumulative Volume (MT)",
         yaxis_title="Price / Cost (USD/MT SAF)",
         xaxis=dict(tickformat=".2f"),
