@@ -174,6 +174,11 @@ def trade_pathway_sankey(df: pd.DataFrame, year: int) -> go.Figure:
         + ["#444444"] * len(target_labels)
     )
 
+    def _rgba(hex_color: str, alpha: float = 0.55) -> str:
+        h = hex_color.lstrip("#")
+        r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+        return f"rgba({r},{g},{b},{alpha})"
+
     sources, targets, values, link_colors = [], [], [], []
     for _, row in agg.iterrows():
         s = src_idx[f"{row['origin_region']} · {row['pathway']}"]
@@ -181,7 +186,7 @@ def trade_pathway_sankey(df: pd.DataFrame, year: int) -> go.Figure:
         sources.append(s)
         targets.append(t)
         values.append(row["volume_mt"])
-        link_colors.append(_PATHWAY_COLORS.get(row["pathway"], "#7f7f7f") + "88")  # +alpha
+        link_colors.append(_rgba(_PATHWAY_COLORS.get(row["pathway"], "#7f7f7f")))
 
     fig = go.Figure(go.Sankey(
         arrangement="snap",
