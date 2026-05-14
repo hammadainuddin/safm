@@ -15,8 +15,13 @@ from __future__ import annotations
 from typing import List, Optional, Tuple
 
 from config.settings import SUPPLY_DEMAND_BALANCE_TOLERANCE
-from data.loaders import load_coprocessing_caps, load_feedstock_bundles
+from data.loaders import (
+    load_coprocessing_caps,
+    load_feedstock_bundles,
+    load_transport_costs,
+)
 from modules.supply_model import SupplyModel
+from modules.wtp_model import WTPModel
 from schemas.demand_schema import DemandMatrix
 from schemas.expansion_schema import CapacityExpansionResult
 from schemas.feedstock_schema import RegionalFeedstockBundle
@@ -69,10 +74,20 @@ class CapacityExpansionModule:
 
         if any(g > 0 for g in gaps.values()):
             coprocessing_caps = load_coprocessing_caps()
+            # Pass WTP, demand, and transport info so the LP's flow-aware
+            # formulation only builds capacity that will actually clear in
+            # the downstream market-clearing step.
+            wtp_matrix = WTPModel().compute_wtp(year, capacity_state)
+            wtp_dict = wtp_matrix.to_dict()
+            demand_by_region = demand_matrix.volume_by_region(year)
+            transport_costs = load_transport_costs()
             expansion = self._sm.build_expansion_lp(
                 gaps, feedstock_bundles, year,
                 existing_capacity=capacity_state,
                 coprocessing_caps=coprocessing_caps,
+                wtp_dict=wtp_dict,
+                demand_by_region=demand_by_region,
+                transport_costs=transport_costs,
             )
             if expansion.solver_status != "infeasible":
                 capacity_state = self._sm.apply_expansion(capacity_state, expansion)

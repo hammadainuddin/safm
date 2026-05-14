@@ -123,6 +123,9 @@ class SupplyModel:
         regional_opex: Dict[str, Dict[str, float]] = None,
         existing_capacity: Optional[CapacityState] = None,
         coprocessing_caps: Optional[Dict[str, float]] = None,
+        wtp_dict: Optional[Dict[str, float]] = None,
+        demand_by_region: Optional[Dict[str, float]] = None,
+        transport_costs: Optional[Dict[tuple, float]] = None,
     ) -> ExpansionDecision:
         """
         Solve a least-cost capacity expansion LP.
@@ -132,7 +135,12 @@ class SupplyModel:
         If the LP is infeasible (feedstock constraints too tight), returns
         a warning decision rather than raising.
         """
-        total_gap = sum(max(0.0, g) for g in gaps.values())
+        # Net global gap (NOT the sum of positive per-region gaps). With
+        # region-agnostic siting, supply in a surplus region can ship to a
+        # deficit region via trade flows, so the LP only needs to cover the
+        # aggregate net deficit. Summing positive gaps double-counts when
+        # some regions are in surplus and others are short.
+        total_gap = max(0.0, sum(gaps.values()))
         if total_gap <= 0:
             return ExpansionDecision(
                 year=year, new_plants=[], npv_cost_usd=0.0,
@@ -163,8 +171,9 @@ class SupplyModel:
         m.x = pyo.Var(m.R, m.P, within=pyo.NonNegativeReals)
 
         # Cost coefficients: annualised CAPEX + OPEX per unit capacity, for every
-        # (region, pathway). The LP minimises Σ coeff × x over all R × P.
+        # (region, pathway).
         cost_coeff: Dict[tuple, float] = {}
+        lcosaf_by_rp: Dict[tuple, float] = {}
         for r in all_regions:
             r_capex = capex_table.get(r, capex_table.get("ROW", {}))
             r_opex  = opex_table.get(r,  opex_table.get("ROW",  {}))
@@ -175,21 +184,99 @@ class SupplyModel:
                     self.discount_rate,
                     self.project_life,
                 )
+                # LCOSAF (USD/MT SAF) for the WTP filter on flows.
+                lcosaf_by_rp[(r, p)] = cost_coeff[(r, p)] / self.utilization
 
-        def obj_rule(m):
-            return sum(cost_coeff[(r, p)] * m.x[r, p] for r in m.R for p in m.P)
+        # ── Dispatch-aware integration (optional) ────────────────────────────
+        # If the caller passes WTP, demand, and transport data, the LP is solved
+        # jointly with flow variables f[r,p,d] and a WTP filter — so it only
+        # builds capacity that will actually clear in the downstream market step.
+        # Otherwise it falls back to the simpler "total effective capacity ≥
+        # total gap" formulation (used by unit tests and any caller that does
+        # not supply WTP info).
+        use_integrated = (
+            wtp_dict is not None
+            and demand_by_region is not None
+            and transport_costs is not None
+        )
 
-        m.obj = pyo.Objective(rule=obj_rule, sense=pyo.minimize)
+        if use_integrated:
+            # Existing effective supply per (region, pathway) cohort.
+            existing_eff_by_rp: Dict[tuple, float] = {}
+            if existing_capacity is not None:
+                for plant in existing_capacity.plants:
+                    key = (plant.region, plant.pathway)
+                    existing_eff_by_rp[key] = (
+                        existing_eff_by_rp.get(key, 0.0)
+                        + plant.capacity_mt_yr * self.utilization
+                    )
 
-        # C1: GLOBAL demand satisfaction (region-agnostic). Total effective new
-        # capacity must cover the sum of all regional gaps. The +1e-3 buffer
-        # prevents floating-point infeasibility in the downstream clearing step.
-        def demand_rule(m):
-            return (
-                sum(m.x[r, p] * self.utilization for r in m.R for p in m.P)
-                >= total_gap + 1e-3
-            )
-        m.demand_satisfaction = pyo.Constraint(rule=demand_rule)
+            # WTP filter: a flow (r → d via pathway p) is only feasible when the
+            # delivered cost is at or below the destination's WTP.
+            feasible_flows = []
+            for r in all_regions:
+                for p in SAF_PATHWAYS:
+                    lc = lcosaf_by_rp[(r, p)]
+                    for d in all_regions:
+                        t = transport_costs.get((r, d), 0.0)
+                        if lc + t <= wtp_dict.get(d, 0.0) + 1e-6:
+                            feasible_flows.append((r, p, d))
+
+            m.flow_idx = pyo.Set(initialize=feasible_flows, dimen=3)
+            m.f = pyo.Var(m.flow_idx, within=pyo.NonNegativeReals)
+            # Unmet demand (falls to CORSIA offset): penalty = destination WTP,
+            # so the LP only chooses offset when no plant can serve it cheaper.
+            m.u = pyo.Var(m.R, within=pyo.NonNegativeReals)
+
+            def obj_rule(m):
+                build_cost = sum(cost_coeff[(r, p)] * m.x[r, p] for r in m.R for p in m.P)
+                # Light tie-breaker so the LP routes flows along the cheapest
+                # transport corridor (does not change the build decision).
+                transport_tiebreak = 1e-3 * sum(
+                    transport_costs.get((r, d), 0.0) * m.f[r, p, d]
+                    for (r, p, d) in feasible_flows
+                )
+                offset_penalty = sum(wtp_dict.get(d, 0.0) * m.u[d] for d in m.R)
+                return build_cost + transport_tiebreak + offset_penalty
+            m.obj = pyo.Objective(rule=obj_rule, sense=pyo.minimize)
+
+            # Supply per (region, pathway): cohort outflow ≤ existing eff + new eff.
+            def supply_rule(m, r, p):
+                outflow = sum(m.f[r, p, d] for d in m.R if (r, p, d) in m.flow_idx)
+                inflow_supply = (
+                    existing_eff_by_rp.get((r, p), 0.0)
+                    + m.x[r, p] * self.utilization
+                )
+                # If no feasible flow exists from this cohort, the LP must not
+                # build it (would be pure waste) — set x[r,p] = 0 implicitly.
+                if not any((r, p, d) in m.flow_idx for d in m.R):
+                    return m.x[r, p] == 0
+                return outflow <= inflow_supply
+            m.supply_cohort = pyo.Constraint(m.R, m.P, rule=supply_rule)
+
+            # Demand balance per destination: inflow + offset = demand.
+            def demand_rule(m, d):
+                inflow = sum(
+                    m.f[r, p, d] for r in m.R for p in m.P
+                    if (r, p, d) in m.flow_idx
+                )
+                return inflow + m.u[d] >= demand_by_region.get(d, 0.0)
+            m.demand_satisfaction = pyo.Constraint(m.R, rule=demand_rule)
+
+        else:
+            # Legacy formulation: single global demand constraint, no dispatch
+            # coupling. Preserved so unit tests that pass only (gaps, bundles)
+            # still work without changes.
+            def obj_rule(m):
+                return sum(cost_coeff[(r, p)] * m.x[r, p] for r in m.R for p in m.P)
+            m.obj = pyo.Objective(rule=obj_rule, sense=pyo.minimize)
+
+            def demand_rule(m):
+                return (
+                    sum(m.x[r, p] * self.utilization for r in m.R for p in m.P)
+                    >= total_gap + 1e-3
+                )
+            m.demand_satisfaction = pyo.Constraint(rule=demand_rule)
 
         # C2: feedstock availability — only when intensity > 0
         def feedstock_rule(m, r, f):
@@ -342,12 +429,22 @@ class SupplyModel:
     @staticmethod
     def _extract_shadow_prices(m: pyo.ConcreteModel) -> Dict[str, float]:
         """
-        Return the dual on the single global demand constraint under the key
-        "global". The previous per-region duals are gone because the LP now
-        uses one global demand-satisfaction constraint instead of one per region.
+        Return the dual values of the demand-satisfaction constraint.
+
+        - Integrated LP: demand_satisfaction is indexed by destination region
+          and we return one dual per region.
+        - Legacy LP: demand_satisfaction is a single global constraint and we
+          return {"global": dual}.
         """
         try:
-            val = m.dual.get(m.demand_satisfaction)
+            constraint = m.demand_satisfaction
+            if constraint.is_indexed():
+                prices: Dict[str, float] = {}
+                for d in constraint:
+                    val = m.dual.get(constraint[d])
+                    prices[str(d)] = float(val) if val is not None else 0.0
+                return prices
+            val = m.dual.get(constraint)
             return {"global": float(val) if val is not None else 0.0}
         except Exception:
-            return {"global": 0.0}
+            return {}

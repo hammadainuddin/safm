@@ -142,16 +142,17 @@ def run_model(
         )
         expansion = expansion_result.expansion_decision
 
-        # Step 3: WTP + market clearing (gated on supply_meets_demand)
+        # Step 3: WTP + market clearing. PriceQuantityClearing handles partial
+        # supply gracefully by routing unserved demand to CORSIA offsets, so we
+        # always run the clearing step regardless of supply_meets_demand.
         _notify(year, "equilibrium")
-        if expansion_result.supply_meets_demand:
-            wtp_matrix = wtp_model.compute_wtp(year, capacity_state)
-            market = pq_clearing.clear_market(demand_matrix, capacity_state, year, wtp_matrix)
-        else:
-            logger.warning(
-                "Year %d: supply shortfall — market clearing skipped.", year
+        wtp_matrix = wtp_model.compute_wtp(year, capacity_state)
+        market = pq_clearing.clear_market(demand_matrix, capacity_state, year, wtp_matrix)
+        if not expansion_result.supply_meets_demand:
+            logger.info(
+                "Year %d: partial supply — %.3f MT routed to CORSIA offset.",
+                year, sum(market.offset_demand_mt_by_region.values()),
             )
-            market = _make_empty_market_result(year)
 
         # Step 4: Build ModelState
         cumulative_capacity = capacity_state.total_capacity_by_region()
