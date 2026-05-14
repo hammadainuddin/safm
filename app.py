@@ -105,12 +105,19 @@ with tab_run:
         # Drain queued events
         events = runner.drain_events()
         step_icons = {"demand": "📥", "expansion": "🏗️", "equilibrium": "⚖️", "done": "✅"}
+        step_descriptions = {
+            "demand":      "computed bottom-up CORSIA + national-mandate demand from flight activity, fleet efficiency, and route mix",
+            "expansion":   "solved least-cost LP, sized any new endogenous plants and brought them online (LCOSAF-ranked, feedstock + refinery-cap constrained)",
+            "equilibrium": "cleared the market with WTP-priority dispatch (domestic-first, LCOSAF ≤ regional WTP); unserved demand routed to CORSIA offsets",
+            "done":        "year complete — prices, trade flows, and capacity state written to history",
+        }
         for ev in events:
             if ev.step == "complete" and ev.year is None:
                 break
             if ev.year is not None and ev.step != "complete":
                 icon = step_icons.get(ev.step, "•")
-                log_line = f"{icon} {ev.year} — {ev.step}"
+                desc = step_descriptions.get(ev.step, ev.step)
+                log_line = f"{icon} {ev.year} · {ev.step} — {desc}"
                 st.session_state.step_log.append(log_line)
                 # Update step table
                 if ev.year not in st.session_state.step_table:

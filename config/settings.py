@@ -10,13 +10,17 @@ SAF_PATHWAYS = ["HEFA", "ATJ", "FT-MSW", "PtL", "Co-processing"]
 
 FEEDSTOCK_TYPES = ["UCO", "tallow", "agricultural_residue", "MSW", "CO2_green_H2", "other"]
 
-# Per-pathway feedstock intensities: tonnes feedstock per MT SAF
+# Per-pathway feedstock intensities: tonnes raw feedstock per MT SAF.
+# Implied SAF yield (MT SAF / MT feedstock) = 1 / intensity. Values calibrated
+# to published mass yields: HEFA ≈ 0.80, ATJ ≈ 0.22, FT-MSW ≈ 0.15, PtL ≈ 0.28
+# (composite CO2 + green H2 mass), Co-processing ≈ 0.45 (bio-oil to refinery
+# hydrotreater, jet-range fraction only).
 FEED_INTENSITY: dict = {
     "HEFA":          {"UCO": 1.25, "tallow": 1.30, "agricultural_residue": 0.0, "MSW": 0.0,  "CO2_green_H2": 0.0, "other": 0.0},
-    "ATJ":           {"UCO": 0.0,  "tallow": 0.0,  "agricultural_residue": 2.50, "MSW": 0.0,  "CO2_green_H2": 0.0, "other": 0.0},
-    "FT-MSW":        {"UCO": 0.0,  "tallow": 0.0,  "agricultural_residue": 0.0, "MSW": 4.00, "CO2_green_H2": 0.0, "other": 0.0},
-    "PtL":           {"UCO": 0.0,  "tallow": 0.0,  "agricultural_residue": 0.0, "MSW": 0.0,  "CO2_green_H2": 2.80, "other": 0.0},
-    "Co-processing": {"UCO": 0.60, "tallow": 0.65, "agricultural_residue": 0.0, "MSW": 0.0,  "CO2_green_H2": 0.0, "other": 0.80},
+    "ATJ":           {"UCO": 0.0,  "tallow": 0.0,  "agricultural_residue": 4.55, "MSW": 0.0,  "CO2_green_H2": 0.0, "other": 0.0},
+    "FT-MSW":        {"UCO": 0.0,  "tallow": 0.0,  "agricultural_residue": 0.0, "MSW": 6.67, "CO2_green_H2": 0.0, "other": 0.0},
+    "PtL":           {"UCO": 0.0,  "tallow": 0.0,  "agricultural_residue": 0.0, "MSW": 0.0,  "CO2_green_H2": 3.57, "other": 0.0},
+    "Co-processing": {"UCO": 2.22, "tallow": 2.22, "agricultural_residue": 0.0, "MSW": 0.0,  "CO2_green_H2": 0.0, "other": 2.22},
 }
 
 # Regional CAPEX and OPEX by pathway (USD per MT/year nameplate capacity)
