@@ -534,6 +534,14 @@ def render() -> None:
             """
         )
         df = _upload_widget("feedstock_availability.csv", "ss_feedstock_availability")
+
+        st.caption(
+            "**Units:** `max_available_mt` is **MT of feedstock per year** "
+            "(raw feedstock, not SAF output). `cost_usd_per_mt` is the **delivered cost per MT "
+            "of feedstock** (also not per MT SAF). SAF yield per MT feedstock varies by pathway "
+            "(e.g. HEFA ≈ 0.80 MT SAF / MT UCO, FT ≈ 0.25 MT SAF / MT MSW)."
+        )
+
         year_options = sorted(df["year"].unique())
         sel_year = st.selectbox("Preview year", year_options, index=0, key="fs_year")
         year_df = df[df["year"] == sel_year]
@@ -541,10 +549,23 @@ def render() -> None:
             index="region", columns="feedstock_type",
             values="max_available_mt", fill_value=0,
         )
+        st.markdown(f"**Max Feedstock Availability — {int(sel_year)} (MT feedstock / yr)**")
         st.dataframe(pivot.style.format("{:.3f}"), use_container_width=True)
         with st.expander("Edit full table"):
             edited = st.data_editor(
                 df, use_container_width=True, num_rows="dynamic", key="fs_editor",
+                column_config={
+                    "year": st.column_config.NumberColumn("Year", format="%d"),
+                    "region": st.column_config.TextColumn("Region"),
+                    "feedstock_type": st.column_config.TextColumn("Feedstock Type"),
+                    "max_available_mt": st.column_config.NumberColumn(
+                        "Max Available (MT feedstock / yr)", min_value=0.0, format="%.3f",
+                    ),
+                    "cost_usd_per_mt": st.column_config.NumberColumn(
+                        "Cost (USD / MT feedstock)", min_value=0.0, format="%.0f",
+                    ),
+                    "notes": st.column_config.TextColumn("Notes"),
+                },
             )
             if st.button("💾 Save Feedstock Availability", key="save_fs"):
                 _save(edited, "feedstock_availability.csv")
@@ -673,8 +694,8 @@ def render() -> None:
             """
         )
 
-        from config.settings import (REGIONAL_CAPEX, REGIONAL_OPEX, SAF_PATHWAYS,
-                                     UTILIZATION_FACTOR, PROJECT_LIFE_YR,
+        from config.settings import (FEED_INTENSITY, REGIONAL_CAPEX, REGIONAL_OPEX,
+                                     SAF_PATHWAYS, UTILIZATION_FACTOR, PROJECT_LIFE_YR,
                                      REGIONS as _REGIONS, ROUTE_SAMPLE_FRACTION as _RSF)
         from utils.economics import levelised_cost
 
@@ -734,36 +755,71 @@ def render() -> None:
             producer can recover all capital and operating costs at a given required rate of
             return:
 
-            > **LCOSAF (USD/MT SAF) = CRF(IRR, life) × CAPEX / Utilisation + Processing OPEX + Feedstock cost**
+            > **LCOSAF (USD/MT SAF) = (CRF(IRR, life) × CAPEX + OPEX_eq) / Utilisation**
+            >
+            > where **OPEX_eq (USD/MT capacity/yr) = (Proc. OPEX + Feedstock $/t ÷ Yield) × Utilisation**
 
-            Use the inputs below to set **CAPEX**, **Processing OPEX**, and **Feedstock cost**
-            per pathway and region, then adjust the IRR slider to see how investor return
-            requirements shift the investment floor. These values update the charts on this
-            page only and do not affect a model run.
+            Use the inputs below to set per-pathway, per-region **CAPEX**, **Processing OPEX**,
+            **Feedstock cost per tonne of feedstock**, and **SAF Yield**. The yield converts
+            per-tonne feedstock cost into per-MT-SAF cost: a HEFA plant burning UCO at $600/t
+            with a yield of 0.80 MT SAF / MT UCO incurs $600 ÷ 0.80 = $750/MT SAF in feedstock
+            cost. These values update the charts on this page only and do not affect a model
+            run.
 
             - **CAPEX** — capital cost in USD per MT/yr of nameplate capacity
-            - **Processing OPEX** — non-feedstock operating cost in USD per MT SAF produced
-            - **Feedstock cost** — delivered feedstock cost in USD per MT SAF produced
-              (e.g. UCO $600/t × 1.25 t/MT SAF = $750/MT SAF for HEFA)
+            - **Processing OPEX** — non-feedstock operating cost in USD per **MT SAF** produced
+            - **Feedstock $/t feed** — delivered feedstock cost per **MT of raw feedstock**
+            - **Yield** — MT SAF produced per **MT of raw feedstock** (e.g. HEFA ≈ 0.80,
+              ATJ ≈ 0.40, FT ≈ 0.25, PtL ≈ 0.36, Co-processing ≈ 1.67)
             """
         )
 
-        # Initialise grid from settings defaults on first load (75/25 feedstock/processing split)
+        # Primary feedstock used in FEED_INTENSITY for each pathway — used to seed yields.
+        _PRIMARY_FEEDSTOCK = {
+            "HEFA":          "UCO",
+            "ATJ":           "agricultural_residue",
+            "FT-MSW":        "MSW",
+            "PtL":           "CO2_green_H2",
+            "Co-processing": "UCO",
+        }
+
+        def _default_yield(pathway: str) -> float:
+            """MT SAF / MT raw feedstock = 1 / feedstock intensity."""
+            feed = _PRIMARY_FEEDSTOCK.get(pathway)
+            intensity = FEED_INTENSITY.get(pathway, {}).get(feed or "", 0.0)
+            return round(1.0 / intensity, 3) if intensity > 0 else 1.0
+
+        # Initialise grid from settings defaults on first load (75/25 feedstock/processing split,
+        # then back-calculate feedstock $/t feed using the default yield).
         if "lcosaf_cost_grid" not in st.session_state:
             grid: dict = {}
             for r in _REGIONS:
                 grid[r] = {}
                 for p in SAF_PATHWAYS:
                     opex_cap = REGIONAL_OPEX.get(r, {}).get(p, 600)
-                    opex_saf = opex_cap / UTILIZATION_FACTOR
+                    opex_saf = opex_cap / UTILIZATION_FACTOR        # USD/MT SAF
+                    yld     = _default_yield(p)                     # MT SAF / MT feed
+                    feed_per_saf = opex_saf * 0.75                  # USD/MT SAF (legacy split)
                     grid[r][p] = {
-                        "capex":     float(REGIONAL_CAPEX.get(r, {}).get(p, 2000)),
-                        "proc_opex": round(opex_saf * 0.25, 0),
-                        "feedstock": round(opex_saf * 0.75, 0),
+                        "capex":            float(REGIONAL_CAPEX.get(r, {}).get(p, 2000)),
+                        "proc_opex":        round(opex_saf * 0.25, 0),
+                        "feedstock_per_t":  round(feed_per_saf * yld, 0),   # USD/MT feed
+                        "saf_yield":        yld,                            # MT SAF / MT feed
                     }
             st.session_state["lcosaf_cost_grid"] = grid
 
         grid = st.session_state["lcosaf_cost_grid"]
+
+        # Migrate any old session-state entries (without the new fields) so the UI does not crash.
+        for r in _REGIONS:
+            for p in SAF_PATHWAYS:
+                cell = grid.setdefault(r, {}).setdefault(p, {})
+                if "feedstock_per_t" not in cell or "saf_yield" not in cell:
+                    yld = _default_yield(p)
+                    legacy_feed_per_saf = cell.get("feedstock", 0.0)
+                    cell["feedstock_per_t"] = round(legacy_feed_per_saf * yld, 0)
+                    cell["saf_yield"]      = yld
+                    cell.pop("feedstock", None)
 
         col_reset, _ = st.columns([1, 4])
         with col_reset:
@@ -774,14 +830,15 @@ def render() -> None:
         region_tabs_lc = st.tabs(_REGIONS)
         for rtab, region in zip(region_tabs_lc, _REGIONS):
             with rtab:
-                hdr = st.columns([2, 1.5, 1.5, 1.5])
+                hdr = st.columns([1.6, 1.3, 1.4, 1.5, 1.4])
                 hdr[0].markdown("**Pathway**")
                 hdr[1].markdown("**CAPEX** $/MT cap/yr")
                 hdr[2].markdown("**Proc. OPEX** $/MT SAF")
-                hdr[3].markdown("**Feedstock** $/MT SAF")
+                hdr[3].markdown("**Feedstock** $/MT feed")
+                hdr[4].markdown("**Yield** MT SAF / MT feed")
                 for pathway in SAF_PATHWAYS:
                     kp = f"lc_{region}_{pathway}"
-                    row = st.columns([2, 1.5, 1.5, 1.5])
+                    row = st.columns([1.6, 1.3, 1.4, 1.5, 1.4])
                     row[0].write(pathway)
                     grid[region][pathway]["capex"] = float(row[1].number_input(
                         "capex", value=grid[region][pathway]["capex"],
@@ -793,20 +850,30 @@ def render() -> None:
                         min_value=0.0, step=10.0, key=f"{kp}_proc",
                         label_visibility="collapsed",
                     ))
-                    grid[region][pathway]["feedstock"] = float(row[3].number_input(
-                        "feedstock", value=grid[region][pathway]["feedstock"],
-                        min_value=0.0, step=10.0, key=f"{kp}_feed",
+                    grid[region][pathway]["feedstock_per_t"] = float(row[3].number_input(
+                        "feedstock_per_t", value=grid[region][pathway]["feedstock_per_t"],
+                        min_value=0.0, step=10.0, key=f"{kp}_feed_t",
+                        label_visibility="collapsed",
+                    ))
+                    grid[region][pathway]["saf_yield"] = float(row[4].number_input(
+                        "saf_yield", value=grid[region][pathway]["saf_yield"],
+                        min_value=0.001, step=0.05, format="%.3f", key=f"{kp}_yield",
                         label_visibility="collapsed",
                     ))
 
-        # Build overridden dicts for the charts (OPEX in USD/MT capacity/yr)
+        # Build overridden dicts for the charts.
+        # OPEX_eq (USD/MT capacity/yr) = (Proc. OPEX + Feedstock $/t ÷ Yield) × Utilisation
+        def _opex_eq(cell: dict) -> float:
+            yld = cell["saf_yield"] if cell["saf_yield"] > 1e-6 else 1e-6
+            opex_per_saf = cell["proc_opex"] + cell["feedstock_per_t"] / yld
+            return opex_per_saf * UTILIZATION_FACTOR
+
         custom_capex = {
             r: {p: grid[r][p]["capex"] for p in SAF_PATHWAYS}
             for r in _REGIONS
         }
         custom_opex = {
-            r: {p: (grid[r][p]["proc_opex"] + grid[r][p]["feedstock"]) * UTILIZATION_FACTOR
-                for p in SAF_PATHWAYS}
+            r: {p: _opex_eq(grid[r][p]) for p in SAF_PATHWAYS}
             for r in _REGIONS
         }
 
