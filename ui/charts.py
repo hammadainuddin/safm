@@ -59,13 +59,27 @@ def price_decomposition_bar(df: pd.DataFrame, region: str) -> go.Figure:
 
 
 def capacity_stacked_area(df: pd.DataFrame) -> go.Figure:
-    """Total capacity by region stacked over time."""
-    pivot = df.groupby(["year", "region"])["total_capacity_mt_yr"].sum().reset_index()
+    """
+    Dispatched capacity stacked by region, with a dashed line overlay showing
+    total built capacity. The visible gap above the filled area is capacity that
+    stayed idle (demand was satisfied by CORSIA offsets instead).
+    """
+    disp_col = "dispatched_capacity_mt_yr" if "dispatched_capacity_mt_yr" in df.columns else "total_capacity_mt_yr"
+    pivot = df.groupby(["year", "region"])[disp_col].sum().reset_index()
     fig = px.area(
-        pivot, x="year", y="total_capacity_mt_yr", color="region",
-        title="Cumulative SAF Capacity by Region (MT/yr)",
-        labels={"total_capacity_mt_yr": "Capacity (MT/yr)", "year": "Year"},
+        pivot, x="year", y=disp_col, color="region",
+        title="Cumulative SAF Capacity by Region (MT/yr) — Dispatched (filled) vs Total Built (dashed)",
+        labels={disp_col: "Capacity (MT/yr)", "year": "Year"},
     )
+    if "total_capacity_mt_yr" in df.columns:
+        total = df.groupby("year")["total_capacity_mt_yr"].sum().reset_index()
+        fig.add_trace(go.Scatter(
+            x=total["year"], y=total["total_capacity_mt_yr"],
+            mode="lines+markers", name="Total Built Capacity",
+            line=dict(dash="dash", color="black", width=2),
+            marker=dict(size=6, color="black"),
+            hovertemplate="Total built: %{y:.3f} MT/yr<extra></extra>",
+        ))
     fig.update_layout(
         legend_title="Region",
         hovermode="x unified",
@@ -75,13 +89,26 @@ def capacity_stacked_area(df: pd.DataFrame) -> go.Figure:
 
 
 def capacity_by_pathway(df: pd.DataFrame) -> go.Figure:
-    """Capacity by pathway stacked over time."""
-    pivot = df.groupby(["year", "pathway"])["total_capacity_mt_yr"].sum().reset_index()
+    """
+    Dispatched capacity stacked by pathway, with a dashed line overlay showing
+    total built capacity.
+    """
+    disp_col = "dispatched_capacity_mt_yr" if "dispatched_capacity_mt_yr" in df.columns else "total_capacity_mt_yr"
+    pivot = df.groupby(["year", "pathway"])[disp_col].sum().reset_index()
     fig = px.area(
-        pivot, x="year", y="total_capacity_mt_yr", color="pathway",
-        title="Cumulative SAF Capacity by Pathway (MT/yr)",
-        labels={"total_capacity_mt_yr": "Capacity (MT/yr)", "year": "Year"},
+        pivot, x="year", y=disp_col, color="pathway",
+        title="Cumulative SAF Capacity by Pathway (MT/yr) — Dispatched (filled) vs Total Built (dashed)",
+        labels={disp_col: "Capacity (MT/yr)", "year": "Year"},
     )
+    if "total_capacity_mt_yr" in df.columns:
+        total = df.groupby("year")["total_capacity_mt_yr"].sum().reset_index()
+        fig.add_trace(go.Scatter(
+            x=total["year"], y=total["total_capacity_mt_yr"],
+            mode="lines+markers", name="Total Built Capacity",
+            line=dict(dash="dash", color="black", width=2),
+            marker=dict(size=6, color="black"),
+            hovertemplate="Total built: %{y:.3f} MT/yr<extra></extra>",
+        ))
     fig.update_layout(
         legend_title="Pathway",
         hovermode="x unified",
@@ -529,31 +556,56 @@ def wtp_trend_chart(df: pd.DataFrame) -> go.Figure:
 
 def capacity_stacked_split(df: pd.DataFrame) -> go.Figure:
     """
-    SAF capacity split by Planned vs Modelled, stacked by region.
-    df columns: year, region, total_capacity_mt_yr, capacity_type
+    SAF capacity split by Planned vs Modelled, stacked by region. Dispatched
+    portion renders as a solid bar; the idle (undispatched) portion is stacked
+    on top with a hatched pattern to mark capacity that stayed idle because the
+    demand it could have served fell to CORSIA offsets.
     """
     fig = go.Figure()
     region_colors = {
         "EU": "steelblue", "US": "tomato", "APAC": "seagreen",
         "MENA": "gold", "LATAM": "mediumpurple", "ROW": "darkorange",
     }
+    has_split = "dispatched_capacity_mt_yr" in df.columns
+
     for cap_type in ["Planned", "Modelled"]:
-        opacity = 1.0 if cap_type == "Planned" else 0.55
+        base_opacity = 1.0 if cap_type == "Planned" else 0.55
         type_df = df[df["capacity_type"] == cap_type]
         if type_df.empty:
             continue
         for region in sorted(type_df["region"].unique()):
-            rdf = type_df[type_df["region"] == region].groupby("year")["total_capacity_mt_yr"].sum().reset_index()
-            fig.add_trace(go.Bar(
-                x=rdf["year"], y=rdf["total_capacity_mt_yr"],
-                name=f"{region} ({cap_type})",
-                marker_color=region_colors.get(region, "gray"),
-                opacity=opacity,
-                showlegend=True,
-            ))
+            rdf = type_df[type_df["region"] == region]
+            if has_split:
+                grouped = rdf.groupby("year").agg(
+                    dispatched=("dispatched_capacity_mt_yr", "sum"),
+                    undispatched=("undispatched_capacity_mt_yr", "sum"),
+                ).reset_index()
+                fig.add_trace(go.Bar(
+                    x=grouped["year"], y=grouped["dispatched"],
+                    name=f"{region} ({cap_type})",
+                    marker_color=region_colors.get(region, "gray"),
+                    opacity=base_opacity,
+                    hovertemplate=f"<b>{region} {cap_type}</b><br>Dispatched: %{{y:.3f}} MT/yr<extra></extra>",
+                ))
+                fig.add_trace(go.Bar(
+                    x=grouped["year"], y=grouped["undispatched"],
+                    name=f"{region} {cap_type} (idle)",
+                    marker_color=region_colors.get(region, "gray"),
+                    marker_pattern_shape="/",
+                    opacity=base_opacity * 0.4,
+                    hovertemplate=f"<b>{region} {cap_type} idle</b><br>Undispatched: %{{y:.3f}} MT/yr<extra></extra>",
+                ))
+            else:
+                grouped = rdf.groupby("year")["total_capacity_mt_yr"].sum().reset_index()
+                fig.add_trace(go.Bar(
+                    x=grouped["year"], y=grouped["total_capacity_mt_yr"],
+                    name=f"{region} ({cap_type})",
+                    marker_color=region_colors.get(region, "gray"),
+                    opacity=base_opacity,
+                ))
     fig.update_layout(
         barmode="stack",
-        title="SAF Capacity: Planned vs Modelled (MT/yr)",
+        title="SAF Capacity: Planned vs Modelled (MT/yr) — solid = dispatched, hatched = idle",
         xaxis_title="Year", yaxis_title="Capacity (MT/yr)",
         xaxis=dict(tickformat="d"),
         legend_title="Region / Type",

@@ -31,10 +31,11 @@ def _history_to_prices_df(history: list) -> pd.DataFrame:
                 "margin_usd_per_mt": p.margin_usd_per_mt,
             })
 
-    # Add volume-weighted global price row per year
+    # Add volume-weighted global price row per year. Regions on the corsia_offset
+    # regime are excluded automatically because we filter on pricing_regime, so
+    # partial-supply years still produce a meaningful weighted average over the
+    # regions that actually received physical SAF.
     for s in history:
-        if not s.market.market_balanced:
-            continue
         demand_vols = s.demand.volume_by_region(s.year)
         total_vol = 0.0
         weighted_price = 0.0
@@ -76,14 +77,52 @@ def _history_to_flows_df(history: list) -> pd.DataFrame:
 
 
 def _history_to_capacity_df(history: list) -> pd.DataFrame:
+    """
+    Build the capacity DataFrame with dispatched/undispatched split.
+
+    For each plant, the row's `dispatched_capacity_mt_yr` is the share of regional
+    pathway-level dispatched volume (from trade flows) apportioned to this plant by
+    nameplate share, converted back to MT/yr equivalent via UTILIZATION_FACTOR.
+    `undispatched_capacity_mt_yr` is the residual that stayed idle in the clearing
+    step (typically because LCOSAF > regional WTP and demand was satisfied by
+    CORSIA offsets instead).
+    """
+    from config.settings import UTILIZATION_FACTOR
+
     rows = []
     for s in history:
+        # Dispatched MT (effective) by (region, pathway), summed over flows.
+        dispatched_by_rp: dict = {}
+        for f in s.market.trade_flows:
+            key = (f.origin_region, getattr(f, "pathway", ""))
+            dispatched_by_rp[key] = dispatched_by_rp.get(key, 0.0) + f.volume_mt
+
+        # Nameplate share per plant within its (region, pathway) cohort.
+        nameplate_by_rp: dict = {}
         for plant in s.capacity.plants:
+            key = (plant.region, plant.pathway)
+            nameplate_by_rp[key] = nameplate_by_rp.get(key, 0.0) + plant.capacity_mt_yr
+
+        for plant in s.capacity.plants:
+            key = (plant.region, plant.pathway)
+            cohort_nameplate = nameplate_by_rp.get(key, 0.0)
+            dispatched_eff = dispatched_by_rp.get(key, 0.0)
+            if cohort_nameplate > 0:
+                share = plant.capacity_mt_yr / cohort_nameplate
+                # Apportion dispatched volume (MT effective) to this plant, then
+                # convert effective MT back to nameplate-equivalent MT/yr.
+                disp_mt_yr = (dispatched_eff * share) / UTILIZATION_FACTOR
+            else:
+                disp_mt_yr = 0.0
+            disp_mt_yr = min(disp_mt_yr, plant.capacity_mt_yr)
+            undisp_mt_yr = max(0.0, plant.capacity_mt_yr - disp_mt_yr)
             rows.append({
                 "year": s.year,
                 "region": plant.region,
                 "pathway": plant.pathway,
                 "total_capacity_mt_yr": round(plant.capacity_mt_yr, 4),
+                "dispatched_capacity_mt_yr": round(disp_mt_yr, 4),
+                "undispatched_capacity_mt_yr": round(undisp_mt_yr, 4),
                 "capacity_type": "Planned" if plant.is_deterministic else "Modelled",
             })
     return pd.DataFrame(rows)
@@ -184,9 +223,11 @@ def render(history: Optional[list] = None) -> None:
                 """
                 ### Methodology
                 The global SAF market price is reported as the **demand-volume-weighted average**
-                of all regional clearing prices in years when the market is balanced. This gives
-                a single representative market price that reflects the relative size of each
-                regional market:
+                of all regional clearing prices across every model year. Only regions actually
+                served with physical SAF (`pricing_regime = wtp_priority_allocation`) contribute
+                to the weighted average; regions that fell to CORSIA offsets are excluded. This
+                gives a single representative market price that reflects the relative size of
+                each regional market:
 
                 > **Global Price = Σ (Clearing Priceᵣ × Demand Volumeᵣ) / Σ Demand Volumeᵣ**
 
@@ -227,11 +268,11 @@ def render(history: Optional[list] = None) -> None:
                 carbon credit prices, and technology costs change across the 2025–2045 horizon.
                 """
             )
-            balanced_states = [s for s in history if s.market.market_balanced]
-            if balanced_states:
+            wtp_states = list(history)
+            if wtp_states:
                 _wtp_model = WTPModel()
                 wtp_rows = []
-                for s in balanced_states:
+                for s in wtp_states:
                     wtp_matrix = _wtp_model.compute_wtp(s.year, s.capacity)
                     for w in wtp_matrix.regional_wtps:
                         wtp_rows.append({
@@ -281,10 +322,10 @@ def render(history: Optional[list] = None) -> None:
                 instead of physical SAF.
                 """
             )
-            balanced_years = sorted({s.year for s in history if s.market.market_balanced})
-            if balanced_years:
+            sd_years = sorted({s.year for s in history})
+            if sd_years:
                 sd_year = st.selectbox(
-                    "Year for S-D curve", balanced_years, index=0, key="sd_year_out"
+                    "Year for S-D curve", sd_years, index=0, key="sd_year_out"
                 )
                 sd_state = next((s for s in history if s.year == sd_year), None)
                 if sd_state:
@@ -305,7 +346,7 @@ def render(history: Optional[list] = None) -> None:
                         use_container_width=True,
                     )
             else:
-                st.info("Supply-demand curve available only for years when market balanced.")
+                st.info("No model history loaded.")
 
             # ── Per-region price decomposition ────────────────────────────────
             with st.expander("Per-Region Price Decomposition"):
@@ -374,6 +415,15 @@ def render(history: Optional[list] = None) -> None:
                 Capacity accumulates year-over-year: once a plant is built — whether planned or
                 modelled — it remains in the capacity state for the remainder of the horizon.
                 The area charts show how the regional and pathway mix evolves over 2025–2045.
+
+                **Dispatched vs idle capacity:** the filled stacked area shows the share of
+                built capacity that was actually dispatched in the clearing step, while the
+                **black dashed line** traces total built capacity. The gap between them is
+                capacity that stayed idle — its LCOSAF exceeded the destination region's WTP,
+                so the demand it could have served was satisfied by CORSIA-eligible carbon
+                offsets instead. In the Planned-vs-Modelled bar chart the same split appears
+                as a hatched "(idle)" segment stacked on top of each region's solid (dispatched)
+                bar.
                 """
             )
 
