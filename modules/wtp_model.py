@@ -45,9 +45,11 @@ logger = get_logger("wtp_model")
 
 _MOCK = os.path.join(os.path.dirname(__file__), "..", "data", "mock")
 
-# SAF lifecycle carbon intensity reduction vs conventional jet fuel.
-# ~2.5 tCO2 avoided per MT SAF (approximate, varies by pathway).
-_CI_REDUCTION_T_CO2_PER_MT_SAF = 2.5
+# CO2 emitted by one MT of conventional jet fuel at combustion.
+# Under the CORSIA convention SAF combustion is treated as zero-emission,
+# so each MT of SAF that displaces jet fuel avoids this much CO2 — which
+# is the basis for the SAF-vs-offset credit substitution in Case 1 WTP.
+_CI_REDUCTION_T_CO2_PER_MT_SAF = 3.1
 
 
 class WTPModel:
@@ -114,7 +116,7 @@ class WTPModel:
                               cumulative volume falls within total_saf_produced_mt.
           offset_mt         : demand volume unserved by physical SAF (→ CORSIA offsets)
           offset_price_usd_per_mt : CORSIA carbon-offset cost per MT SAF for that year
-                                    = corsia_credit_usd_per_tco2 × 2.5 tCO2/MT SAF.
+                                    = corsia_credit_usd_per_tco2 × 3.1 tCO2/MT SAF.
                                     Used as the y-axis (height) of the offset demand bar.
           max_wtp           : highest regional WTP (kept for backwards compatibility).
         """
@@ -162,7 +164,7 @@ class WTPModel:
         offset_mt = max(0.0, total_demand - actual_dispatched)
         max_wtp = max(wtp_dict.values(), default=0.0)
 
-        # CORSIA offset price = carbon-credit price × 2.5 tCO2/MT SAF.
+        # CORSIA offset price = carbon-credit price × 3.1 tCO2/MT SAF.
         # Pull the credit price from wtp_params for this year (regions share a
         # global CORSIA credit market; take the max across regions in case one
         # entry is missing a value).
@@ -186,7 +188,14 @@ class WTPModel:
 
     @staticmethod
     def _case1(row: pd.Series) -> float:
-        """Jet fuel price + CORSIA carbon credit value (USD/MT SAF)."""
+        """
+        Jet fuel price + CORSIA carbon credit value (USD/MT SAF).
+
+        Case 1 reflects the airline's opportunity cost: each MT of SAF
+        displaces 1 MT of conventional jet fuel and avoids 3.1 tCO₂ of
+        combustion emissions, which would otherwise require buying CORSIA
+        offsets at the credit price.
+        """
         jet = float(row.get("jet_fuel_price_usd_per_mt", 700.0))
         credit = float(row.get("corsia_credit_usd_per_tco2", 30.0))
         return jet + credit * _CI_REDUCTION_T_CO2_PER_MT_SAF

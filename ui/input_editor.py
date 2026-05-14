@@ -271,7 +271,7 @@ def render() -> None:
 
                 The carbon credit price (`carbon_credit_usd_per_tco2`) determines the value of
                 a SAF credit in Case 1 of the WTP calculation:
-                `Case 1 WTP = Jet Fuel Price + Credit Price × 2.5 tCO₂/MT SAF`.
+                `Case 1 WTP = Jet Fuel Price + Credit Price × 3.1 tCO₂/MT SAF`.
                 Phase 1 of mandatory CORSIA begins in 2027, at which point the mandatory fraction
                 steps up sharply and SAF becomes significantly more economically attractive
                 relative to conventional offsets.
@@ -513,6 +513,77 @@ def render() -> None:
             _clear_upload("ss_refinery_capacity")
             st.success("refinery_capacity.csv saved.")
 
+        st.divider()
+
+        # ── Domestic vs Export Share ────────────────────────────────────────
+        st.subheader("Domestic vs Export Share")
+        st.markdown(
+            """
+            ### Methodology
+            Each region's effective SAF supply is split into a **domestic-priority
+            pool** (reserved for local demand) and an **export-eligible pool**
+            (offered to the cross-region import market). The market is cleared in
+            two phases:
+
+            - **Phase 1 — Domestic clearing.** Every region uses its
+              `domestic_share` pool to serve its own demand first, subject to
+              `LCOSAF ≤ regional WTP`, cheapest LCOSAF first.
+            - **Phase 2 — Cross-region imports.** The export pool, plus any
+              unused domestic remainder, is allocated cheapest-CIF first to
+              destinations sorted by WTP descending, again filtered by
+              `LCOSAF + transport ≤ destination WTP`.
+
+            A region set to **100%** behaves as full autarky-first (e.g. the EU
+            under ReFuelEU). A region at **0%** offers its full supply to the
+            global pool from the start. Intermediate values express softer
+            domestic preference. Regions absent from the table default to 100%.
+            """
+        )
+        dp_df = _upload_widget("domestic_supply_priority.csv", "ss_domestic_priority")
+        dp_calc = dp_df.copy()
+        dp_calc["domestic_share_pct"] = dp_calc["domestic_share_pct"].clip(0, 100)
+        dp_calc["export_share_pct"] = 100.0 - dp_calc["domestic_share_pct"]
+
+        share_long = dp_calc.melt(
+            id_vars="region",
+            value_vars=["domestic_share_pct", "export_share_pct"],
+            var_name="pool", value_name="share_pct",
+        )
+        share_long["pool"] = share_long["pool"].map({
+            "domestic_share_pct": "Domestic (Phase 1)",
+            "export_share_pct":   "Export pool (Phase 2)",
+        })
+        fig_share = px.bar(
+            share_long, x="region", y="share_pct", color="pool",
+            barmode="stack",
+            title="Supply Split: Domestic Priority vs Export Pool (%)",
+            labels={"region": "Region", "share_pct": "Share (%)", "pool": "Pool"},
+            color_discrete_map={
+                "Domestic (Phase 1)":    "#2ca02c",
+                "Export pool (Phase 2)": "#9ecae1",
+            },
+        )
+        fig_share.update_layout(yaxis_range=[0, 100], xaxis=dict(tickformat=""))
+        st.plotly_chart(fig_share, use_container_width=True)
+
+        st.markdown("**Edit per-region domestic share**")
+        edited_dp = st.data_editor(
+            dp_df, use_container_width=True, num_rows="dynamic", key="dp_editor",
+            column_config={
+                "region": st.column_config.TextColumn("Region"),
+                "domestic_share_pct": st.column_config.NumberColumn(
+                    "Domestic Share (%)",
+                    min_value=0.0, max_value=100.0, step=1.0, format="%.0f",
+                    help="Share of regional supply reserved for local demand "
+                         "in Phase 1 before exports are allowed.",
+                ),
+            },
+        )
+        if st.button("💾 Save Domestic Supply Priority", key="save_domestic_priority"):
+            _save(edited_dp, "domestic_supply_priority.csv")
+            _clear_upload("ss_domestic_priority")
+            st.success("domestic_supply_priority.csv saved.")
+
     # ════════════════════════════════════════════════════════════════════════
     # 🌿  FEEDSTOCK AVAILABILITY
     # ════════════════════════════════════════════════════════════════════════
@@ -681,7 +752,7 @@ def render() -> None:
 
             - **Case 1 — Market floor (Jet + CORSIA):** The value of SAF as a drop-in
               replacement for jet fuel, augmented by the carbon credit value avoided under
-              CORSIA: `WTP₁ = Jet Fuel Price + Credit Price × 2.5 tCO₂/MT SAF`
+              CORSIA: `WTP₁ = Jet Fuel Price + Credit Price × 3.1 tCO₂/MT SAF`
             - **Case 2 — Investment floor (LCOSAF@IRR):** The minimum price at which a
               rational investor would build new SAF capacity, using the cheapest available
               pathway: `WTP₂ = min_pathway[(CRF(IRR, 20yr) × CAPEX + OPEX) / Utilisation]`

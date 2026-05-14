@@ -22,7 +22,7 @@ from typing import Dict, List, Optional, Tuple
 from config.settings import (
     DISCOUNT_RATE, MARKET_BALANCE_TOL, PROJECT_LIFE_YR, UTILIZATION_FACTOR,
 )
-from data.loaders import load_transport_costs
+from data.loaders import load_domestic_priority_shares, load_transport_costs
 from schemas.demand_schema import DemandMatrix
 from schemas.equilibrium_schema import MarketClearingResult, RegionalPrice, TradeFlow
 from schemas.supply_schema import CapacityState
@@ -46,6 +46,7 @@ class PriceQuantityClearing:
     def __init__(self, transport_costs_path: str = None):
         self._tc_path = transport_costs_path
         self._tc_cache: Optional[Dict[tuple, float]] = None
+        self._priority_cache: Optional[Dict[str, float]] = None
 
     # ── Public interface ─────────────────────────────────────────────────────
 
@@ -71,12 +72,13 @@ class PriceQuantityClearing:
         MarketClearingResult — same schema as EquilibriumSolver output
         """
         tc = self._transport_costs()
+        domestic_shares = self._domestic_priority_shares()
         supply_costs  = self._capacity_weighted_opex(capacity)
         demand_by_region = demand.volume_by_region(year)
         wtp_dict      = wtp_matrix.to_dict()
 
         trade_flows, marginal_supplier = self._allocate(
-            demand_by_region, wtp_dict, capacity, tc, year
+            demand_by_region, wtp_dict, capacity, tc, year, domestic_shares
         )
 
         prices = self._compute_prices(
@@ -102,12 +104,36 @@ class PriceQuantityClearing:
         unserved = list(offset_demand_mt_by_region.keys())
         market_balanced = len(unserved) == 0
 
+        # Per-region dispatch summary (domestic vs import vs offset).
+        served_domestic: Dict[str, float] = {}
+        served_import:   Dict[str, float] = {}
+        for f in trade_flows:
+            if f.origin_region == f.destination_region:
+                served_domestic[f.destination_region] = (
+                    served_domestic.get(f.destination_region, 0.0) + f.volume_mt
+                )
+            else:
+                served_import[f.destination_region] = (
+                    served_import.get(f.destination_region, 0.0) + f.volume_mt
+                )
+
         logger.info(
             "Year %d — PQ clearing: balanced=%s, produced=%.4f MT, "
             "traded=%.4f MT, corsia_offset=%s",
             year, market_balanced, total_produced, total_traded,
             {r: f"{v:.4f}" for r, v in offset_demand_mt_by_region.items()} or "none",
         )
+        for d_region in sorted(demand_by_region.keys()):
+            d   = demand_by_region.get(d_region, 0.0)
+            if d <= MARKET_BALANCE_TOL:
+                continue
+            dom = served_domestic.get(d_region, 0.0)
+            imp = served_import.get(d_region, 0.0)
+            off = offset_demand_mt_by_region.get(d_region, 0.0)
+            logger.info(
+                "  %s: demand=%.4f  domestic=%.4f  import=%.4f  offset=%.4f",
+                d_region, d, dom, imp, off,
+            )
 
         return MarketClearingResult(
             year=year,
@@ -130,22 +156,30 @@ class PriceQuantityClearing:
         capacity: CapacityState,
         tc: Dict[tuple, float],
         year: int,
+        domestic_shares: Dict[str, float],
     ) -> Tuple[List[TradeFlow], Dict[str, str]]:
         """
-        Pathway-aware allocation:
-          Phase 1 (domestic clearing) — each region's own plants supply local demand
-                                        when their LCOSAF ≤ regional WTP.
-          Phase 2 (imports)          — residual demand is supplied from out-of-region
-                                        plants whose LCOSAF ≤ destination WTP, sorted
-                                        by cheapest CIF cost (LCOSAF + transport).
+        Share-aware two-pass clearing.
 
-        Demand regions are processed in WTP-descending order so the highest-paying
-        market gets first dibs on the inter-regional supply pool.
+        For each plant in region r with effective volume V:
+            domestic_pool = V × domestic_share[r]
+            export_pool   = V × (1 − domestic_share[r])
+
+        Phase 1 — Domestic clearing. Each region (WTP-desc for stable
+                  ordering) consumes its OWN plants' domestic_pool subject
+                  to LCOSAF ≤ regional WTP, cheapest LCOSAF first.
+
+        Phase 2 — Imports. For each destination (WTP-desc), build the
+                  cross-region candidate pool from each plant's export_pool
+                  PLUS any unused domestic_pool remainder (so reserved
+                  capacity is not wasted when local demand is already met).
+                  Filter by LCOSAF + transport ≤ destination WTP, sort by
+                  cheapest CIF, dispatch in that order.
 
         Returns (trade_flows, marginal_supplier_by_demand_region).
         """
-        # ── Pre-compute LCOSAF and effective supply for every plant ─────────────
-        # Each entry: [lcosaf, region, pathway, vol_remaining]
+        # ── Pre-compute LCOSAF and per-plant pools ──────────────────────────────
+        # Each entry: [lcosaf, region, pathway, dom_remaining, exp_remaining]
         plants: List[List] = []
         for p in capacity.plants:
             lc = levelised_cost(
@@ -153,29 +187,43 @@ class PriceQuantityClearing:
                 UTILIZATION_FACTOR, DISCOUNT_RATE, PROJECT_LIFE_YR,
             )
             eff_vol = p.capacity_mt_yr * UTILIZATION_FACTOR
-            if eff_vol > MARKET_BALANCE_TOL:
-                plants.append([lc, p.region, p.pathway, eff_vol])
+            if eff_vol <= MARKET_BALANCE_TOL:
+                continue
+            share = domestic_shares.get(p.region, 1.0)
+            share = max(0.0, min(1.0, share))
+            dom = eff_vol * share
+            exp = eff_vol - dom
+            plants.append([lc, p.region, p.pathway, dom, exp])
 
         trade_flows: List[TradeFlow] = []
         marginal_supplier: Dict[str, str] = {}
+        demand_remaining: Dict[str, float] = {
+            r: float(v) for r, v in demand_by_region.items()
+        }
 
-        priority_order = sorted(demand_by_region.keys(), key=lambda r: -wtp_dict.get(r, 0.0))
+        priority_order = sorted(
+            demand_by_region.keys(),
+            key=lambda r: -wtp_dict.get(r, 0.0),
+        )
 
+        # ── PHASE 1: domestic clearing — each region draws on its own pool ──────
         for d_region in priority_order:
-            demand_remaining = demand_by_region.get(d_region, 0.0)
-            if demand_remaining <= MARKET_BALANCE_TOL:
+            if demand_remaining.get(d_region, 0.0) <= MARKET_BALANCE_TOL:
                 continue
             wtp_d = wtp_dict.get(d_region, 0.0)
-
-            # ── Phase 1: domestic clearing ──────────────────────────────────────
             domestic = sorted(
-                [pl for pl in plants if pl[1] == d_region and pl[0] <= wtp_d and pl[3] > MARKET_BALANCE_TOL],
+                [
+                    pl for pl in plants
+                    if pl[1] == d_region
+                    and pl[0] <= wtp_d
+                    and pl[3] > MARKET_BALANCE_TOL
+                ],
                 key=lambda x: x[0],
             )
             for pl in domestic:
-                if demand_remaining <= MARKET_BALANCE_TOL:
+                if demand_remaining[d_region] <= MARKET_BALANCE_TOL:
                     break
-                take = min(pl[3], demand_remaining)
+                take = min(pl[3], demand_remaining[d_region])
                 trade_flows.append(TradeFlow(
                     year=year,
                     origin_region=d_region,
@@ -185,25 +233,44 @@ class PriceQuantityClearing:
                     pathway=pl[2],
                 ))
                 pl[3] -= take
-                demand_remaining -= take
+                demand_remaining[d_region] -= take
                 marginal_supplier[d_region] = d_region
 
-            if demand_remaining <= MARKET_BALANCE_TOL:
+        # ── PHASE 2: cross-region imports for residual demand ───────────────────
+        # Each plant offers exp_remaining + unused dom_remaining to the
+        # import pool — so a region's reserved share is not wasted if its
+        # own demand was already met.
+        for d_region in priority_order:
+            if demand_remaining.get(d_region, 0.0) <= MARKET_BALANCE_TOL:
                 continue
-
-            # ── Phase 2: imports, filtered by LCOSAF ≤ WTP, sorted by CIF ───────
-            imports = sorted(
-                [
-                    (pl[0] + tc.get((pl[1], d_region), 0.0), pl)
-                    for pl in plants
-                    if pl[1] != d_region and pl[0] <= wtp_d and pl[3] > MARKET_BALANCE_TOL
-                ],
-                key=lambda x: x[0],
-            )
-            for _cif, pl in imports:
-                if demand_remaining <= MARKET_BALANCE_TOL:
+            wtp_d = wtp_dict.get(d_region, 0.0)
+            candidates = []
+            for pl in plants:
+                if pl[1] == d_region:
+                    continue
+                available = pl[3] + pl[4]
+                if available <= MARKET_BALANCE_TOL:
+                    continue
+                if pl[0] > wtp_d:
+                    continue
+                cif = pl[0] + tc.get((pl[1], d_region), 0.0)
+                candidates.append((cif, pl, available))
+            candidates.sort(key=lambda x: x[0])
+            for _cif, pl, available in candidates:
+                if demand_remaining[d_region] <= MARKET_BALANCE_TOL:
                     break
-                take = min(pl[3], demand_remaining)
+                # Recompute available — earlier iterations may have drained
+                # this plant via a different destination.
+                avail_now = pl[3] + pl[4]
+                if avail_now <= MARKET_BALANCE_TOL:
+                    continue
+                take = min(avail_now, demand_remaining[d_region])
+                # Draw from the export pool first; if export pool is empty,
+                # spill into the unused domestic remainder.
+                from_exp = min(take, pl[4])
+                from_dom = take - from_exp
+                pl[4] -= from_exp
+                pl[3] -= from_dom
                 transport = tc.get((pl[1], d_region), 0.0)
                 trade_flows.append(TradeFlow(
                     year=year,
@@ -213,8 +280,7 @@ class PriceQuantityClearing:
                     transport_cost_usd_per_mt=transport,
                     pathway=pl[2],
                 ))
-                pl[3] -= take
-                demand_remaining -= take
+                demand_remaining[d_region] -= take
                 marginal_supplier[d_region] = pl[1]
 
         return trade_flows, marginal_supplier
@@ -306,3 +372,9 @@ class PriceQuantityClearing:
         if self._tc_cache is None:
             self._tc_cache = load_transport_costs(self._tc_path)
         return self._tc_cache
+
+    def _domestic_priority_shares(self) -> Dict[str, float]:
+        """Cached {region: domestic_share}. Missing regions default to 1.0."""
+        if self._priority_cache is None:
+            self._priority_cache = load_domestic_priority_shares()
+        return self._priority_cache

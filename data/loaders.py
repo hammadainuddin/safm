@@ -79,6 +79,30 @@ def load_committed_capacity(year: int, path: str = None) -> CapacityState:
 # Refinery co-processing capacity caps
 # ---------------------------------------------------------------------------
 
+def load_domestic_priority_shares(path: str = None) -> Dict[str, float]:
+    """
+    Return {region: domestic_share} where each share is a fraction in [0, 1].
+
+    `domestic_share` is the portion of a region's effective SAF supply that
+    is reserved for local consumption (Phase 1 of market clearing) before
+    any of that region's output can be exported. The remaining
+    (1 - domestic_share) enters the cross-region import pool in Phase 2.
+
+    Missing file or missing rows default to 1.0 (full domestic-first).
+    """
+    path = path or _mock_path("domestic_supply_priority.csv")
+    if not os.path.exists(path):
+        return {}
+    df = pd.read_csv(path)
+    shares: Dict[str, float] = {}
+    for _, row in df.iterrows():
+        pct = float(row.get("domestic_share_pct", 100.0))
+        # Clamp to [0, 100] then convert to 0..1 fraction.
+        pct = max(0.0, min(100.0, pct))
+        shares[str(row["region"])] = pct / 100.0
+    return shares
+
+
 def load_coprocessing_caps(path: str = None) -> Dict[str, float]:
     """
     Return {region: max_coprocessing_mt_yr}.

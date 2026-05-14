@@ -335,7 +335,7 @@ def supply_demand_curve(demand_steps, supply_steps, year,
     demand_steps : [(wtp, vol, region), ...] sorted desc by WTP
     offset_mt    : unserved demand volume covered by CORSIA carbon offsets
     offset_price_usd_per_mt : CORSIA carbon-offset cost per MT SAF
-                              (= credit price × 2.5 tCO2/MT SAF). Used as the
+                              (= credit price × 3.1 tCO2/MT SAF). Used as the
                               y-axis height of the offset demand bar.
     max_wtp      : highest regional WTP — fallback only, no longer used directly.
     """

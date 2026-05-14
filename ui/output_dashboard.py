@@ -249,7 +249,7 @@ def render(history: Optional[list] = None) -> None:
                 Willingness-to-pay (WTP) is the maximum price each region is prepared to pay for
                 SAF in a given year. It is computed as the maximum of three independent cases:
 
-                - **Case 1 (Market floor):** `Jet Fuel Price + CORSIA Credit × 2.5 tCO₂/MT SAF`
+                - **Case 1 (Market floor):** `Jet Fuel Price + CORSIA Credit × 3.1 tCO₂/MT SAF`
                   Reflects the value of SAF as a drop-in fuel plus the avoided cost of purchasing
                   conventional CORSIA offsets. Rising carbon credit prices over time push this
                   value upward.
@@ -320,7 +320,7 @@ def render(history: Optional[list] = None) -> None:
                 dispatched physical-SAF supply, the unserved volume is already visible as the
                 rightmost demand bars that extend past where the supply bars end. A summary text
                 box is overlaid in that gap, stating the unserved volume and the CORSIA
-                carbon-offset unit price (`corsia_credit_usd_per_tco2 × 2.5 tCO₂/MT SAF`) — the
+                carbon-offset unit price (`corsia_credit_usd_per_tco2 × 3.1 tCO₂/MT SAF`) — the
                 price airlines actually pay when they fall to CORSIA-eligible carbon offsets
                 instead of physical SAF.
                 """
@@ -464,25 +464,34 @@ def render(history: Optional[list] = None) -> None:
             st.markdown(
                 """
                 ### Methodology
-                SAF trade flows are produced by a **two-phase pathway-aware dispatch**:
+                SAF trade flows are produced by a **share-aware two-pass dispatch**.
+                Each region's effective supply is split into a **domestic-priority pool**
+                (size = `domestic_share × supply`) and an **export pool** (the remaining
+                `1 − domestic_share`). Both shares are editable per region in the
+                **Capacity → Domestic vs Export Share** input section.
 
-                - **Phase 1 — Domestic clearing.** Each region's own plants supply local
-                  demand first, sorted by LCOSAF ascending. Only plants whose
-                  **LCOSAF ≤ regional WTP** dispatch — uneconomic plants stay idle.
-                - **Phase 2 — Imports.** Residual (unmet) demand is filled by plants in
-                  other regions, again subject to **LCOSAF ≤ destination WTP**, with
-                  inter-regional candidates sorted by cheapest CIF:
+                - **Phase 1 — Domestic clearing.** Every region's domestic pool is
+                  dispatched to its own demand first, sorted by LCOSAF ascending and
+                  filtered by **LCOSAF ≤ regional WTP**. Higher-WTP regions are tie-broken
+                  first, but no region's domestic supply leaves the country until every
+                  region has had a chance to clear locally.
+                - **Phase 2 — Cross-region imports.** Residual demand is filled by each
+                  plant's export pool plus any unused domestic remainder. Candidates are
+                  filtered by **LCOSAF + transport ≤ destination WTP** and sorted by
+                  cheapest CIF:
 
                 > **CIF Cost (origin → destination) = LCOSAF_origin + Transport Cost_origin→destination**
 
-                Demand regions are processed in descending order of WTP, so the highest-paying
-                market gets first call on the inter-regional supply pool. Demand that no plant
-                can clear within the WTP filter falls to **CORSIA-eligible carbon offsets**
-                (visible in the Market Summary).
+                Phase 2 destinations are processed in WTP-descending order, so the highest-
+                paying market gets first call on the global export pool. Demand that no
+                plant can clear within the WTP filter falls to **CORSIA-eligible carbon
+                offsets** (visible in the Market Summary), priced at
+                `corsia_credit_usd_per_tco2 × 3.1 tCO₂/MT SAF`.
 
-                Each trade flow now carries a **pathway** label (HEFA, Co-processing, etc.) in
-                addition to origin and destination, so the pathway-level chart below shows which
-                production technology in which origin region serves each importing market.
+                Each trade flow carries a **pathway** label (HEFA, Co-processing, etc.) in
+                addition to origin and destination, so the pathway-level chart below shows
+                which production technology in which origin region serves each importing
+                market.
                 """
             )
 
