@@ -494,13 +494,15 @@ def supply_demand_curve(demand_steps, supply_steps, year,
             y=0.99, yanchor="top",
             yref="container",
         ),
-        xaxis_title="Cumulative Volume (MT)",
+        xaxis=dict(
+            title=dict(text="Cumulative Volume (MT)", standoff=12),
+            tickformat=".2f",
+        ),
         yaxis_title="Price / Cost (USD/MT SAF)",
-        xaxis=dict(tickformat=".2f"),
-        # Legend pushed further below the x-axis title so they do not collide.
+        # Legend pushed well clear of the x-axis title.
         legend=dict(
             orientation="h",
-            yanchor="top", y=-0.32,
+            yanchor="top", y=-0.45,
             xanchor="center", x=0.5,
         ),
         hovermode="closest",
@@ -518,7 +520,7 @@ def supply_demand_curve(demand_steps, supply_steps, year,
                 showactive=True, buttons=region_buttons,
             ),
         ],
-        margin=dict(t=150, b=170),
+        margin=dict(t=150, b=210),
         annotations=sd_annotations,
     )
     return fig
