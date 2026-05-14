@@ -695,14 +695,14 @@ def render() -> None:
             ### Methodology
             Regulatory parameters define the policy environment that shapes CORSIA demand and
             pricing in each region. The key levers are: `mandate_fraction` — the minimum SAF
-            blend share required by law (feeds into Case 3 WTP penalty calculations);
-            `non_compliance_penalty_usd_per_mt` — the fine per MT of SAF shortfall, which sets
-            the ceiling on what regulated buyers will pay (the EU ReFuelEU penalty of $2,500/MT
-            is a critical driver of EU WTP); and `carbon_tax_usd_per_tco2` — a carbon price
-            applied to fossil jet fuel that improves SAF's relative economics. Together these
-            parameters determine how much regulatory pull exists in each region and year. The
-            EU is the only currently regulated region; other regions can be activated by raising
-            their penalty above zero.
+            blend share required by law (feeds into the Case 3 Total-Market-WTP ceiling);
+            `non_compliance_penalty_usd_per_mt` — the fine per MT of SAF shortfall, one of
+            several drivers behind the Case 3 ceiling (the EU ReFuelEU penalty of $1,500+/MT
+            is the dominant component of EU WTP, on top of $850 baseline + ~$280 ETS); and
+            `carbon_tax_usd_per_tco2` — a carbon price applied to fossil jet fuel that
+            improves SAF's relative economics. Every region now carries a non-zero Case 3
+            (total market WTP) reflecting CORSIA + voluntary corporate premium + any local
+            mandate; edit `wtp_params.csv` to tune those regional ceilings.
             """
         )
         df = _upload_widget("regulatory_params.csv", "ss_regulatory_params")
@@ -756,15 +756,24 @@ def render() -> None:
             - **Case 2 — Investment floor (LCOSAF@IRR):** The minimum price at which a
               rational investor would build new SAF capacity, using the cheapest available
               pathway: `WTP₂ = min_pathway[(CRF(IRR, 20yr) × CAPEX + OPEX) / Utilisation]`
-            - **Case 3 — Policy ceiling (Penalty):** The regulatory non-compliance penalty
-              that creates a hard price ceiling for regulated buyers (e.g. EU ReFuelEU):
-              `WTP₃ = non_compliance_penalty_usd_per_mt`
+            - **Case 3 — Total Market WTP ceiling:** The full price airlines in the
+              region will actually pay, combining jet-fuel baseline + CORSIA / ETS / LCFS
+              compliance value + a regional regulatory or voluntary premium.
+              `WTP₃ = case3_penalty_usd_per_mt`. Default 2025 → 2045 trajectories:
+              EU $2,600 → $3,600+ (ETS + ReFuelEU penalty),
+              US $1,500 → $2,200 (LCFS + Scope-3 corporate premium),
+              APAC $1,300 → $1,800 (Singapore SAF levy + emerging mandates),
+              MENA $1,000 → $1,300 (small flagship-carrier premium),
+              LATAM / ROW $800 → $1,000 (CORSIA only, near-zero premium).
 
             > **Final WTP = max(WTP₁, WTP₂, WTP₃)**
 
-            In practice, Case 3 dominates the EU ($2,500/MT) and Case 2 dominates all other
-            regions ($980–$1,200/MT at 12% IRR). The WTP drives the clearing price: each
-            served region pays exactly its WTP.
+            In practice Case 3 dominates almost everywhere now: airline WTP is set by the
+            local market reality (mandates, ETS, LCFS, corporate buyers) rather than by
+            the abstract Case-2 LCOSAF investment floor. The WTP drives the clearing
+            price: each served region pays exactly its WTP. The column name
+            `case3_penalty_usd_per_mt` in `wtp_params.csv` is legacy — the value now
+            represents the **total market WTP ceiling**, not only a non-compliance fine.
             """
         )
 

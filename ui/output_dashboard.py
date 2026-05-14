@@ -257,10 +257,25 @@ def render(history: Optional[list] = None) -> None:
                   The minimum price at which a rational investor would build new capacity, using
                   the cheapest available pathway (typically Co-processing or HEFA). This sets the
                   long-run equilibrium price floor — no new capacity is built below this level.
-                - **Case 3 (Policy ceiling):** `non_compliance_penalty_usd_per_mt`
-                  The regulatory penalty for failing to meet a blending mandate. For the EU this
-                  is $2,500/MT under ReFuelEU, making Case 3 the binding constraint for EU
-                  buyers. For non-regulated regions, Case 3 is zero and Case 2 dominates.
+                - **Case 3 (Total Market WTP ceiling):** the full market-clearing price
+                  airlines in each region will actually pay. Combines jet-fuel baseline,
+                  CORSIA / ETS / LCFS compliance value, and a regional premium that
+                  reflects local regulatory + voluntary drivers:
+                    * **EU** baseline + ETS + ReFuelEU non-compliance penalty
+                      ($2,600 → $3,600+ across 2025–2045).
+                    * **US** baseline + CORSIA + LCFS + corporate Scope-3 premium
+                      ($1,500 → $2,200).
+                    * **APAC** baseline + CORSIA + moderate mandate premium
+                      ($1,300 → $1,800; Singapore SAF levy from 2026).
+                    * **MENA** baseline + CORSIA + small flagship-carrier premium
+                      ($1,000 → $1,300).
+                    * **LATAM / ROW** baseline + CORSIA, near-zero premium
+                      ($800 → $1,000) — physical SAF rarely clears domestically;
+                      regional feedstocks are exported to EU/US instead.
+
+                  Loaded from `wtp_params.csv` column `case3_penalty_usd_per_mt`. The
+                  "penalty" column name is legacy — the value now represents the **total
+                  market WTP ceiling**, not just a non-compliance fine.
 
                 > **Final WTP = max(Case 1, Case 2, Case 3)**
 

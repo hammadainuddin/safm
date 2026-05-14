@@ -12,10 +12,15 @@ three complementary cases:
       LCOSAF at target IRR (computed from CAPEX/OPEX tables using levelised_cost())
       This is the floor price that incentivises new capacity investment.
 
-  Case 3 — Policy compliance ceiling:
-      Regulatory penalty equivalent (e.g. ReFuelEU: 2× the SAF/jet fuel price gap
-      × mandate fraction, approximated as a fixed $/MT surcharge from wtp_params.csv)
-      Airlines will pay up to this amount to avoid non-compliance.
+  Case 3 — Total market WTP ceiling (regional reality):
+      The full market-clearing price airlines in a region will pay, combining
+      the jet-fuel baseline + CORSIA/ETS/LCFS compliance value + a regional
+      regulatory or voluntary premium (ReFuelEU non-compliance penalty for
+      EU; LCFS + corporate sustainability buyers for US; pilot mandates for
+      APAC; small flagship-carrier premium for MENA; near-zero premium for
+      LATAM/ROW). Loaded from wtp_params.csv `case3_penalty_usd_per_mt` —
+      now spans EU $2.6k–3.6k, US $1.5k–2.2k, APAC $1.3k–1.8k, MENA
+      $1.0k–1.3k, LATAM/ROW $0.8k–1.0k over 2025–2045.
 
 Final WTP = max(case1, case2, case3).  The binding case tells you which price
 driver dominates — useful for scenario analysis.
@@ -230,6 +235,16 @@ class WTPModel:
 
     @staticmethod
     def _case3(row: pd.Series) -> float:
+        """
+        Total market WTP ceiling (USD/MT SAF) for the region in this year.
+
+        Captures the combined effect of jet-fuel baseline, CORSIA/ETS/LCFS
+        compliance value, and any regulatory or voluntary premium specific
+        to the region (ReFuelEU penalty in EU, LCFS + corporate premium in
+        US, pilot mandates in APAC, small flagship-carrier premium in
+        MENA, ~0 premium in LATAM/ROW). Sourced from wtp_params.csv
+        `case3_penalty_usd_per_mt`.
+        """
         """Policy compliance penalty (e.g. ReFuelEU surcharge, USD/MT SAF)."""
         return float(row.get("case3_penalty_usd_per_mt", 0.0))
 
