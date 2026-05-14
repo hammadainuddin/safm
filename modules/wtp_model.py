@@ -108,12 +108,15 @@ class WTPModel:
         Returns
         -------
         dict with keys:
-          demand_steps : [(wtp, volume, region), ...]  sorted by wtp desc
-          supply_steps : [(lcosaf, volume, region, pathway, dispatched), ...]
-                         sorted by lcosaf asc; dispatched=True when the plant's
-                         cumulative volume falls within total_saf_produced_mt.
-          offset_mt    : demand volume unserved by physical SAF (→ CORSIA offsets)
-          max_wtp      : highest regional WTP (used as offset-bar height)
+          demand_steps      : [(wtp, volume, region), ...]  sorted by wtp desc
+          supply_steps      : [(lcosaf, volume, region, pathway, dispatched), ...]
+                              sorted by lcosaf asc; dispatched=True when the plant's
+                              cumulative volume falls within total_saf_produced_mt.
+          offset_mt         : demand volume unserved by physical SAF (→ CORSIA offsets)
+          offset_price_usd_per_mt : CORSIA carbon-offset cost per MT SAF for that year
+                                    = corsia_credit_usd_per_tco2 × 2.5 tCO2/MT SAF.
+                                    Used as the y-axis (height) of the offset demand bar.
+          max_wtp           : highest regional WTP (kept for backwards compatibility).
         """
         from utils.economics import levelised_cost as _lc
 
@@ -159,10 +162,23 @@ class WTPModel:
         offset_mt = max(0.0, total_demand - actual_dispatched)
         max_wtp = max(wtp_dict.values(), default=0.0)
 
+        # CORSIA offset price = carbon-credit price × 2.5 tCO2/MT SAF.
+        # Pull the credit price from wtp_params for this year (regions share a
+        # global CORSIA credit market; take the max across regions in case one
+        # entry is missing a value).
+        params_df = self._load_params()
+        year_row = params_df[params_df["year"] == year]
+        if not year_row.empty and "corsia_credit_usd_per_tco2" in year_row.columns:
+            credit_price = float(year_row["corsia_credit_usd_per_tco2"].max())
+        else:
+            credit_price = 30.0
+        offset_price_usd_per_mt = credit_price * _CI_REDUCTION_T_CO2_PER_MT_SAF
+
         return {
             "demand_steps": demand_steps,
             "supply_steps": supply_steps,
             "offset_mt":    offset_mt,
+            "offset_price_usd_per_mt": offset_price_usd_per_mt,
             "max_wtp":      max_wtp,
         }
 

@@ -325,14 +325,19 @@ def corsia_suppression_chart(df: pd.DataFrame) -> go.Figure:
     return fig
 
 
-def supply_demand_curve(demand_steps, supply_steps, year, offset_mt=0.0, max_wtp=0.0):
+def supply_demand_curve(demand_steps, supply_steps, year,
+                        offset_mt=0.0, max_wtp=0.0, offset_price_usd_per_mt=0.0):
     """
-    Pathway-level supply-demand bar chart with dispatched/undispatched supply and CORSIA offset demand.
+    Pathway-level supply-demand bar chart with dispatched/undispatched supply and
+    CORSIA offset demand.
 
     supply_steps : [(lcosaf, vol, region, pathway, dispatched), ...] sorted asc by lcosaf
     demand_steps : [(wtp, vol, region), ...] sorted desc by WTP
     offset_mt    : unserved demand volume covered by CORSIA carbon offsets
-    max_wtp      : highest regional WTP (height of the offset demand bar)
+    offset_price_usd_per_mt : CORSIA carbon-offset cost per MT SAF
+                              (= credit price × 2.5 tCO2/MT SAF). Used as the
+                              y-axis height of the offset demand bar.
+    max_wtp      : highest regional WTP — fallback only, no longer used directly.
     """
     _REGION_COLORS = {
         "EU": "#e6194b", "US": "#3cb44b", "APAC": "#4363d8",
@@ -422,8 +427,15 @@ def supply_demand_curve(demand_steps, supply_steps, year, offset_mt=0.0, max_wtp
         cum_d += vol
 
     # ── CORSIA Offset demand bar (grey hatched, appended to demand axis) ─────
+    # Bar height = CORSIA carbon-offset price (USD/MT SAF), not max_wtp:
+    # airlines that fall to CORSIA pay the credit price × 2.5 tCO2/MT SAF,
+    # which is the meaningful y-axis value for the offset segment.
     if offset_mt > 1e-6:
-        off_height = max_wtp if max_wtp > 0 else (demand_steps[0][0] if demand_steps else 1000)
+        if offset_price_usd_per_mt and offset_price_usd_per_mt > 0:
+            off_height = offset_price_usd_per_mt
+        else:
+            # Last-resort fallback only — should not normally trigger.
+            off_height = max_wtp if max_wtp > 0 else (demand_steps[0][0] if demand_steps else 1000)
         mid_off = cum_d + offset_mt / 2
         fig.add_trace(go.Bar(
             x=[mid_off], y=[off_height], width=[offset_mt],
@@ -435,6 +447,7 @@ def supply_demand_curve(demand_steps, supply_steps, year, offset_mt=0.0, max_wtp
             showlegend=True,
             hovertemplate=(
                 f"<b>CORSIA Carbon Offset Demand</b><br>"
+                f"Offset price: ${off_height:.0f}/MT SAF<br>"
                 f"Unserved by physical SAF<br>Vol: {offset_mt:.3f} MT"
                 f"<extra></extra>"
             ),
@@ -473,25 +486,33 @@ def supply_demand_curve(demand_steps, supply_steps, year, offset_mt=0.0, max_wtp
 
     fig.update_layout(
         barmode="overlay",
-        title=f"SAF Supply-Demand Curve — {year}",
+        title=dict(text=f"SAF Supply-Demand Curve — {year}", y=0.97, yanchor="top"),
         xaxis_title="Cumulative Volume (MT)",
         yaxis_title="Price / Cost (USD/MT SAF)",
         xaxis=dict(tickformat=".2f"),
-        legend=dict(orientation="h", yanchor="bottom", y=1.18, xanchor="right", x=1),
+        # Legend below the chart, horizontal — keeps the top strip clear for the
+        # toggle buttons and region dropdown.
+        legend=dict(
+            orientation="h",
+            yanchor="top", y=-0.18,
+            xanchor="center", x=0.5,
+        ),
         hovermode="closest",
         updatemenus=[
             dict(
                 type="buttons", direction="right",
-                x=0.0, xanchor="left", y=1.22, yanchor="top",
+                x=0.0, xanchor="left", y=1.12, yanchor="bottom",
+                pad=dict(t=2, b=2, l=2, r=2),
                 showactive=True, buttons=type_buttons,
             ),
             dict(
                 type="dropdown",
-                x=0.72, xanchor="left", y=1.22, yanchor="top",
+                x=0.78, xanchor="left", y=1.12, yanchor="bottom",
+                pad=dict(t=2, b=2, l=2, r=2),
                 showactive=True, buttons=region_buttons,
             ),
         ],
-        margin=dict(t=140),
+        margin=dict(t=90, b=120),
     )
     return fig
 

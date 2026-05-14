@@ -319,7 +319,10 @@ def render(history: Optional[list] = None) -> None:
                 **CORSIA Offset Demand** (grey cross-hatched bar): the portion of total CORSIA
                 demand that cannot be met by physical SAF at or below the regional WTP. Airlines
                 in this segment are assumed to purchase CORSIA-eligible carbon offset credits
-                instead of physical SAF.
+                instead of physical SAF. The bar **height equals the CORSIA carbon-offset cost
+                per MT SAF** for that year — `corsia_credit_usd_per_tco2 × 2.5 tCO₂/MT SAF` —
+                so the y-axis value is the unit price airlines actually pay when they fall to
+                offsets, not the regional WTP.
                 """
             )
             sd_years = sorted({s.year for s in history})
@@ -342,6 +345,7 @@ def render(history: Optional[list] = None) -> None:
                             sd_year,
                             offset_mt=sd_data["offset_mt"],
                             max_wtp=sd_data["max_wtp"],
+                            offset_price_usd_per_mt=sd_data.get("offset_price_usd_per_mt", 0.0),
                         ),
                         use_container_width=True,
                     )
