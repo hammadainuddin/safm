@@ -94,23 +94,24 @@ class CapacityExpansionModule:
         effective_supply = capacity_state.effective_supply_by_region(self._sm.utilization)
         demand_by_region = demand_matrix.volume_by_region(year)
 
+        # Per-region shortfall is kept for reporting, but the gating decision
+        # ("did the LP build enough?") is now GLOBAL — capacity is built where
+        # it is cheapest worldwide and the market-clearing step routes it via
+        # trade flows. A per-region shortfall is normal and does not block the
+        # clearing step.
         shortfall_by_region: dict = {}
-        warning_parts: list = []
         for region, demand_vol in demand_by_region.items():
             supply_vol = effective_supply.get(region, 0.0)
-            shortfall = max(0.0, demand_vol - supply_vol)
-            shortfall_by_region[region] = round(shortfall, 8)
-            if shortfall > SUPPLY_DEMAND_BALANCE_TOLERANCE:
-                warning_parts.append(
-                    f"{region}: shortfall={shortfall:.4f} MT "
-                    f"(supply={supply_vol:.4f}, demand={demand_vol:.4f})"
-                )
+            shortfall_by_region[region] = round(max(0.0, demand_vol - supply_vol), 8)
 
-        supply_meets_demand = not bool(warning_parts)
+        global_demand = sum(demand_by_region.values())
+        global_supply = sum(effective_supply.values())
+        global_shortfall = max(0.0, global_demand - global_supply)
+        supply_meets_demand = global_shortfall <= SUPPLY_DEMAND_BALANCE_TOLERANCE
         warning_message = (
-            f"Year {year}: supply shortfall in {len(warning_parts)} region(s): "
-            + "; ".join(warning_parts)
-            if warning_parts else ""
+            f"Year {year}: global supply shortfall = {global_shortfall:.4f} MT "
+            f"(supply={global_supply:.4f}, demand={global_demand:.4f})"
+            if not supply_meets_demand else ""
         )
         if warning_message:
             logger.warning(warning_message)

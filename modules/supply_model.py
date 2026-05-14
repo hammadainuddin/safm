@@ -6,7 +6,7 @@ Pyomo LP when demand exceeds available supply.
 
 LP formulation
 --------------
-Sets   : R = regions with demand gap > 0
+Sets   : R = ALL regions (region-agnostic siting — LP picks the cheapest)
          P = SAF conversion pathways
          F = feedstock types
 
@@ -15,9 +15,14 @@ Vars   : x[r,p] ∈ ℝ≥0   new capacity built in region r via pathway p (MT/y
 Obj    : min  Σ_{r,p}  cost_coeff[r,p] × x[r,p]
          where cost_coeff = annualised_capex + opex  (USD / MT/yr capacity)
 
-C1  Demand satisfaction  :  Σ_p  x[r,p] × η  ≥  gap[r]        ∀ r ∈ R
-                            (η = utilization factor; dual → shadow price)
+C1  Global demand        :  Σ_{r,p}  x[r,p] × η  ≥  Σ_r gap[r]
+                            (single dual → global shadow price)
 C2  Feedstock availability:  Σ_p  fi[p,f] × x[r,p]  ≤  avail[r,f]  ∀ r,f
+C3  Refinery co-proc cap :  x[r, "Co-processing"]  ≤  cap[r] − existing[r]   ∀ r
+
+Inter-regional trade flows are resolved downstream in the market-clearing
+step (PriceQuantityClearing), so this LP does NOT pin capacity to the
+region that has demand — it builds where it is cheapest globally.
 """
 
 from __future__ import annotations
@@ -36,6 +41,7 @@ from config.settings import (
     PROJECT_LIFE_YR,
     REGIONAL_CAPEX,
     REGIONAL_OPEX,
+    REGIONS,
     SAF_PATHWAYS,
     UTILIZATION_FACTOR,
 )
@@ -126,8 +132,8 @@ class SupplyModel:
         If the LP is infeasible (feedstock constraints too tight), returns
         a warning decision rather than raising.
         """
-        regions_with_gap = [r for r, g in gaps.items() if g > 0]
-        if not regions_with_gap:
+        total_gap = sum(max(0.0, g) for g in gaps.values())
+        if total_gap <= 0:
             return ExpansionDecision(
                 year=year, new_plants=[], npv_cost_usd=0.0,
                 solver_status="not_needed", shadow_prices={}, build_triggered=False,
@@ -137,19 +143,29 @@ class SupplyModel:
         opex_table  = regional_opex  or REGIONAL_OPEX
         avail = self._feedstock_avail_lookup(feedstock_bundles)
 
-        logger.info("Year %d — building expansion LP for regions: %s", year, regions_with_gap)
+        # The LP is region-agnostic: it can place new capacity in ANY region,
+        # not just the ones with a local gap. Inter-regional trade flows in the
+        # market clearing step then route built capacity to demand. This way
+        # the LP picks the genuinely cheapest (region, pathway) globally.
+        all_regions = list(REGIONS)
+
+        logger.info(
+            "Year %d — building expansion LP: total gap = %.4f MT, candidate regions = %s",
+            year, total_gap, all_regions,
+        )
 
         m = pyo.ConcreteModel(name=f"CapExpansion_{year}")
 
-        m.R = pyo.Set(initialize=regions_with_gap)
+        m.R = pyo.Set(initialize=all_regions)
         m.P = pyo.Set(initialize=SAF_PATHWAYS)
         m.F = pyo.Set(initialize=FEEDSTOCK_TYPES)
 
         m.x = pyo.Var(m.R, m.P, within=pyo.NonNegativeReals)
 
-        # Cost coefficients: annualised CAPEX + OPEX per unit capacity
+        # Cost coefficients: annualised CAPEX + OPEX per unit capacity, for every
+        # (region, pathway). The LP minimises Σ coeff × x over all R × P.
         cost_coeff: Dict[tuple, float] = {}
-        for r in regions_with_gap:
+        for r in all_regions:
             r_capex = capex_table.get(r, capex_table.get("ROW", {}))
             r_opex  = opex_table.get(r,  opex_table.get("ROW",  {}))
             for p in SAF_PATHWAYS:
@@ -165,15 +181,15 @@ class SupplyModel:
 
         m.obj = pyo.Objective(rule=obj_rule, sense=pyo.minimize)
 
-        # C1: demand satisfaction (+1e-3 buffer ensures effective supply > demand
-        # after utilization factor, preventing floating-point infeasibility in the
-        # downstream equilibrium LP)
-        def demand_rule(m, r):
+        # C1: GLOBAL demand satisfaction (region-agnostic). Total effective new
+        # capacity must cover the sum of all regional gaps. The +1e-3 buffer
+        # prevents floating-point infeasibility in the downstream clearing step.
+        def demand_rule(m):
             return (
-                sum(m.x[r, p] * self.utilization for p in m.P)
-                >= gaps[r] + 1e-3
+                sum(m.x[r, p] * self.utilization for r in m.R for p in m.P)
+                >= total_gap + 1e-3
             )
-        m.demand_satisfaction = pyo.Constraint(m.R, rule=demand_rule)
+        m.demand_satisfaction = pyo.Constraint(rule=demand_rule)
 
         # C2: feedstock availability — only when intensity > 0
         def feedstock_rule(m, r, f):
@@ -233,9 +249,9 @@ class SupplyModel:
 
         if no_solution:
             msg = (
-                f"Year {year}: LP infeasible for regions {regions_with_gap}. "
-                "Feedstock constraints may be too tight to satisfy demand gap. "
-                "Consider relaxing feedstock availability or importing from other regions."
+                f"Year {year}: global expansion LP infeasible (total gap {total_gap:.3f} MT). "
+                "Feedstock or refinery-cap constraints may be too tight across all regions. "
+                "Consider relaxing feedstock availability or refinery co-processing caps."
             )
             logger.warning(msg)
             return ExpansionDecision(
@@ -252,7 +268,7 @@ class SupplyModel:
             logger.warning(msg)
 
         new_plants = self._extract_plants(m, year, capex_table, opex_table)
-        shadow_prices = self._extract_shadow_prices(m, regions_with_gap)
+        shadow_prices = self._extract_shadow_prices(m)
         obj_val = pyo.value(m.obj)
         npv_cost = obj_val / crf(self.discount_rate, self.project_life)
 
@@ -324,15 +340,14 @@ class SupplyModel:
         return plants
 
     @staticmethod
-    def _extract_shadow_prices(
-        m: pyo.ConcreteModel,
-        regions_with_gap: List[str],
-    ) -> Dict[str, float]:
-        prices: Dict[str, float] = {}
-        for r in regions_with_gap:
-            try:
-                val = m.dual.get(m.demand_satisfaction[r])
-                prices[r] = float(val) if val is not None else 0.0
-            except Exception:
-                prices[r] = 0.0
-        return prices
+    def _extract_shadow_prices(m: pyo.ConcreteModel) -> Dict[str, float]:
+        """
+        Return the dual on the single global demand constraint under the key
+        "global". The previous per-region duals are gone because the LP now
+        uses one global demand-satisfaction constraint instead of one per region.
+        """
+        try:
+            val = m.dual.get(m.demand_satisfaction)
+            return {"global": float(val) if val is not None else 0.0}
+        except Exception:
+            return {"global": 0.0}

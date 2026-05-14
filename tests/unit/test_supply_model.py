@@ -94,13 +94,16 @@ class TestFeasibleLP:
 
         decision = supply_model.build_expansion_lp(gaps, bundles, 2025)
 
-        # After applying expansion, effective supply should meet demand
+        # LP is region-agnostic: total built effective capacity should cover the
+        # SUM of regional gaps. Inter-regional trade flows handle the routing in
+        # the downstream market-clearing step.
         updated = supply_model.apply_expansion(capacity, decision)
-        effective = updated.effective_supply_by_region(UTILIZATION_FACTOR)
-        for r, g in gaps.items():
-            if g > 0:
-                assert effective.get(r, 0.0) >= demand.volume_by_region(2025)[r] - 1e-4, \
-                    f"Region {r} still short after expansion"
+        effective_by_region = updated.effective_supply_by_region(UTILIZATION_FACTOR)
+        total_effective_new = sum(effective_by_region.get(r, 0.0) for r in effective_by_region) \
+                              - sum(capacity.effective_supply_by_region(UTILIZATION_FACTOR).values())
+        total_gap = sum(g for g in gaps.values() if g > 0)
+        assert total_effective_new >= total_gap - 1e-4, \
+            f"Total new effective capacity {total_effective_new:.4f} < total gap {total_gap:.4f}"
 
     def test_new_plants_have_correct_year_and_flag(self, supply_model):
         demand   = _make_demand({"EU": 0.5})
@@ -188,9 +191,9 @@ class TestBindingFeedstock:
         decision = supply_model.build_expansion_lp(gaps, bundles, 2025)
 
         assert decision.solver_status == "optimal"
-        # Shadow price on demand constraint must be positive (cost of the last unit)
-        shadow = decision.shadow_prices.get("EU", 0.0)
-        assert shadow > 0, f"Expected positive shadow price, got {shadow}"
+        # The single global demand dual must be positive when feedstock binds.
+        shadow = decision.shadow_prices.get("global", 0.0)
+        assert shadow > 0, f"Expected positive global shadow price, got {shadow}"
 
 
 # ---------------------------------------------------------------------------
