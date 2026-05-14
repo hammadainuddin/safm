@@ -68,6 +68,7 @@ def _history_to_flows_df(history: list) -> pd.DataFrame:
                 "year": f.year,
                 "origin_region": f.origin_region,
                 "destination_region": f.destination_region,
+                "pathway": f.pathway,
                 "volume_mt": f.volume_mt,
                 "transport_cost_usd_per_mt": f.transport_cost_usd_per_mt,
             })
@@ -409,26 +410,25 @@ def render(history: Optional[list] = None) -> None:
             st.markdown(
                 """
                 ### Methodology
-                SAF trade flows arise from the **cheapest-CIF dispatch** algorithm in the market
-                clearing step. Each destination region is served by the supply source that
-                minimises the delivered cost — the producing region's LCOSAF plus the transport
-                cost from the transport cost matrix:
+                SAF trade flows are produced by a **two-phase pathway-aware dispatch**:
+
+                - **Phase 1 — Domestic clearing.** Each region's own plants supply local
+                  demand first, sorted by LCOSAF ascending. Only plants whose
+                  **LCOSAF ≤ regional WTP** dispatch — uneconomic plants stay idle.
+                - **Phase 2 — Imports.** Residual (unmet) demand is filled by plants in
+                  other regions, again subject to **LCOSAF ≤ destination WTP**, with
+                  inter-regional candidates sorted by cheapest CIF:
 
                 > **CIF Cost (origin → destination) = LCOSAF_origin + Transport Cost_origin→destination**
 
-                Regions are served in descending order of WTP (highest-WTP region first), and
-                within each destination the cheapest available origin is selected until the
-                region's demand is met. This produces an allocation that is efficient from a
-                cost perspective but not necessarily a competitive equilibrium — clearing prices
-                are set by WTP, not by marginal supply cost, so producers earn rents above their
-                break-even LCOSAF.
+                Demand regions are processed in descending order of WTP, so the highest-paying
+                market gets first call on the inter-regional supply pool. Demand that no plant
+                can clear within the WTP filter falls to **CORSIA-eligible carbon offsets**
+                (visible in the Market Summary).
 
-                A trade flow is recorded for every origin-destination pair with non-zero volume.
-                Flows within the same region (self-supply) appear as diagonal entries in the
-                heatmap and as left-to-right self-loops in the Sankey diagram (export node →
-                import node of the same region). The Sankey uses a **double-node layout** —
-                exporter nodes on the left, importer nodes on the right — so no arrows loop
-                back, making the direction of all flows immediately legible.
+                Each trade flow now carries a **pathway** label (HEFA, Co-processing, etc.) in
+                addition to origin and destination, so the pathway-level chart below shows which
+                production technology in which origin region serves each importing market.
                 """
             )
 
@@ -443,6 +443,28 @@ def render(history: Optional[list] = None) -> None:
             with col2:
                 st.plotly_chart(
                     charts.trade_sankey(flows_df, sel_year), use_container_width=True
+                )
+
+            # ── Pathway-level trade flows ────────────────────────────────────────
+            st.subheader("Pathway-Level Trade Flows")
+            st.markdown(
+                """
+                The Sankey below splits each origin region by its **production pathway**, so the
+                lines reveal exactly which technology (HEFA, FT, Co-processing, etc.) from which
+                origin clears each destination's demand. The stacked bar gives the same data as
+                a destination-by-destination pathway mix.
+                """
+            )
+            col_p1, col_p2 = st.columns(2)
+            with col_p1:
+                st.plotly_chart(
+                    charts.trade_pathway_sankey(flows_df, sel_year),
+                    use_container_width=True,
+                )
+            with col_p2:
+                st.plotly_chart(
+                    charts.trade_pathway_stacked(flows_df, sel_year),
+                    use_container_width=True,
                 )
 
             st.subheader("Raw Trade Flow Data")

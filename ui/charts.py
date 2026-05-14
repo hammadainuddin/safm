@@ -137,6 +137,105 @@ def trade_sankey(df: pd.DataFrame, year: int) -> go.Figure:
     return fig
 
 
+_PATHWAY_COLORS = {
+    "HEFA":          "#1f77b4",
+    "FT":            "#ff7f0e",
+    "ATJ":           "#2ca02c",
+    "Co-processing": "#d62728",
+    "PtL":           "#9467bd",
+    "Other":         "#7f7f7f",
+}
+
+
+def trade_pathway_sankey(df: pd.DataFrame, year: int) -> go.Figure:
+    """
+    Sankey: (origin region × pathway) → destination region for one year.
+    Each link is one supply lane so the user can trace which pathway from
+    which origin clears each destination's demand.
+    """
+    year_df = df[(df["year"] == year) & (df["volume_mt"] > 1e-4)].copy()
+    if year_df.empty or "pathway" not in year_df.columns:
+        return go.Figure().update_layout(title=f"No pathway-level trade in {year}")
+
+    year_df["pathway"] = year_df["pathway"].fillna("").replace("", "Unspecified")
+    agg = (
+        year_df.groupby(["origin_region", "pathway", "destination_region"], as_index=False)
+               ["volume_mt"].sum()
+    )
+
+    source_labels = sorted({f"{o} · {p}" for o, p in zip(agg["origin_region"], agg["pathway"])})
+    target_labels = sorted({f"→ {d}" for d in agg["destination_region"]})
+    src_idx = {label: i for i, label in enumerate(source_labels)}
+    tgt_idx = {label: i + len(source_labels) for i, label in enumerate(target_labels)}
+
+    labels = source_labels + target_labels
+    node_colors = (
+        [_PATHWAY_COLORS.get(label.split(" · ", 1)[1], "#7f7f7f") for label in source_labels]
+        + ["#444444"] * len(target_labels)
+    )
+
+    sources, targets, values, link_colors = [], [], [], []
+    for _, row in agg.iterrows():
+        s = src_idx[f"{row['origin_region']} · {row['pathway']}"]
+        t = tgt_idx[f"→ {row['destination_region']}"]
+        sources.append(s)
+        targets.append(t)
+        values.append(row["volume_mt"])
+        link_colors.append(_PATHWAY_COLORS.get(row["pathway"], "#7f7f7f") + "88")  # +alpha
+
+    fig = go.Figure(go.Sankey(
+        arrangement="snap",
+        node=dict(label=labels, pad=18, thickness=18, color=node_colors),
+        link=dict(source=sources, target=targets, value=values, color=link_colors,
+                  hovertemplate="%{source.label} → %{target.label}<br>Volume: %{value:.3f} MT<extra></extra>"),
+    ))
+    fig.update_layout(
+        title=f"Pathway-Level Trade Flows — {year}",
+        margin=dict(t=60, l=10, r=10, b=10),
+    )
+    return fig
+
+
+def trade_pathway_stacked(df: pd.DataFrame, year: int) -> go.Figure:
+    """
+    Stacked bar: destination region on x-axis, stacked by (origin region, pathway)
+    so the pathway composition of each importer's supply is visible at a glance.
+    """
+    year_df = df[(df["year"] == year) & (df["volume_mt"] > 1e-4)].copy()
+    if year_df.empty or "pathway" not in year_df.columns:
+        return go.Figure().update_layout(title=f"No pathway-level trade in {year}")
+
+    year_df["pathway"] = year_df["pathway"].fillna("").replace("", "Unspecified")
+    year_df["source"] = year_df["origin_region"] + " · " + year_df["pathway"]
+    agg = (
+        year_df.groupby(["destination_region", "source", "pathway"], as_index=False)
+               ["volume_mt"].sum()
+    )
+
+    fig = go.Figure()
+    for src in sorted(agg["source"].unique()):
+        sub = agg[agg["source"] == src]
+        pathway = sub["pathway"].iloc[0]
+        fig.add_trace(go.Bar(
+            x=sub["destination_region"], y=sub["volume_mt"],
+            name=src,
+            marker_color=_PATHWAY_COLORS.get(pathway, "#7f7f7f"),
+            hovertemplate=(
+                f"<b>{src}</b><br>→ %{{x}}<br>Volume: %{{y:.3f}} MT<extra></extra>"
+            ),
+        ))
+
+    fig.update_layout(
+        barmode="stack",
+        title=f"Pathway Mix per Destination — {year}",
+        xaxis_title="Destination Region",
+        yaxis_title="Volume (MT)",
+        legend_title="Origin · Pathway",
+        hovermode="closest",
+    )
+    return fig
+
+
 def market_balance_bar(df: pd.DataFrame) -> go.Figure:
     """CORSIA demand vs produced vs CORSIA offset demand vs traded by year."""
     fig = go.Figure()

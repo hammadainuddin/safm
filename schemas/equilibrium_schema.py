@@ -15,6 +15,7 @@ class TradeFlow(BaseModel):
     destination_region: str
     volume_mt: float               # million tonnes; 0 if no trade on this arc
     transport_cost_usd_per_mt: float
+    pathway: str = ""              # production pathway (HEFA, FT, etc.); "" for legacy flows
 
     @field_validator("volume_mt", "transport_cost_usd_per_mt")
     @classmethod

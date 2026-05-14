@@ -19,12 +19,15 @@ from __future__ import annotations
 
 from typing import Dict, List, Optional, Tuple
 
-from config.settings import MARKET_BALANCE_TOL, UTILIZATION_FACTOR
+from config.settings import (
+    DISCOUNT_RATE, MARKET_BALANCE_TOL, PROJECT_LIFE_YR, UTILIZATION_FACTOR,
+)
 from data.loaders import load_transport_costs
 from schemas.demand_schema import DemandMatrix
 from schemas.equilibrium_schema import MarketClearingResult, RegionalPrice, TradeFlow
 from schemas.supply_schema import CapacityState
 from schemas.wtp_schema import WTPMatrix
+from utils.economics import levelised_cost
 from utils.logging_config import get_logger
 
 logger = get_logger("price_quantity_clearing")
@@ -69,12 +72,11 @@ class PriceQuantityClearing:
         """
         tc = self._transport_costs()
         supply_costs  = self._capacity_weighted_opex(capacity)
-        supply_avail  = dict(capacity.effective_supply_by_region(UTILIZATION_FACTOR))
         demand_by_region = demand.volume_by_region(year)
         wtp_dict      = wtp_matrix.to_dict()
 
         trade_flows, marginal_supplier = self._allocate(
-            demand_by_region, wtp_dict, supply_avail, supply_costs, tc, year
+            demand_by_region, wtp_dict, capacity, tc, year
         )
 
         prices = self._compute_prices(
@@ -125,58 +127,95 @@ class PriceQuantityClearing:
         self,
         demand_by_region: Dict[str, float],
         wtp_dict: Dict[str, float],
-        supply_avail: Dict[str, float],
-        supply_costs: Dict[str, float],
+        capacity: CapacityState,
         tc: Dict[tuple, float],
         year: int,
     ) -> Tuple[List[TradeFlow], Dict[str, str]]:
         """
-        Priority dispatch:
-        - Highest WTP region gets supply first.
-        - Within each demand region, supply is dispatched from cheapest CIF source.
+        Pathway-aware allocation:
+          Phase 1 (domestic clearing) — each region's own plants supply local demand
+                                        when their LCOSAF ≤ regional WTP.
+          Phase 2 (imports)          — residual demand is supplied from out-of-region
+                                        plants whose LCOSAF ≤ destination WTP, sorted
+                                        by cheapest CIF cost (LCOSAF + transport).
+
+        Demand regions are processed in WTP-descending order so the highest-paying
+        market gets first dibs on the inter-regional supply pool.
 
         Returns (trade_flows, marginal_supplier_by_demand_region).
         """
-        supply_remaining = dict(supply_avail)
-        trade_flows: List[TradeFlow] = []
-        marginal_supplier: Dict[str, str] = {}   # {demand_region: last supply region used}
+        # ── Pre-compute LCOSAF and effective supply for every plant ─────────────
+        # Each entry: [lcosaf, region, pathway, vol_remaining]
+        plants: List[List] = []
+        for p in capacity.plants:
+            lc = levelised_cost(
+                p.capex_usd_per_mt, p.opex_usd_per_mt,
+                UTILIZATION_FACTOR, DISCOUNT_RATE, PROJECT_LIFE_YR,
+            )
+            eff_vol = p.capacity_mt_yr * UTILIZATION_FACTOR
+            if eff_vol > MARKET_BALANCE_TOL:
+                plants.append([lc, p.region, p.pathway, eff_vol])
 
-        # Sort demand regions by WTP descending
+        trade_flows: List[TradeFlow] = []
+        marginal_supplier: Dict[str, str] = {}
+
         priority_order = sorted(demand_by_region.keys(), key=lambda r: -wtp_dict.get(r, 0.0))
 
         for d_region in priority_order:
             demand_remaining = demand_by_region.get(d_region, 0.0)
             if demand_remaining <= MARKET_BALANCE_TOL:
                 continue
+            wtp_d = wtp_dict.get(d_region, 0.0)
 
-            # Build list of supply options sorted by CIF cost (cheapest first)
-            supply_options = sorted(
-                [
-                    (s_region, supply_costs.get(s_region, _PLACEHOLDER_COST) + tc.get((s_region, d_region), 0.0))
-                    for s_region, vol in supply_remaining.items()
-                    if vol > MARKET_BALANCE_TOL
-                ],
-                key=lambda x: x[1],
+            # ── Phase 1: domestic clearing ──────────────────────────────────────
+            domestic = sorted(
+                [pl for pl in plants if pl[1] == d_region and pl[0] <= wtp_d and pl[3] > MARKET_BALANCE_TOL],
+                key=lambda x: x[0],
             )
-
-            for s_region, cif_cost in supply_options:
+            for pl in domestic:
                 if demand_remaining <= MARKET_BALANCE_TOL:
                     break
-                avail = supply_remaining.get(s_region, 0.0)
-                if avail <= MARKET_BALANCE_TOL:
-                    continue
-                vol = min(avail, demand_remaining)
-                transport = tc.get((s_region, d_region), 0.0)
+                take = min(pl[3], demand_remaining)
                 trade_flows.append(TradeFlow(
                     year=year,
-                    origin_region=s_region,
+                    origin_region=d_region,
                     destination_region=d_region,
-                    volume_mt=round(vol, 8),
-                    transport_cost_usd_per_mt=transport,
+                    volume_mt=round(take, 8),
+                    transport_cost_usd_per_mt=0.0,
+                    pathway=pl[2],
                 ))
-                supply_remaining[s_region] = avail - vol
-                demand_remaining -= vol
-                marginal_supplier[d_region] = s_region
+                pl[3] -= take
+                demand_remaining -= take
+                marginal_supplier[d_region] = d_region
+
+            if demand_remaining <= MARKET_BALANCE_TOL:
+                continue
+
+            # ── Phase 2: imports, filtered by LCOSAF ≤ WTP, sorted by CIF ───────
+            imports = sorted(
+                [
+                    (pl[0] + tc.get((pl[1], d_region), 0.0), pl)
+                    for pl in plants
+                    if pl[1] != d_region and pl[0] <= wtp_d and pl[3] > MARKET_BALANCE_TOL
+                ],
+                key=lambda x: x[0],
+            )
+            for _cif, pl in imports:
+                if demand_remaining <= MARKET_BALANCE_TOL:
+                    break
+                take = min(pl[3], demand_remaining)
+                transport = tc.get((pl[1], d_region), 0.0)
+                trade_flows.append(TradeFlow(
+                    year=year,
+                    origin_region=pl[1],
+                    destination_region=d_region,
+                    volume_mt=round(take, 8),
+                    transport_cost_usd_per_mt=transport,
+                    pathway=pl[2],
+                ))
+                pl[3] -= take
+                demand_remaining -= take
+                marginal_supplier[d_region] = pl[1]
 
         return trade_flows, marginal_supplier
 

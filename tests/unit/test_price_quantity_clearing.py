@@ -36,7 +36,10 @@ def _capacity(plants: list) -> CapacityState:
     return CapacityState(year=2025, plants=plants)
 
 
-def _plant(region: str, capacity_mt_yr: float, opex: float = 600.0) -> PlantRecord:
+def _plant(region: str, capacity_mt_yr: float, opex: float = 400.0) -> PlantRecord:
+    # Default opex chosen so plant LCOSAF (~$678/MT SAF with capex=1500, opex=400,
+    # util=0.85, discount=0.10, life=20) sits below all WTPs used in these tests,
+    # ensuring LCOSAF ≤ WTP under the new domestic-first / LCOSAF-filtered dispatch.
     return PlantRecord(
         plant_id=f"test_{region}_{capacity_mt_yr}",
         region=region,
