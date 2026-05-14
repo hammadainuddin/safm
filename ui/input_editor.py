@@ -536,10 +536,13 @@ def render() -> None:
         df = _upload_widget("feedstock_availability.csv", "ss_feedstock_availability")
 
         st.caption(
-            "**Units:** `max_available_mt` is **MT of feedstock per year** "
-            "(raw feedstock, not SAF output). `cost_usd_per_mt` is the **delivered cost per MT "
-            "of feedstock** (also not per MT SAF). SAF yield per MT feedstock varies by pathway "
-            "(e.g. HEFA ≈ 0.80 MT SAF / MT UCO, FT ≈ 0.25 MT SAF / MT MSW)."
+            "**Units convention.** `max_available_mt` is **million tonnes of raw feedstock per "
+            "year** (so 0.8 = 0.8 Mt = 800,000 t — a realistic regional UCO collection rate). "
+            "`cost_usd_per_mt` is the **delivered price per metric tonne of feedstock** "
+            "(e.g. UCO ≈ \$350/t). The same \"MT\" suffix in this CSV is overloaded — volumes "
+            "are millions of tonnes, prices are per single tonne. SAF yield per tonne of "
+            "feedstock varies by pathway (HEFA ≈ 0.80, ATJ ≈ 0.40, FT ≈ 0.25, PtL ≈ 0.36, "
+            "Co-processing ≈ 1.67 t SAF / t feedstock)."
         )
 
         year_options = sorted(df["year"].unique())
@@ -549,7 +552,7 @@ def render() -> None:
             index="region", columns="feedstock_type",
             values="max_available_mt", fill_value=0,
         )
-        st.markdown(f"**Max Feedstock Availability — {int(sel_year)} (MT feedstock / yr)**")
+        st.markdown(f"**Max Feedstock Availability — {int(sel_year)} (Million tonnes / yr)**")
         st.dataframe(pivot.style.format("{:.3f}"), use_container_width=True)
         with st.expander("Edit full table"):
             edited = st.data_editor(
@@ -559,10 +562,10 @@ def render() -> None:
                     "region": st.column_config.TextColumn("Region"),
                     "feedstock_type": st.column_config.TextColumn("Feedstock Type"),
                     "max_available_mt": st.column_config.NumberColumn(
-                        "Max Available (MT feedstock / yr)", min_value=0.0, format="%.3f",
+                        "Max Available (Million tonnes / yr)", min_value=0.0, format="%.3f",
                     ),
                     "cost_usd_per_mt": st.column_config.NumberColumn(
-                        "Cost (USD / MT feedstock)", min_value=0.0, format="%.0f",
+                        "Cost (USD / tonne)", min_value=0.0, format="%.0f",
                     ),
                     "notes": st.column_config.TextColumn("Notes"),
                 },
