@@ -151,7 +151,7 @@ def render(history: Optional[list] = None) -> None:
             Years where the market does not balance — typically early in the horizon before
             sufficient capacity has been built — produce no price or trade-flow data.
 
-            **Note on CORSIA demand and carbon offsets:** Total SAF demand reported here
+            **Note on CORSIA demand and carbon offsets:** Total CORSIA demand reported here
             represents the full CORSIA-mandated and blending-mandate obligation. In years where
             physical SAF supply cannot meet this obligation at a cost below the regional WTP,
             the shortfall is assumed to be covered by **CORSIA-eligible carbon offset credits**
@@ -270,7 +270,7 @@ def render(history: Optional[list] = None) -> None:
                 LCOSAF too high to be economically dispatched.
 
                 **Demand side** (hatched bars, sorted left-to-right by descending WTP): each bar
-                represents one region's SAF demand (CORSIA + blending mandate) at its WTP.
+                represents one region's CORSIA demand (CORSIA mandate + national blending mandate) at its WTP.
                 The highest-WTP region is served first. Clearing price = WTP of each served
                 region (WTP-priority allocation, not a competitive auction).
 

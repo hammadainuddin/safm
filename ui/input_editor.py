@@ -105,12 +105,12 @@ def render() -> None:
         st.subheader("Bottom-Up Demand Module")
         st.markdown(
             """
-            CORSIA-mandated SAF demand is estimated from first principles using a bottom-up
-            flight-activity model rather than a simple top-down trajectory. The module combines
-            four independent data streams — flight routes, aircraft fuel efficiency, CORSIA
-            international offsetting obligations, and domestic blending mandates — to produce an
-            annual regional CORSIA-mandated SAF demand figure that responds dynamically to policy
-            changes, fleet renewal, and traffic growth.
+            CORSIA demand is estimated from first principles using a bottom-up flight-activity
+            model rather than a simple top-down trajectory. The module combines four independent
+            data streams — flight routes, aircraft fuel efficiency, CORSIA international
+            offsetting obligations, and domestic blending mandates — to produce an annual regional
+            CORSIA demand figure that responds dynamically to policy changes, fleet renewal, and
+            traffic growth.
             The 64 representative routes in the dataset approximate **5% of global scheduled
             traffic** (`ROUTE_SAMPLE_FRACTION = 0.05`); CORSIA demand is scaled by this factor,
             while mandate demand represents absolute policy targets and is not scaled.
@@ -265,9 +265,9 @@ def render() -> None:
                 a full credit against this obligation because its lifecycle emissions are
                 substantially lower than fossil jet fuel. The **mandatory fraction** defines
                 the share of international fuel burn above the 2019 baseline that must be
-                covered by offsets or SAF credits in each year. CORSIA-mandated SAF demand is therefore:
+                covered by offsets or SAF credits in each year. CORSIA demand is therefore:
 
-                > **CORSIA-Mandated SAF Demand (MT) = International Fuel Burn (MT) × mandatory_fraction**
+                > **CORSIA Demand (MT) = International Fuel Burn (MT) × mandatory_fraction**
 
                 The carbon credit price (`carbon_credit_usd_per_tco2`) determines the value of
                 a SAF credit in Case 1 of the WTP calculation:
@@ -323,7 +323,7 @@ def render() -> None:
                 economic incentive to purchase SAF credits during the voluntary phase
                 (2021–2026). The EU is always assigned a suppression factor of **1.0** because
                 ReFuelEU mandates apply independently of CORSIA voluntary status. Regions with
-                suppression factors below 1.0 have their CORSIA-mandated SAF demand reduced:
+                suppression factors below 1.0 have their CORSIA demand reduced:
 
                 > **Effective CORSIA-Mandated Demand (region, year) = Raw CORSIA-Mandated Demand × suppression_factor**
 
@@ -355,7 +355,7 @@ def render() -> None:
                 above a baseline — mandates apply to the **total domestic fuel burn** in
                 each year. Mandate demand is therefore:
 
-                > **Mandate-Driven SAF Demand (MT) = Domestic Fuel Burn (MT) × mandate_fraction**
+                > **Mandate Demand (MT) = Domestic Fuel Burn (MT) × mandate_fraction**
 
                 Only domestic routes contribute to mandate demand; international routes are
                 covered by CORSIA instead. The EU ReFuelEU regulation is the primary driver
@@ -528,7 +528,7 @@ def render() -> None:
         st.markdown(
             """
             ### Methodology
-            Regulatory parameters define the policy environment that shapes SAF demand and
+            Regulatory parameters define the policy environment that shapes CORSIA demand and
             pricing in each region. The key levers are: `mandate_fraction` — the minimum SAF
             blend share required by law (feeds into Case 3 WTP penalty calculations);
             `non_compliance_penalty_usd_per_mt` — the fine per MT of SAF shortfall, which sets

@@ -1,7 +1,7 @@
 """
 Bottom-Up Flight Demand Module
 ================================
-Derives SAF demand from CORSIA-eligible international flights and national
+Derives CORSIA demand from CORSIA-eligible international flights and national
 blending mandates. Demand is attributed to the refuelling airport's region
 (CORSIA uplift-based accounting): 60% origin, 40% destination.
 
@@ -44,7 +44,7 @@ _EFFICIENCY_IMPROVEMENT_PA = 0.015
 
 class BottomUpDemandModule:
     """
-    Estimates annual SAF demand from:
+    Estimates annual CORSIA demand from:
       1. International flights under CORSIA mandatory offsetting
       2. Domestic/regional flights under national blending mandates
 
@@ -74,7 +74,7 @@ class BottomUpDemandModule:
         self, year: int, scenario: str = "baseline"
     ) -> DemandMatrix:
         """
-        Compute SAF demand for a given year and return a validated DemandMatrix.
+        Compute CORSIA demand for a given year and return a validated DemandMatrix.
 
         Parameters
         ----------
@@ -157,7 +157,7 @@ class BottomUpDemandModule:
                 if d_region in fuel_by_region:
                     fuel_by_region[d_region] += fuel_mt * _DEST_SHARE
 
-                # CORSIA SAF demand
+                # CORSIA demand
                 corsia_saf = fuel_mt * corsia_frac
                 if o_region in corsia_by_region:
                     corsia_by_region[o_region] += corsia_saf * _ORIGIN_SHARE

@@ -165,7 +165,7 @@ def demand_trajectory(df: pd.DataFrame) -> go.Figure:
     """Demand volume by region over time (from demand_mock.csv input)."""
     fig = px.line(
         df, x="year", y="volume_mt", color="region",
-        title="SAF Demand Trajectory by Region (MT)",
+        title="CORSIA Demand Trajectory by Region (MT)",
         labels={"volume_mt": "Volume (MT)", "year": "Year"},
         markers=True,
     )
@@ -262,20 +262,20 @@ def supply_demand_curve(demand_steps, supply_steps, year, offset_mt=0.0, max_wtp
             trace_meta.append(("undispatched", region))
         cum_s2 += vol
 
-    # ── Demand bars: SAF demand per region (hatched) ─────────────────────────
+    # ── Demand bars: CORSIA demand per region (hatched) ──────────────────────
     cum_d = 0.0
     for i, (wtp, vol, region) in enumerate(demand_steps):
         mid = cum_d + vol / 2
         fig.add_trace(go.Bar(
             x=[mid], y=[wtp], width=[vol],
-            name=f"SAF Demand: {region}",
+            name=f"CORSIA Demand: {region}",
             legendgroup=f"demand_{region}",
             marker_color=_color(region, i),
             marker_pattern_shape="/",
             opacity=0.55,
             showlegend=True,
             hovertemplate=(
-                f"<b>{region} SAF Demand (CORSIA/mandate)</b><br>"
+                f"<b>{region} CORSIA Demand</b><br>"
                 f"WTP: ${wtp:.0f}/MT<br>Vol: {vol:.3f} MT"
                 f"<extra></extra>"
             ),

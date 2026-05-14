@@ -99,7 +99,7 @@ class DemandModel:
         return self.load_all().volume_by_region(year)
 
     def total_global_demand(self, year: int) -> float:
-        """Total global SAF demand in MT for a given year."""
+        """Total global CORSIA demand in MT for a given year."""
         return self.load_all().total_volume_mt(year)
 
     # ------------------------------------------------------------------
