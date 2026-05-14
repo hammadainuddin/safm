@@ -21,25 +21,40 @@ FEED_INTENSITY: dict = {
 
 # Regional CAPEX and OPEX by pathway (USD per MT/year nameplate capacity)
 # These are representative values; override via committed_capacity.csv for deterministic plants
-# Full-cost OPEX (processing + feedstock + logistics). Targets HEFA LCOSAF ≈ $1,531/MT
-# at 12% IRR, 20yr project life, 85% utilisation. Other regions scaled proportionally.
-# CRF(12%, 20yr) ≈ 0.1339. LCOSAF = (CRF × CAPEX + OPEX) / UTILIZATION.
+# Full-cost OPEX (processing + feedstock + logistics).
+#
+# Cost stack reflects real-world competitive positioning:
+#   - APAC (China, Malaysia, Singapore, India) — lowest cost: integrated feedstock supply
+#     chains (UCO, palm-residue, agricultural residues), large-scale EPC at lower
+#     labour/equipment cost, established refining base for co-processing.
+#   - MENA — cheap solar electricity / green-H2 gives a clear PtL advantage; HEFA and
+#     bio pathways slightly above APAC due to limited oilseed feedstock.
+#   - LATAM, ROW — mid-stack; abundant ag-residue but less integrated capital base.
+#   - US — IRA tax-credit support partially offsets higher construction labour and steel
+#     costs, but raw plant economics remain above APAC/MENA.
+#   - EU — highest CAPEX/OPEX: stringent environmental permitting, expensive labour,
+#     small-scale European EPC market, high feedstock pricing.
+#
+# CRF(10%, 20yr) ≈ 0.1175. LCOSAF = (CRF × CAPEX + OPEX) / UTILIZATION_FACTOR.
+# Resulting HEFA LCOSAF at 10% IRR / 85% utilisation:
+#   APAC ≈ $1,170/MT  · MENA ≈ $1,245  · LATAM ≈ $1,290  · ROW ≈ $1,340
+#   US   ≈ $1,415/MT  · EU   ≈ $1,540
 REGIONAL_CAPEX: dict = {
-    "EU":   {"HEFA": 3000, "ATJ": 4500, "FT-MSW": 6000, "PtL": 8000, "Co-processing": 1500},
-    "US":   {"HEFA": 2750, "ATJ": 4150, "FT-MSW": 5650, "PtL": 7350, "Co-processing": 1375},
-    "APAC": {"HEFA": 3250, "ATJ": 4850, "FT-MSW": 6350, "PtL": 8300, "Co-processing": 1625},
-    "MENA": {"HEFA": 2800, "ATJ": 4650, "FT-MSW": 6650, "PtL": 7050, "Co-processing": 1450},
-    "LATAM":{"HEFA": 3050, "ATJ": 4350, "FT-MSW": 6150, "PtL": 8650, "Co-processing": 1550},
-    "ROW":  {"HEFA": 3200, "ATJ": 4850, "FT-MSW": 6500, "PtL": 9000, "Co-processing": 1675},
+    "APAC": {"HEFA": 2500, "ATJ": 3800, "FT-MSW": 5200, "PtL": 7000, "Co-processing": 1200},
+    "MENA": {"HEFA": 2625, "ATJ": 4000, "FT-MSW": 5450, "PtL": 6300, "Co-processing": 1250},
+    "LATAM":{"HEFA": 2750, "ATJ": 4200, "FT-MSW": 5700, "PtL": 7700, "Co-processing": 1325},
+    "ROW":  {"HEFA": 2900, "ATJ": 4400, "FT-MSW": 6000, "PtL": 8050, "Co-processing": 1375},
+    "US":   {"HEFA": 3000, "ATJ": 4550, "FT-MSW": 6250, "PtL": 8400, "Co-processing": 1450},
+    "EU":   {"HEFA": 3250, "ATJ": 4900, "FT-MSW": 6750, "PtL": 9100, "Co-processing": 1550},
 }
 
 REGIONAL_OPEX: dict = {
-    "EU":   {"HEFA": 900,  "ATJ": 1200, "FT-MSW": 1400, "PtL": 2000, "Co-processing": 700},
-    "US":   {"HEFA": 825,  "ATJ": 1125, "FT-MSW": 1300, "PtL": 1850, "Co-processing": 650},
-    "APAC": {"HEFA": 975,  "ATJ": 1275, "FT-MSW": 1475, "PtL": 2050, "Co-processing": 750},
-    "MENA": {"HEFA": 850,  "ATJ": 1150, "FT-MSW": 1425, "PtL": 1800, "Co-processing": 675},
-    "LATAM":{"HEFA": 925,  "ATJ": 1175, "FT-MSW": 1400, "PtL": 2100, "Co-processing": 725},
-    "ROW":  {"HEFA": 950,  "ATJ": 1250, "FT-MSW": 1450, "PtL": 2175, "Co-processing": 775},
+    "APAC": {"HEFA": 700,  "ATJ": 950,  "FT-MSW": 1200, "PtL": 1700, "Co-processing": 550},
+    "MENA": {"HEFA": 750,  "ATJ": 1000, "FT-MSW": 1250, "PtL": 1450, "Co-processing": 575},
+    "LATAM":{"HEFA": 775,  "ATJ": 1050, "FT-MSW": 1325, "PtL": 1875, "Co-processing": 625},
+    "ROW":  {"HEFA": 800,  "ATJ": 1100, "FT-MSW": 1375, "PtL": 1950, "Co-processing": 650},
+    "US":   {"HEFA": 850,  "ATJ": 1150, "FT-MSW": 1450, "PtL": 2050, "Co-processing": 675},
+    "EU":   {"HEFA": 925,  "ATJ": 1250, "FT-MSW": 1550, "PtL": 2200, "Co-processing": 725},
 }
 
 UTILIZATION_FACTOR  = 0.85
