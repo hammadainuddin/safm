@@ -68,7 +68,7 @@ def _history_to_flows_df(history: list) -> pd.DataFrame:
                 "year": f.year,
                 "origin_region": f.origin_region,
                 "destination_region": f.destination_region,
-                "pathway": f.pathway,
+                "pathway": getattr(f, "pathway", ""),
                 "volume_mt": f.volume_mt,
                 "transport_cost_usd_per_mt": f.transport_cost_usd_per_mt,
             })

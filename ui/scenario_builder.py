@@ -131,7 +131,7 @@ def _trade_df(history) -> pd.DataFrame:
                 rows.append({
                     "Year": f.year, "Origin": f.origin_region,
                     "Destination": f.destination_region,
-                    "Pathway": f.pathway,
+                    "Pathway": getattr(f, "pathway", ""),
                     "Volume (MT)": round(f.volume_mt, 4),
                     "Transport Cost (USD/MT)": f.transport_cost_usd_per_mt,
                 })
