@@ -426,35 +426,38 @@ def supply_demand_curve(demand_steps, supply_steps, year,
         trace_meta.append(("demand", region))
         cum_d += vol
 
-    # ── CORSIA Offset demand bar (grey hatched, appended to demand axis) ─────
-    # Bar height = CORSIA carbon-offset price (USD/MT SAF), not max_wtp:
-    # airlines that fall to CORSIA pay the credit price × 2.5 tCO2/MT SAF,
-    # which is the meaningful y-axis value for the offset segment.
-    if offset_mt > 1e-6:
+    # ── CORSIA Offset annotation (text box above unserved demand region) ────
+    # The unserved demand is already visible as the rightmost demand bars (where
+    # the demand chart extends past the supply chart). A simple annotation in
+    # that gap summarises the volume and the CORSIA carbon-offset unit price,
+    # avoiding a redundant bar.
+    dispatched_x_end = sum(vol for _, vol, _, _, disp in supply_steps if disp)
+    sd_annotations = []
+    if offset_mt > 1e-6 and cum_d > dispatched_x_end + 1e-6:
         if offset_price_usd_per_mt and offset_price_usd_per_mt > 0:
-            off_height = offset_price_usd_per_mt
+            off_price = offset_price_usd_per_mt
         else:
-            # Last-resort fallback only — should not normally trigger.
-            off_height = max_wtp if max_wtp > 0 else (demand_steps[0][0] if demand_steps else 1000)
-        mid_off = cum_d + offset_mt / 2
-        fig.add_trace(go.Bar(
-            x=[mid_off], y=[off_height], width=[offset_mt],
-            name="CORSIA Offset Demand (unserved)",
-            legendgroup="offset",
-            marker_color="#aaaaaa",
-            marker_pattern_shape="\\",
-            opacity=0.65,
-            showlegend=True,
-            hovertemplate=(
-                f"<b>CORSIA Carbon Offset Demand</b><br>"
-                f"Offset price: ${off_height:.0f}/MT SAF<br>"
-                f"Unserved by physical SAF<br>Vol: {offset_mt:.3f} MT"
-                f"<extra></extra>"
+            off_price = max_wtp if max_wtp > 0 else (demand_steps[0][0] if demand_steps else 0.0)
+        anno_x = (dispatched_x_end + cum_d) / 2
+        # Place the box above the tallest demand bar so it sits in clear space.
+        max_demand_height = max((w for w, _, _ in demand_steps), default=0.0)
+        anno_y = max_demand_height * 1.04 if max_demand_height > 0 else off_price * 1.04
+        sd_annotations.append(dict(
+            x=anno_x, y=anno_y, xref="x", yref="y",
+            text=(
+                f"<b>CORSIA Offset Demand</b><br>"
+                f"{offset_mt:.3f} MT unserved by physical SAF<br>"
+                f"Offset price ≈ ${off_price:.0f}/MT SAF"
             ),
+            showarrow=True, arrowhead=2, arrowcolor="#666666",
+            ax=0, ay=-30,
+            align="center",
+            bgcolor="rgba(245,245,245,0.92)",
+            bordercolor="#888888", borderwidth=1, borderpad=6,
+            font=dict(size=11, color="#333333"),
         ))
-        trace_meta.append(("offset", "offset"))
 
-    all_regions = sorted({r for _, r in trace_meta if r != "offset"})
+    all_regions = sorted({r for _, r in trace_meta})
 
     def _vis(keep_type=None, keep_region=None, show_undispatched=False):
         vis = []
@@ -462,8 +465,6 @@ def supply_demand_curve(demand_steps, supply_steps, year,
             if t_type == "undispatched":
                 show = show_undispatched and (keep_type in (None, "supply", "undispatched")) and \
                        (keep_region is None or t_region == keep_region)
-            elif t_type == "offset":
-                show = (keep_type is None or keep_type == "demand")
             else:
                 show = (keep_type is None or t_type == keep_type) and \
                        (keep_region is None or t_region == keep_region)
@@ -513,6 +514,7 @@ def supply_demand_curve(demand_steps, supply_steps, year,
             ),
         ],
         margin=dict(t=90, b=120),
+        annotations=sd_annotations,
     )
     return fig
 

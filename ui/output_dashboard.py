@@ -316,13 +316,13 @@ def render(history: Optional[list] = None) -> None:
                 The highest-WTP region is served first. Clearing price = WTP of each served
                 region (WTP-priority allocation, not a competitive auction).
 
-                **CORSIA Offset Demand** (grey cross-hatched bar): the portion of total CORSIA
-                demand that cannot be met by physical SAF at or below the regional WTP. Airlines
-                in this segment are assumed to purchase CORSIA-eligible carbon offset credits
-                instead of physical SAF. The bar **height equals the CORSIA carbon-offset cost
-                per MT SAF** for that year — `corsia_credit_usd_per_tco2 × 2.5 tCO₂/MT SAF` —
-                so the y-axis value is the unit price airlines actually pay when they fall to
-                offsets, not the regional WTP.
+                **CORSIA Offset Demand** (annotation box): when total CORSIA demand exceeds the
+                dispatched physical-SAF supply, the unserved volume is already visible as the
+                rightmost demand bars that extend past where the supply bars end. A summary text
+                box is overlaid in that gap, stating the unserved volume and the CORSIA
+                carbon-offset unit price (`corsia_credit_usd_per_tco2 × 2.5 tCO₂/MT SAF`) — the
+                price airlines actually pay when they fall to CORSIA-eligible carbon offsets
+                instead of physical SAF.
                 """
             )
             sd_years = sorted({s.year for s in history})
