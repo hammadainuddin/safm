@@ -84,6 +84,50 @@ def _clear_upload(ss_key: str) -> None:
     st.session_state.pop(ss_key, None)
 
 
+def _demand_input_mtimes() -> tuple:
+    """
+    Modification timestamps of the four CSVs that feed the bottom-up demand
+    module. Used as a cache key so the projection chart re-runs when any
+    of them is saved.
+    """
+    files = (
+        "flight_routes.csv", "aircraft_types.csv",
+        "corsia_schedule.csv", "corsia_suppression.csv",
+    )
+    return tuple(
+        os.path.getmtime(_mock_path(f)) if os.path.exists(_mock_path(f)) else 0.0
+        for f in files
+    )
+
+
+@st.cache_data(ttl=60)
+def _build_demand_projection_df(_cache_buster: tuple) -> pd.DataFrame:
+    """
+    Per-year, per-region projection of jet-fuel burn and CORSIA / mandate
+    SAF demand under the current inputs. The _cache_buster argument is the
+    tuple of input CSV mtimes; saving any of them invalidates this cache.
+    """
+    from modules.demand_bottom_up import BottomUpDemandModule
+    from config.settings import HORIZON_YEARS
+
+    mod = BottomUpDemandModule()
+    rows = []
+    for yr in HORIZON_YEARS:
+        try:
+            r = mod.get_intermediate_result(yr)
+        except Exception:
+            continue
+        for region, vol in r.fuel_by_region.items():
+            rows.append({
+                "year": yr,
+                "region": region,
+                "fuel_mt":        vol,
+                "corsia_saf_mt":  r.corsia_saf_demand_by_region.get(region, 0.0),
+                "mandate_saf_mt": r.mandate_saf_demand_by_region.get(region, 0.0),
+            })
+    return pd.DataFrame(rows)
+
+
 def render() -> None:
     st.header("Model Inputs")
     st.caption(
@@ -116,6 +160,59 @@ def render() -> None:
             while mandate demand represents absolute policy targets and is not scaled.
             """
         )
+
+        # ── Projection panel: per-region jet-fuel burn + CORSIA SAF demand ──
+        with st.expander(
+            "📊 Projected jet fuel burn and CORSIA SAF demand (2025–2045)",
+            expanded=True,
+        ):
+            try:
+                proj_df = _build_demand_projection_df(_demand_input_mtimes())
+            except Exception as exc:
+                st.warning(f"Could not compute demand projection: {exc}")
+                proj_df = pd.DataFrame()
+
+            if proj_df.empty:
+                st.info(
+                    "No demand projection available yet — check that the four "
+                    "underlying CSVs (flight_routes, aircraft_types, "
+                    "corsia_schedule, corsia_suppression) exist and parse."
+                )
+            else:
+                col_jf, col_corsia = st.columns(2)
+                with col_jf:
+                    fig_jf = px.line(
+                        proj_df, x="year", y="fuel_mt", color="region",
+                        title="Jet Fuel Burn by Region (Mt / yr)",
+                        labels={"fuel_mt": "Fuel (Million tonnes)", "year": "Year"},
+                        markers=True,
+                    )
+                    fig_jf.update_layout(
+                        xaxis=dict(tickformat="d"),
+                        hovermode="x unified",
+                        legend_title="Region",
+                    )
+                    st.plotly_chart(fig_jf, use_container_width=True)
+                with col_corsia:
+                    fig_c = px.line(
+                        proj_df, x="year", y="corsia_saf_mt", color="region",
+                        title="CORSIA-Mandated SAF Demand by Region (Mt / yr)",
+                        labels={"corsia_saf_mt": "CORSIA SAF Demand (Million tonnes)",
+                                "year": "Year"},
+                        markers=True,
+                    )
+                    fig_c.update_layout(
+                        xaxis=dict(tickformat="d"),
+                        hovermode="x unified",
+                        legend_title="Region",
+                    )
+                    st.plotly_chart(fig_c, use_container_width=True)
+                st.caption(
+                    "Computed live from your current routes, aircraft efficiency, "
+                    "CORSIA schedule, and suppression inputs via the bottom-up demand "
+                    "module. Save any edits in the sub-tabs below to refresh these "
+                    "charts. Volumes are in **million tonnes per year**."
+                )
 
         (sub_routes, sub_airlines, sub_aircraft,
          sub_corsia_sched, sub_corsia_supp, sub_mandates) = st.tabs([
@@ -783,6 +880,27 @@ def render() -> None:
         from utils.economics import levelised_cost
 
         wtp_df = _upload_widget("wtp_params.csv", "ss_wtp_params")
+
+        # ── Jet fuel price trajectory (drives Case 1 WTP) ────────────────────
+        st.subheader("Jet Fuel Price Input Trajectory")
+        fig_jet = px.line(
+            wtp_df, x="year", y="jet_fuel_price_usd_per_mt", color="region",
+            title="Jet Fuel Price by Region (USD / metric tonne) — drives Case 1 WTP",
+            labels={"jet_fuel_price_usd_per_mt": "Jet Fuel Price (USD/t)",
+                    "year": "Year"},
+            markers=True,
+        )
+        fig_jet.update_layout(
+            xaxis=dict(tickformat="d"),
+            hovermode="x unified",
+            legend_title="Region",
+        )
+        st.plotly_chart(fig_jet, use_container_width=True)
+        st.caption(
+            "Per-region jet fuel price over the model horizon. Case 1 WTP = "
+            "jet fuel price + CORSIA credit × 3.1 tCO₂ / MT SAF."
+        )
+
         year_opts = sorted(wtp_df["year"].unique())
         sel_yr = st.selectbox("Preview year", year_opts, index=0, key="wtp_year_sel")
         yr_wtp = wtp_df[wtp_df["year"] == sel_yr].copy()
