@@ -527,36 +527,62 @@ def render() -> None:
                 > **Mandate Demand (MT) = Domestic Fuel Burn (MT) × mandate_fraction**
 
                 Only domestic routes contribute to mandate demand; international routes are
-                covered by CORSIA instead. The EU ReFuelEU regulation is the primary driver
-                of mandate demand in this model, with fractions rising from 2% in 2025 to
-                70% by 2050. Other regions may adopt similar frameworks; these can be
-                added or adjusted here. Mandate demand is **not** scaled by the route sample fraction
-                because it represents an absolute policy obligation rather than a sample-based
-                estimate of market activity.
+                covered by CORSIA instead. Mandates can be specified at **country level**
+                (e.g. Japan within APAC) or at **region level** for uniform frameworks
+                (e.g. EU ReFuelEU). Set `country = region` for a region-wide mandate or
+                `country = <specific country>` to target one jurisdiction within a region.
+                Mandate demand is **not** scaled by the route sample fraction because it
+                represents an absolute policy obligation rather than a sample-based estimate
+                of market activity.
                 """
             )
             mandates_df = _upload_widget("national_blending_mandates.csv", "ss_national_blending_mandates")
 
+            # Build a display label: use country name for country-specific entries
+            # (where country ≠ region), use region name for uniform region-level entries.
+            # Then drop zero catch-all rows (country == region AND mandate_fraction == 0
+            # across all years) so they never appear as a misleading region-level line.
+            mdf = mandates_df.copy()
+            mdf["display_label"] = mdf.apply(
+                lambda r: r["country"] if str(r.get("country", r["region"])) != r["region"]
+                          else r["region"],
+                axis=1,
+            )
+            # Keep only labels that have at least one non-zero mandate across the horizon
+            active_labels = (
+                mdf.groupby("display_label")["mandate_fraction"]
+                .max()
+                .pipe(lambda s: s[s > 0].index.tolist())
+            )
+            mdf_active = mdf[mdf["display_label"].isin(active_labels)].sort_values("year")
+
             col1, col2 = st.columns(2)
             with col1:
-                eu_mand = mandates_df[mandates_df["region"] == "EU"].sort_values("year")
                 fig = px.line(
-                    eu_mand, x="year", y="mandate_fraction",
-                    title="EU ReFuelEU Blending Mandate Over Time",
-                    labels={"mandate_fraction": "Mandate Fraction", "year": "Year"},
+                    mdf_active, x="year", y="mandate_fraction", color="display_label",
+                    title="Blending Mandate Trajectory",
+                    labels={"mandate_fraction": "Mandate Fraction",
+                            "year": "Year", "display_label": "Country / Region"},
                     markers=True,
                 )
-                fig.update_layout(xaxis=dict(tickformat="d"))
+                fig.update_layout(xaxis=dict(tickformat="d"), hovermode="x unified")
                 st.plotly_chart(fig, use_container_width=True)
+                st.caption(
+                    "Lines labelled with a **country name** (e.g. Japan) are country-specific "
+                    "mandates; lines labelled with a **region name** (e.g. EU, US) are "
+                    "region-wide obligations. Zero-fraction catch-all rows are hidden."
+                )
             with col2:
-                all_regions = mandates_df[mandates_df["year"] == mandates_df["year"].max()]
+                latest_yr = int(mdf_active["year"].max())
+                latest = mdf_active[mdf_active["year"] == latest_yr]
                 fig2 = px.bar(
-                    all_regions, x="region", y="mandate_fraction",
-                    title=f"Mandate Fraction by Region ({int(mandates_df['year'].max())})",
-                    labels={"mandate_fraction": "Mandate Fraction", "region": "Region"},
+                    latest, x="display_label", y="mandate_fraction",
+                    title=f"Mandate Fraction by Country / Region ({latest_yr})",
+                    labels={"mandate_fraction": "Mandate Fraction",
+                            "display_label": "Country / Region"},
                     color="mandate_fraction", color_continuous_scale="Greens",
                 )
-                fig2.update_layout(showlegend=False, xaxis=dict(tickformat=""))
+                fig2.update_layout(showlegend=False)
                 st.plotly_chart(fig2, use_container_width=True)
 
             with st.expander("Edit mandates table"):
