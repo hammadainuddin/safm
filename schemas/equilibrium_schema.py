@@ -63,6 +63,7 @@ class MarketClearingResult(BaseModel):
     solver_status: str
     objective_value: float        # LP objective (minimised total supply + transport cost)
     offset_demand_mt_by_region: Dict[str, float] = {}  # unserved demand covered by CORSIA offsets
+    corsia_offset_price_usd_per_mt: float = 0.0        # credit_price × 3.1 tCO2/MT SAF (for compliance cost chart)
 
     def price_for_region(self, region: str) -> Optional[RegionalPrice]:
         for p in self.prices:

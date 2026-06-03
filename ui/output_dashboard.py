@@ -61,6 +61,53 @@ def _history_to_prices_df(history: list) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def _history_to_compliance_cost_df(history: list) -> pd.DataFrame:
+    """
+    Per-year volume-weighted blended SAF compliance cost.
+
+    For each region, physical SAF volume is priced at regional WTP and the
+    remaining shortfall is priced at the CORSIA carbon-offset cost.  As
+    physical SAF progressively replaces cheap CORSIA offsets the blended
+    average rises from near the offset floor toward WTP, tracing an S-curve.
+    """
+    rows = []
+    for s in history:
+        demand_vols = s.demand.volume_by_region(s.year)
+        offset_price = s.market.corsia_offset_price_usd_per_mt
+
+        # Physical SAF actually delivered per destination region
+        inflow: dict = {}
+        for f in s.market.trade_flows:
+            inflow[f.destination_region] = inflow.get(f.destination_region, 0.0) + f.volume_mt
+
+        # WTP per region:
+        # - fully served (wtp_priority_allocation) → clearing_price == WTP
+        # - partially served / unserved (corsia_offset) → shadow_price == WTP
+        wtp_by_region: dict = {}
+        for p in s.market.prices:
+            if p.pricing_regime == "wtp_priority_allocation":
+                wtp_by_region[p.region] = p.clearing_price_usd_per_mt
+            else:
+                wtp_by_region[p.region] = p.shadow_price_usd_per_mt
+
+        total_vol = weighted = 0.0
+        for region, demand_vol in demand_vols.items():
+            if demand_vol <= 0:
+                continue
+            saf_vol = min(inflow.get(region, 0.0), demand_vol)
+            offset_vol = max(0.0, demand_vol - saf_vol)
+            wtp = wtp_by_region.get(region, offset_price)
+            weighted += saf_vol * wtp + offset_vol * offset_price
+            total_vol += demand_vol
+
+        if total_vol > 0:
+            rows.append({
+                "year": s.year,
+                "compliance_cost_usd_per_mt": round(weighted / total_vol, 2),
+            })
+    return pd.DataFrame(rows)
+
+
 def _history_to_flows_df(history: list) -> pd.DataFrame:
     rows = []
     for s in history:
@@ -240,6 +287,23 @@ def render(history: Optional[list] = None) -> None:
                 """
             )
             st.plotly_chart(charts.global_price_chart(prices_df), use_container_width=True)
+
+            # ── SAF compliance cost curve (S-curve) ──────────────────────────
+            st.markdown(
+                """
+                ### SAF Compliance Cost Curve
+                The chart below shows the **volume-weighted blended compliance cost** across all
+                regions. Regions that receive physical SAF are priced at their regional WTP;
+                regions that cannot access physical SAF fall back to CORSIA carbon-offset credits
+                (priced at `CORSIA credit × 3.1 tCO₂/MT SAF`). As modelled capacity grows and
+                physical SAF progressively displaces cheap CORSIA offsets, the blended cost rises
+                from the offset floor through a rapid transition to near-WTP — producing the
+                expected S-shaped trajectory with an inflection where the transition is fastest and
+                a plateau as the market approaches full physical-SAF coverage.
+                """
+            )
+            compliance_df = _history_to_compliance_cost_df(history)
+            st.plotly_chart(charts.saf_compliance_cost_chart(compliance_df), use_container_width=True)
 
             # ── WTP multi-year trend ──────────────────────────────────────────
             st.subheader("Willingness-to-Pay by Region")

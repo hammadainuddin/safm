@@ -97,7 +97,13 @@ class WTPModel:
                 binding_case=binding,
             ))
 
-        matrix = WTPMatrix(year=year, regional_wtps=regional_wtps)
+        credit_price = (float(year_params["corsia_credit_usd_per_tco2"].max())
+                        if not year_params.empty else 30.0)
+        matrix = WTPMatrix(
+            year=year,
+            regional_wtps=regional_wtps,
+            corsia_offset_price_usd_per_mt=round(credit_price * _CI_REDUCTION_T_CO2_PER_MT_SAF, 2),
+        )
         self._log_summary(matrix, year)
         return matrix
 

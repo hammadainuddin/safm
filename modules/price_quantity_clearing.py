@@ -145,6 +145,7 @@ class PriceQuantityClearing:
             solver_status="optimal" if market_balanced else "partial",
             objective_value=0.0,
             offset_demand_mt_by_region=offset_demand_mt_by_region,
+            corsia_offset_price_usd_per_mt=wtp_matrix.corsia_offset_price_usd_per_mt,
         )
 
     # ── Allocation algorithm ─────────────────────────────────────────────────

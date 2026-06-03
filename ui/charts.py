@@ -664,6 +664,38 @@ def global_price_chart(df: pd.DataFrame) -> go.Figure:
     return fig
 
 
+def saf_compliance_cost_chart(df: pd.DataFrame) -> go.Figure:
+    """
+    S-curve: volume-weighted blended SAF compliance cost over time.
+
+    Unserved demand is priced at the CORSIA carbon-offset cost for the year;
+    served demand is priced at the region's WTP clearing price.  As physical
+    SAF replaces cheap CORSIA offsets the blended average traces an S-shaped
+    curve from the offset floor toward WTP.
+    df columns: year, compliance_cost_usd_per_mt
+    """
+    if df.empty:
+        return go.Figure().update_layout(title="No compliance cost data available")
+    fig = px.line(
+        df.sort_values("year"),
+        x="year", y="compliance_cost_usd_per_mt",
+        title="SAF Compliance Cost Curve — Volume-Weighted (USD/MT)",
+        labels={"compliance_cost_usd_per_mt": "Compliance Cost (USD/MT)", "year": "Year"},
+        markers=True,
+    )
+    fig.update_traces(line=dict(color="mediumseagreen", width=3))
+    fig.update_layout(
+        xaxis=dict(tickformat="d"),
+        hovermode="x unified",
+        annotations=[dict(
+            xref="paper", yref="paper", x=0.01, y=0.06, showarrow=False,
+            text="Served regions: WTP clearing price · Unserved regions: CORSIA offset cost",
+            font=dict(size=11, color="gray"), align="left",
+        )],
+    )
+    return fig
+
+
 def lcosaf_heatmap(regions, pathways, capex_dict, opex_dict, util, irr, life) -> go.Figure:
     """Heatmap of LCOSAF (USD/MT) for all region × pathway combinations."""
     from utils.economics import levelised_cost

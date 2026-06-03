@@ -30,6 +30,7 @@ class RegionalWTP(BaseModel):
 class WTPMatrix(BaseModel):
     year: int
     regional_wtps: List[RegionalWTP]
+    corsia_offset_price_usd_per_mt: float = 0.0  # corsia_credit × 3.1 tCO2/MT SAF
 
     def wtp_for_region(self, region: str) -> Optional[RegionalWTP]:
         for wtp in self.regional_wtps:
