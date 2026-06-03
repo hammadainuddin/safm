@@ -92,7 +92,8 @@ def run_model(
     output_dir:          str = None,
     verbose:             bool = True,
     on_step:             Optional[Callable] = None,
-    demand_scale_factor: float = 1.0,
+    demand_scale_factor:    float = 1.0,
+    route_sample_fraction:  float = None,
 ) -> List[ModelState]:
     """
     Execute the dynamic SAF market model.
@@ -130,7 +131,7 @@ def run_model(
     logger.info("=" * 60)
 
     # ── Module initialisation ─────────────────────────────────────────────────
-    demand_module    = BottomUpDemandModule()
+    demand_module    = BottomUpDemandModule(route_sample_fraction=route_sample_fraction)
     cap_expansion    = CapacityExpansionModule()
     wtp_model        = WTPModel()
     pq_clearing      = PriceQuantityClearing()

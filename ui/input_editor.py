@@ -86,9 +86,8 @@ def _clear_upload(ss_key: str) -> None:
 
 def _demand_input_mtimes() -> tuple:
     """
-    Modification timestamps of the four CSVs that feed the bottom-up demand
-    module, plus the module file itself. Used as a cache key so the projection
-    chart re-runs when any input or the module logic changes.
+    Cache key for the demand projection: CSV mtimes + module mtime +
+    current route_sample_fraction so the chart re-runs on any change.
     """
     csv_files = (
         "flight_routes.csv", "aircraft_types.csv",
@@ -101,20 +100,24 @@ def _demand_input_mtimes() -> tuple:
     _HERE = os.path.dirname(os.path.abspath(__file__))
     module_path = os.path.join(_HERE, "..", "modules", "demand_bottom_up.py")
     module_mtime = os.path.getmtime(module_path) if os.path.exists(module_path) else 0.0
-    return csv_mtimes + (module_mtime,)
+    from config.settings import ROUTE_SAMPLE_FRACTION as _default_rsf
+    rsf = st.session_state.get("route_sample_fraction", _default_rsf)
+    return csv_mtimes + (module_mtime, rsf)
 
 
 @st.cache_data(ttl=60)
 def _build_demand_projection_df(_cache_buster: tuple) -> pd.DataFrame:
     """
     Per-year, per-region projection of jet-fuel burn and CORSIA / mandate
-    SAF demand under the current inputs. The _cache_buster argument is the
-    tuple of input CSV mtimes; saving any of them invalidates this cache.
+    SAF demand under the current inputs. _cache_buster includes the CSV
+    mtimes and the current route_sample_fraction so the chart invalidates
+    on any change.
     """
     from modules.demand_bottom_up import BottomUpDemandModule
-    from config.settings import HORIZON_YEARS
+    from config.settings import HORIZON_YEARS, ROUTE_SAMPLE_FRACTION as _default_rsf
 
-    mod = BottomUpDemandModule()
+    rsf = st.session_state.get("route_sample_fraction", _default_rsf)
+    mod = BottomUpDemandModule(route_sample_fraction=float(rsf))
     rows = []
     for yr in HORIZON_YEARS:
         try:
@@ -159,11 +162,29 @@ def render() -> None:
             offsetting obligations, and domestic blending mandates — to produce an annual regional
             CORSIA demand figure that responds dynamically to policy changes, fleet renewal, and
             traffic growth.
-            The 64 representative routes in the dataset approximate **5% of global scheduled
-            traffic** (`ROUTE_SAMPLE_FRACTION = 0.05`); all computed volumes are extrapolated
-            to the full global fleet by dividing by this fraction (×20).
             """
         )
+
+        from config.settings import ROUTE_SAMPLE_FRACTION as _default_rsf
+        with st.expander("🔬 Route Sample Fraction", expanded=False):
+            st.markdown(
+                "The flight routes dataset is a representative sample of global scheduled "
+                "traffic. All computed fuel burn and CORSIA demand volumes are extrapolated "
+                "to the full global fleet by dividing by this fraction. "
+                "Set it to match the share of global traffic your route dataset represents "
+                "(e.g. 0.01 = 1 %, 0.05 = 5 %)."
+            )
+            st.number_input(
+                "Route sample fraction",
+                min_value=0.001,
+                max_value=1.0,
+                value=float(st.session_state.get("route_sample_fraction", _default_rsf)),
+                step=0.001,
+                format="%.4f",
+                key="route_sample_fraction",
+                help="Fraction of global scheduled traffic represented by the route dataset. "
+                     "Computed volumes are divided by this value to extrapolate to the full fleet.",
+            )
 
         # ── Projection panel: per-region jet-fuel burn + CORSIA SAF demand ──
         with st.expander(
@@ -482,9 +503,9 @@ def render() -> None:
                 covered by CORSIA instead. The EU ReFuelEU regulation is the primary driver
                 of mandate demand in this model, with fractions rising from 2% in 2025 to
                 70% by 2050. Other regions may adopt similar frameworks; these can be
-                added or adjusted here. Mandate demand is **not** scaled by
-                `ROUTE_SAMPLE_FRACTION` because it represents an absolute policy obligation
-                rather than a sample-based estimate of market activity.
+                added or adjusted here. Mandate demand is **not** scaled by the route sample fraction
+                because it represents an absolute policy obligation rather than a sample-based
+                estimate of market activity.
                 """
             )
             mandates_df = _upload_widget("national_blending_mandates.csv", "ss_national_blending_mandates")
@@ -900,7 +921,7 @@ def render() -> None:
 
         from config.settings import (FEED_INTENSITY, REGIONAL_CAPEX, REGIONAL_OPEX,
                                      SAF_PATHWAYS, UTILIZATION_FACTOR, PROJECT_LIFE_YR,
-                                     REGIONS as _REGIONS, ROUTE_SAMPLE_FRACTION as _RSF)
+                                     REGIONS as _REGIONS)
         from utils.economics import levelised_cost
 
         wtp_df = _upload_widget("wtp_params.csv", "ss_wtp_params")

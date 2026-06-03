@@ -22,7 +22,7 @@ _HERE = os.path.dirname(os.path.abspath(__file__))
 if _HERE not in sys.path:
     sys.path.insert(0, _HERE)
 
-from config.settings import MODEL_END_YEAR, MODEL_START_YEAR, HORIZON_YEARS
+from config.settings import MODEL_END_YEAR, MODEL_START_YEAR, HORIZON_YEARS, ROUTE_SAMPLE_FRACTION as _DEFAULT_RSF
 from ui import input_editor, output_dashboard
 
 st.set_page_config(
@@ -96,6 +96,7 @@ with tab_run:
                 scenario=scenario,
                 verbose=False,
                 demand_scale_factor=float(st.session_state.get("demand_scale_factor", 1.0)),
+                route_sample_fraction=float(st.session_state.get("route_sample_fraction", _DEFAULT_RSF)),
             )
             st.rerun()
 

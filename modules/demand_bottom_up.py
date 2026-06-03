@@ -23,7 +23,7 @@ from config.settings import (
     MODEL_START_YEAR,
     MT_TO_PJ_FACTOR,
     REGIONS,
-    ROUTE_SAMPLE_FRACTION,
+    ROUTE_SAMPLE_FRACTION as _DEFAULT_ROUTE_SAMPLE_FRACTION,
 )
 from schemas.demand_schema import DemandMatrix, DemandRecord
 from schemas.flight_schema import AircraftType, AirlineRecord, BottomUpDemandResult, FlightRoute
@@ -58,11 +58,16 @@ class BottomUpDemandModule:
         aircraft_path: str = None,
         corsia_path: str = None,
         mandates_path: str = None,
+        route_sample_fraction: float = None,
     ):
         self._routes_path   = routes_path   or os.path.join(_MOCK, "flight_routes.csv")
         self._aircraft_path = aircraft_path or os.path.join(_MOCK, "aircraft_types.csv")
         self._corsia_path   = corsia_path   or os.path.join(_MOCK, "corsia_schedule.csv")
         self._mandates_path = mandates_path or os.path.join(_MOCK, "national_blending_mandates.csv")
+        self._route_sample_fraction = (
+            route_sample_fraction if route_sample_fraction is not None
+            else _DEFAULT_ROUTE_SAMPLE_FRACTION
+        )
         self._routes_cache: Optional[pd.DataFrame]   = None
         self._aircraft_cache: Optional[Dict[str, float]] = None  # {type: efficiency}
         self._corsia_cache:   Optional[pd.DataFrame] = None
@@ -174,11 +179,11 @@ class BottomUpDemandModule:
                 if m_frac > 0 and o_region in mandate_by_region_saf:
                     mandate_by_region_saf[o_region] += fuel_mt * m_frac
 
-        # Extrapolate from sample to full global fleet.
-        # 64 routes = ROUTE_SAMPLE_FRACTION (5%) of global traffic; divide to scale up ×20.
-        fuel_by_region   = {r: v / ROUTE_SAMPLE_FRACTION for r, v in fuel_by_region.items()}
-        scaled_corsia    = {r: corsia_by_region[r] / ROUTE_SAMPLE_FRACTION for r in REGIONS}
-        mandate_by_region_saf = {r: v / ROUTE_SAMPLE_FRACTION for r, v in mandate_by_region_saf.items()}
+        # Extrapolate from sample routes to the full global fleet.
+        rsf = self._route_sample_fraction
+        fuel_by_region        = {r: v / rsf for r, v in fuel_by_region.items()}
+        scaled_corsia         = {r: corsia_by_region[r] / rsf for r in REGIONS}
+        mandate_by_region_saf = {r: v / rsf for r, v in mandate_by_region_saf.items()}
 
         total_by_region = {
             r: round(scaled_corsia[r] + mandate_by_region_saf[r], 8)
