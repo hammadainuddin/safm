@@ -144,7 +144,7 @@ class BottomUpDemandModule:
 
             # Fuel burn (tonnes) = flights × distance × efficiency × improvement
             fuel_t = annual_flights * float(row["distance_km"]) * base_eff * eff_factor
-            fuel_mt = fuel_t / 1_000  # convert to MT (millions of tonnes)
+            fuel_mt = fuel_t / 1_000_000  # convert to Mt (million tonnes)
 
             o_region = str(row["origin_region"])
             d_region = str(row["dest_region"])
@@ -174,9 +174,11 @@ class BottomUpDemandModule:
                 if m_frac > 0 and o_region in mandate_by_region_saf:
                     mandate_by_region_saf[o_region] += fuel_mt * m_frac
 
-        # Scale CORSIA demand: 64 routes ≈ ROUTE_SAMPLE_FRACTION of global traffic.
-        # Mandate demand is a policy target (not sampled) so it is NOT scaled.
-        scaled_corsia = {r: corsia_by_region[r] * ROUTE_SAMPLE_FRACTION for r in REGIONS}
+        # Extrapolate from sample to full global fleet.
+        # 64 routes = ROUTE_SAMPLE_FRACTION (5%) of global traffic; divide to scale up ×20.
+        fuel_by_region   = {r: v / ROUTE_SAMPLE_FRACTION for r, v in fuel_by_region.items()}
+        scaled_corsia    = {r: corsia_by_region[r] / ROUTE_SAMPLE_FRACTION for r in REGIONS}
+        mandate_by_region_saf = {r: v / ROUTE_SAMPLE_FRACTION for r, v in mandate_by_region_saf.items()}
 
         total_by_region = {
             r: round(scaled_corsia[r] + mandate_by_region_saf[r], 8)

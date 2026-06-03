@@ -66,13 +66,33 @@ def _make_empty_market_result(year: int) -> MarketClearingResult:
     )
 
 
+def _scale_demand_matrix(matrix, factor: float):
+    """Return a new DemandMatrix with all volumes multiplied by factor."""
+    from schemas.demand_schema import DemandMatrix, DemandRecord
+    from config.settings import MT_TO_PJ_FACTOR
+    scaled = [
+        DemandRecord(
+            year=r.year,
+            region=r.region,
+            volume_mt=round(r.volume_mt * factor, 8),
+            energy_pj=round(r.volume_mt * factor * MT_TO_PJ_FACTOR, 8),
+            pathway_mix=r.pathway_mix,
+            source=r.source,
+        )
+        for r in matrix.records
+    ]
+    return DemandMatrix(records=scaled, scenario_name=matrix.scenario_name,
+                        created_at=matrix.created_at)
+
+
 def run_model(
-    start_year: int = MODEL_START_YEAR,
-    end_year:   int = MODEL_END_YEAR,
-    scenario:   str = "baseline",
-    output_dir: str = None,
-    verbose:    bool = True,
-    on_step:    Optional[Callable] = None,
+    start_year:          int = MODEL_START_YEAR,
+    end_year:            int = MODEL_END_YEAR,
+    scenario:            str = "baseline",
+    output_dir:          str = None,
+    verbose:             bool = True,
+    on_step:             Optional[Callable] = None,
+    demand_scale_factor: float = 1.0,
 ) -> List[ModelState]:
     """
     Execute the dynamic SAF market model.
@@ -132,6 +152,8 @@ def run_model(
         # Step 1: Bottom-up demand
         _notify(year, "demand")
         demand_matrix = demand_module.estimate_demand(year, scenario)
+        if demand_scale_factor != 1.0:
+            demand_matrix = _scale_demand_matrix(demand_matrix, demand_scale_factor)
 
         # Step 2: Capacity expansion (standalone module, unchanged)
         _notify(year, "expansion")

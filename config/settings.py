@@ -72,9 +72,12 @@ MT_TO_PJ_FACTOR     = SAF_LHV_MJ_KG / 1_000     # 1 MT SAF → PJ (1 MT = 1e6 kg
 DEFAULT_SOLVER      = "glpk"
 MARKET_BALANCE_TOL  = 1e-4   # MT; absolute tolerance for market clearing check
 
-# 64 representative routes ≈ 5% of global scheduled traffic.
-# Applied to CORSIA SAF demand only (mandate targets are policy absolutes, not sampled).
-ROUTE_SAMPLE_FRACTION = 0.05
+# Calibration fraction: the 64 mock routes produce 2.943 Mt of raw fuel.
+# Dividing by this fraction extrapolates to the IATA 2025 international
+# aviation baseline of ~320 Mt (2.943 / 0.0092 ≈ 320 Mt).
+# The 5% assumption was wrong — one carrier per route at 365-730 flights/yr
+# represents far less than 5% of global multi-carrier traffic.
+ROUTE_SAMPLE_FRACTION = 0.0092
 
 # CORSIA demand suppression — voluntary regions have reduced effective demand
 # in early years due to cheap jet fuel + CORSIA-eligible carbon offsets.

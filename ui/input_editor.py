@@ -87,17 +87,21 @@ def _clear_upload(ss_key: str) -> None:
 def _demand_input_mtimes() -> tuple:
     """
     Modification timestamps of the four CSVs that feed the bottom-up demand
-    module. Used as a cache key so the projection chart re-runs when any
-    of them is saved.
+    module, plus the module file itself. Used as a cache key so the projection
+    chart re-runs when any input or the module logic changes.
     """
-    files = (
+    csv_files = (
         "flight_routes.csv", "aircraft_types.csv",
         "corsia_schedule.csv", "corsia_suppression.csv",
     )
-    return tuple(
+    csv_mtimes = tuple(
         os.path.getmtime(_mock_path(f)) if os.path.exists(_mock_path(f)) else 0.0
-        for f in files
+        for f in csv_files
     )
+    _HERE = os.path.dirname(os.path.abspath(__file__))
+    module_path = os.path.join(_HERE, "..", "modules", "demand_bottom_up.py")
+    module_mtime = os.path.getmtime(module_path) if os.path.exists(module_path) else 0.0
+    return csv_mtimes + (module_mtime,)
 
 
 @st.cache_data(ttl=60)
@@ -156,8 +160,8 @@ def render() -> None:
             CORSIA demand figure that responds dynamically to policy changes, fleet renewal, and
             traffic growth.
             The 64 representative routes in the dataset approximate **5% of global scheduled
-            traffic** (`ROUTE_SAMPLE_FRACTION = 0.05`); CORSIA demand is scaled by this factor,
-            while mandate demand represents absolute policy targets and is not scaled.
+            traffic** (`ROUTE_SAMPLE_FRACTION = 0.05`); all computed volumes are extrapolated
+            to the full global fleet by dividing by this fraction (×20).
             """
         )
 
@@ -213,6 +217,26 @@ def render() -> None:
                     "module. Save any edits in the sub-tabs below to refresh these "
                     "charts. Volumes are in **million tonnes per year**."
                 )
+
+        # ── Demand scaling factor ─────────────────────────────────────────────
+        with st.expander("⚖️ Demand Scaling Factor", expanded=False):
+            st.markdown(
+                "Apply a global multiplier to all bottom-up demand volumes before "
+                "market clearing. The default value of **1.0** uses the computed demand "
+                "as-is. Increase above 1.0 to stress-test supply under a higher-demand "
+                "scenario; decrease below 1.0 to model a smaller addressable market."
+            )
+            st.number_input(
+                "Demand scaling factor",
+                min_value=0.1,
+                max_value=10.0,
+                value=1.0,
+                step=0.1,
+                format="%.2f",
+                key="demand_scale_factor",
+                help="Multiplier applied to all regional SAF demand volumes (CORSIA + mandate) "
+                     "before capacity expansion and market clearing.",
+            )
 
         (sub_routes, sub_airlines, sub_aircraft,
          sub_corsia_sched, sub_corsia_supp, sub_mandates) = st.tabs([
@@ -905,7 +929,7 @@ def render() -> None:
         sel_yr = st.selectbox("Preview year", year_opts, index=0, key="wtp_year_sel")
         yr_wtp = wtp_df[wtp_df["year"] == sel_yr].copy()
 
-        _CI = 2.5
+        _CI = 3.1
         yr_wtp["case1_preview"] = (
             yr_wtp["jet_fuel_price_usd_per_mt"]
             + yr_wtp["corsia_credit_usd_per_tco2"] * _CI

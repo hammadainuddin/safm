@@ -95,6 +95,7 @@ with tab_run:
                 end_year=int(end_year),
                 scenario=scenario,
                 verbose=False,
+                demand_scale_factor=float(st.session_state.get("demand_scale_factor", 1.0)),
             )
             st.rerun()
 
