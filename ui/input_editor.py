@@ -125,12 +125,15 @@ def _build_demand_projection_df(_cache_buster: tuple) -> pd.DataFrame:
         except Exception:
             continue
         for region, vol in r.fuel_by_region.items():
+            corsia = r.corsia_saf_demand_by_region.get(region, 0.0)
+            mandate = r.mandate_saf_demand_by_region.get(region, 0.0)
             rows.append({
                 "year": yr,
                 "region": region,
                 "fuel_mt":        vol,
-                "corsia_saf_mt":  r.corsia_saf_demand_by_region.get(region, 0.0),
-                "mandate_saf_mt": r.mandate_saf_demand_by_region.get(region, 0.0),
+                "corsia_saf_mt":  corsia,
+                "mandate_saf_mt": mandate,
+                "total_saf_mt":   corsia + mandate,
             })
     return pd.DataFrame(rows)
 
@@ -204,12 +207,12 @@ def render() -> None:
                     "corsia_schedule, corsia_suppression) exist and parse."
                 )
             else:
-                col_jf, col_corsia = st.columns(2)
+                col_jf, col_total = st.columns(2)
                 with col_jf:
                     fig_jf = px.line(
                         proj_df, x="year", y="fuel_mt", color="region",
                         title="Jet Fuel Burn by Region (Mt / yr)",
-                        labels={"fuel_mt": "Fuel (Million tonnes)", "year": "Year"},
+                        labels={"fuel_mt": "Fuel (Mt/yr)", "year": "Year"},
                         markers=True,
                     )
                     fig_jf.update_layout(
@@ -218,26 +221,48 @@ def render() -> None:
                         legend_title="Region",
                     )
                     st.plotly_chart(fig_jf, use_container_width=True)
-                with col_corsia:
-                    fig_c = px.line(
-                        proj_df, x="year", y="corsia_saf_mt", color="region",
-                        title="CORSIA-Mandated SAF Demand by Region (Mt / yr)",
-                        labels={"corsia_saf_mt": "CORSIA SAF Demand (Million tonnes)",
-                                "year": "Year"},
+                with col_total:
+                    fig_total = px.line(
+                        proj_df, x="year", y="total_saf_mt", color="region",
+                        title="Total SAF Demand by Region (Mt / yr) — CORSIA + Mandate",
+                        labels={"total_saf_mt": "Total SAF Demand (Mt/yr)", "year": "Year"},
                         markers=True,
                     )
-                    fig_c.update_layout(
+                    fig_total.update_layout(
                         xaxis=dict(tickformat="d"),
                         hovermode="x unified",
                         legend_title="Region",
                     )
-                    st.plotly_chart(fig_c, use_container_width=True)
+                    st.plotly_chart(fig_total, use_container_width=True)
+
                 st.caption(
-                    "Computed live from your current routes, aircraft efficiency, "
-                    "CORSIA schedule, and suppression inputs via the bottom-up demand "
-                    "module. Save any edits in the sub-tabs below to refresh these "
-                    "charts. Volumes are in **million tonnes per year**."
+                    "**Total SAF Demand = CORSIA offsetting obligation + domestic blending mandate.** "
+                    "This matches the demand figure used in market clearing and reported in the "
+                    "Output → Market Summary tab. Volumes are in million tonnes per year."
                 )
+
+                with st.expander("📊 CORSIA vs Mandate breakdown", expanded=False):
+                    col_c, col_m = st.columns(2)
+                    with col_c:
+                        fig_c = px.line(
+                            proj_df, x="year", y="corsia_saf_mt", color="region",
+                            title="CORSIA Component Only (Mt / yr)",
+                            labels={"corsia_saf_mt": "CORSIA SAF (Mt/yr)", "year": "Year"},
+                            markers=True,
+                        )
+                        fig_c.update_layout(xaxis=dict(tickformat="d"),
+                                            hovermode="x unified", legend_title="Region")
+                        st.plotly_chart(fig_c, use_container_width=True)
+                    with col_m:
+                        fig_m = px.line(
+                            proj_df, x="year", y="mandate_saf_mt", color="region",
+                            title="Blending Mandate Component Only (Mt / yr)",
+                            labels={"mandate_saf_mt": "Mandate SAF (Mt/yr)", "year": "Year"},
+                            markers=True,
+                        )
+                        fig_m.update_layout(xaxis=dict(tickformat="d"),
+                                            hovermode="x unified", legend_title="Region")
+                        st.plotly_chart(fig_m, use_container_width=True)
 
         # ── Demand scaling factor ─────────────────────────────────────────────
         with st.expander("⚖️ Demand Scaling Factor", expanded=False):
