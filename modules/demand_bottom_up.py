@@ -123,10 +123,25 @@ class BottomUpDemandModule:
         mandates_df = self._load_mandates()
 
         corsia_frac = float(corsia_row["mandatory_fraction"])
+
+        yr_mandates = mandates_df[mandates_df["year"] == year]
+
+        # Region-level fallback: rows where country == region (the catch-all entry)
         mandate_by_region: Dict[str, float] = {}
-        for region in REGIONS:
-            rows = mandates_df[(mandates_df["year"] == year) & (mandates_df["region"] == region)]
-            mandate_by_region[region] = float(rows["mandate_fraction"].iloc[0]) if not rows.empty else 0.0
+        mandate_by_country: Dict[str, float] = {}
+        if "country" in yr_mandates.columns:
+            for _, mrow in yr_mandates.iterrows():
+                c = str(mrow.get("country", "")).strip()
+                r = str(mrow["region"])
+                frac = float(mrow["mandate_fraction"])
+                if c and c != r:
+                    mandate_by_country[c] = frac   # country-level override
+                else:
+                    mandate_by_region[r] = frac    # region catch-all
+        else:
+            for region in REGIONS:
+                rows = yr_mandates[yr_mandates["region"] == region]
+                mandate_by_region[region] = float(rows["mandate_fraction"].iloc[0]) if not rows.empty else 0.0
 
         # Annual growth and efficiency improvement for this year
         yr_offset = year - MODEL_START_YEAR
@@ -174,8 +189,10 @@ class BottomUpDemandModule:
                 if o_region in fuel_by_region:
                     fuel_by_region[o_region] += fuel_mt
 
-                # Blending mandate (domestic only)
-                m_frac = mandate_by_region.get(o_region, 0.0)
+                # Blending mandate: country-level fraction wins over region-level
+                o_country = str(row.get("origin_country", "")).strip()
+                m_frac = mandate_by_country.get(o_country,
+                         mandate_by_region.get(o_region, 0.0))
                 if m_frac > 0 and o_region in mandate_by_region_saf:
                     mandate_by_region_saf[o_region] += fuel_mt * m_frac
 
