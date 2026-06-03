@@ -585,18 +585,19 @@ def wtp_trend_chart(df: pd.DataFrame) -> go.Figure:
     return fig
 
 
+_REGION_COLORS = {
+    "EU": "steelblue", "US": "tomato", "APAC": "seagreen",
+    "MENA": "gold", "LATAM": "mediumpurple", "ROW": "darkorange",
+}
+
+
 def capacity_stacked_split(df: pd.DataFrame) -> go.Figure:
     """
-    SAF capacity split by Planned vs Modelled, stacked by region. Dispatched
-    portion renders as a solid bar; the idle (undispatched) portion is stacked
-    on top with a hatched pattern to mark capacity that stayed idle because the
-    demand it could have served fell to CORSIA offsets.
+    SAF dispatched capacity split by Planned vs Modelled, stacked by region.
+    Only shows dispatched (active) capacity; idle capacity is omitted — use
+    idle_capacity_chart() to render it separately.
     """
     fig = go.Figure()
-    region_colors = {
-        "EU": "steelblue", "US": "tomato", "APAC": "seagreen",
-        "MENA": "gold", "LATAM": "mediumpurple", "ROW": "darkorange",
-    }
     has_split = "dispatched_capacity_mt_yr" in df.columns
 
     for cap_type in ["Planned", "Modelled"]:
@@ -607,37 +608,67 @@ def capacity_stacked_split(df: pd.DataFrame) -> go.Figure:
         for region in sorted(type_df["region"].unique()):
             rdf = type_df[type_df["region"] == region]
             if has_split:
-                grouped = rdf.groupby("year").agg(
-                    dispatched=("dispatched_capacity_mt_yr", "sum"),
-                    undispatched=("undispatched_capacity_mt_yr", "sum"),
-                ).reset_index()
-                fig.add_trace(go.Bar(
-                    x=grouped["year"], y=grouped["dispatched"],
-                    name=f"{region} ({cap_type})",
-                    marker_color=region_colors.get(region, "gray"),
-                    opacity=base_opacity,
-                    hovertemplate=f"<b>{region} {cap_type}</b><br>Dispatched: %{{y:.3f}} MT/yr<extra></extra>",
-                ))
-                fig.add_trace(go.Bar(
-                    x=grouped["year"], y=grouped["undispatched"],
-                    name=f"{region} {cap_type} (idle)",
-                    marker_color=region_colors.get(region, "gray"),
-                    marker_pattern_shape="/",
-                    opacity=base_opacity * 0.4,
-                    hovertemplate=f"<b>{region} {cap_type} idle</b><br>Undispatched: %{{y:.3f}} MT/yr<extra></extra>",
-                ))
+                grouped = rdf.groupby("year")["dispatched_capacity_mt_yr"].sum().reset_index()
+                y_col = "dispatched_capacity_mt_yr"
             else:
                 grouped = rdf.groupby("year")["total_capacity_mt_yr"].sum().reset_index()
-                fig.add_trace(go.Bar(
-                    x=grouped["year"], y=grouped["total_capacity_mt_yr"],
-                    name=f"{region} ({cap_type})",
-                    marker_color=region_colors.get(region, "gray"),
-                    opacity=base_opacity,
-                ))
+                y_col = "total_capacity_mt_yr"
+            fig.add_trace(go.Bar(
+                x=grouped["year"], y=grouped[y_col],
+                name=f"{region} ({cap_type})",
+                marker_color=_REGION_COLORS.get(region, "gray"),
+                opacity=base_opacity,
+                hovertemplate=f"<b>{region} {cap_type}</b><br>Dispatched: %{{y:.3f}} MT/yr<extra></extra>",
+            ))
+
     fig.update_layout(
         barmode="stack",
-        title="SAF Capacity: Planned vs Modelled (MT/yr) — solid = dispatched, hatched = idle",
-        xaxis_title="Year", yaxis_title="Capacity (MT/yr)",
+        title="SAF Dispatched Capacity by Region / Type (MT/yr)",
+        xaxis_title="Year", yaxis_title="Dispatched Capacity (MT/yr)",
+        xaxis=dict(tickformat="d"),
+        legend_title="Region / Type",
+        hovermode="x unified",
+    )
+    return fig
+
+
+def idle_capacity_chart(df: pd.DataFrame) -> go.Figure:
+    """
+    Idle (undispatched) SAF capacity by region and type — capacity that was
+    built but stayed unused because its LCOSAF exceeded the destination WTP
+    and the residual demand fell to CORSIA offsets.
+    """
+    fig = go.Figure()
+    if "undispatched_capacity_mt_yr" not in df.columns:
+        fig.update_layout(title="No idle capacity data available")
+        return fig
+
+    for cap_type in ["Planned", "Modelled"]:
+        base_opacity = 1.0 if cap_type == "Planned" else 0.55
+        type_df = df[df["capacity_type"] == cap_type]
+        if type_df.empty:
+            continue
+        for region in sorted(type_df["region"].unique()):
+            rdf = type_df[type_df["region"] == region]
+            grouped = rdf.groupby("year")["undispatched_capacity_mt_yr"].sum().reset_index()
+            if grouped["undispatched_capacity_mt_yr"].sum() == 0:
+                continue
+            fig.add_trace(go.Bar(
+                x=grouped["year"], y=grouped["undispatched_capacity_mt_yr"],
+                name=f"{region} ({cap_type})",
+                marker_color=_REGION_COLORS.get(region, "gray"),
+                marker_pattern_shape="/",
+                opacity=base_opacity * 0.6,
+                hovertemplate=(
+                    f"<b>{region} {cap_type} — idle</b><br>"
+                    "Undispatched: %{y:.3f} MT/yr<extra></extra>"
+                ),
+            ))
+
+    fig.update_layout(
+        barmode="stack",
+        title="SAF Idle Capacity by Region / Type (MT/yr)",
+        xaxis_title="Year", yaxis_title="Idle Capacity (MT/yr)",
         xaxis=dict(tickformat="d"),
         legend_title="Region / Type",
         hovermode="x unified",

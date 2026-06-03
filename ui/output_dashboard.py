@@ -612,18 +612,31 @@ def render(history: Optional[list] = None) -> None:
                 modelled — it remains in the capacity state for the remainder of the horizon.
                 The area charts show how the regional and pathway mix evolves over 2025–2045.
 
-                **Dispatched vs idle capacity:** the filled stacked area shows the share of
-                built capacity that was actually dispatched in the clearing step, while the
-                **black dashed line** traces total built capacity. The gap between them is
-                capacity that stayed idle — its LCOSAF exceeded the destination region's WTP,
-                so the demand it could have served was satisfied by CORSIA-eligible carbon
-                offsets instead. In the Planned-vs-Modelled bar chart the same split appears
-                as a hatched "(idle)" segment stacked on top of each region's solid (dispatched)
-                bar.
+                **Dispatched vs idle capacity:** the bar chart shows only dispatched capacity
+                by default. Use the **Show idle capacity** toggle below to split the view into
+                two columns — dispatched on the left and idle on the right. Idle capacity is
+                capacity that was built but stayed unused because its LCOSAF exceeded the
+                destination region's WTP; that residual demand was satisfied by CORSIA-eligible
+                carbon offsets instead.
                 """
             )
 
-            st.plotly_chart(charts.capacity_stacked_split(capacity_df), use_container_width=True)
+            show_idle = st.toggle("Show idle capacity", value=False)
+
+            if show_idle:
+                col_disp, col_idle = st.columns(2)
+                with col_disp:
+                    st.plotly_chart(
+                        charts.capacity_stacked_split(capacity_df), use_container_width=True
+                    )
+                with col_idle:
+                    st.plotly_chart(
+                        charts.idle_capacity_chart(capacity_df), use_container_width=True
+                    )
+            else:
+                st.plotly_chart(
+                    charts.capacity_stacked_split(capacity_df), use_container_width=True
+                )
 
             col1, col2 = st.columns(2)
             with col1:
