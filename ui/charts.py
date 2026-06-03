@@ -155,10 +155,18 @@ def trade_sankey(df: pd.DataFrame, year: int) -> go.Figure:
     target = [imp_idx[r] for r in year_df["destination_region"]]
     value  = year_df["volume_mt"].tolist()
 
+    _label_font = dict(
+        color="white",
+        size=13,
+        weight="bold",
+        shadow="1px 1px 3px #000, -1px -1px 3px #000, 1px -1px 3px #000, -1px 1px 3px #000",
+    )
+
     fig = go.Figure(go.Sankey(
         arrangement="fixed",
         valueformat=".4f",
         valuesuffix=" Mt",
+        textfont=_label_font,
         node=dict(label=labels, x=x_pos, y=y_pos, pad=15, thickness=20, color=colors),
         link=dict(source=source, target=target, value=value),
     ))
@@ -217,10 +225,18 @@ def trade_pathway_sankey(df: pd.DataFrame, year: int) -> go.Figure:
         values.append(row["volume_mt"])
         link_colors.append(_rgba(_PATHWAY_COLORS.get(row["pathway"], "#7f7f7f")))
 
+    _label_font = dict(
+        color="white",
+        size=13,
+        weight="bold",
+        shadow="1px 1px 3px #000, -1px -1px 3px #000, 1px -1px 3px #000, -1px 1px 3px #000",
+    )
+
     fig = go.Figure(go.Sankey(
         arrangement="snap",
         valueformat=".4f",
         valuesuffix=" Mt",
+        textfont=_label_font,
         node=dict(label=labels, pad=18, thickness=18, color=node_colors),
         link=dict(source=sources, target=targets, value=values, color=link_colors,
                   hovertemplate="%{source.label} → %{target.label}<br>Volume: %{value:.4f} Mt<extra></extra>"),
