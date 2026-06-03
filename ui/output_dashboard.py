@@ -61,6 +61,117 @@ def _history_to_prices_df(history: list) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def _global_price_narrative(prices_df: pd.DataFrame, history: list) -> str:
+    """
+    Build a data-driven explanation of the global SAF price chart profile.
+
+    Derives key facts — first year with a clearing price, which regions are
+    fully served when, where transitions occur and whether prices step down or
+    up — from the actual model results so the text stays accurate under any
+    input scenario.
+    """
+    global_df = (
+        prices_df[prices_df["region"] == "Global (vol-wtd)"]
+        .sort_values("year")
+        .reset_index(drop=True)
+    )
+    served_df = (
+        prices_df[prices_df["pricing_regime"] == "wtp_priority_allocation"]
+        .sort_values(["year", "clearing_price_usd_per_mt"], ascending=[True, False])
+    )
+    all_years = sorted({s.year for s in history})
+
+    if global_df.empty:
+        return (
+            "No region achieved complete SAF coverage in any modelled year. "
+            "All demand was served via CORSIA carbon-offset credits throughout the "
+            "simulation, so no physical clearing price appears in the chart. "
+            "Consider increasing supply capacity or extending the horizon to observe "
+            "the transition to physical SAF markets."
+        )
+
+    first_price_year = int(global_df["year"].iloc[0])
+    no_price_years = [y for y in all_years if y < first_price_year]
+
+    # Primary served region per year: the one with the highest clearing price
+    # (allocation is WTP-priority so the highest-WTP region is served first)
+    primary: dict = {}
+    for _, row in served_df.iterrows():
+        yr = int(row["year"])
+        if yr not in primary:
+            primary[yr] = (row["region"], float(row["clearing_price_usd_per_mt"]))
+
+    # Collapse into contiguous segments sharing the same primary region
+    segments = []
+    prev_region = None
+    seg_start = seg_prices = None
+    for yr in sorted(primary):
+        region, price = primary[yr]
+        if region != prev_region:
+            if prev_region is not None:
+                segments.append((seg_start, yr - 1, prev_region, seg_prices))
+            prev_region, seg_start, seg_prices = region, yr, [price]
+        else:
+            seg_prices.append(price)
+    if prev_region is not None:
+        segments.append((seg_start, max(primary), prev_region, seg_prices))
+
+    parts = []
+
+    # ── Pre-price period ──────────────────────────────────────────────────────
+    if no_price_years:
+        span = (f"{no_price_years[0]}" if len(no_price_years) == 1
+                else f"{no_price_years[0]}–{no_price_years[-1]}")
+        parts.append(
+            f"**{span} — no physical clearing price.**  "
+            "Throughout this period total SAF supply cannot fully satisfy any single "
+            "region's demand; all regions remain partially covered with the shortfall "
+            "met by CORSIA carbon-offset credits, so no clearing price registers."
+        )
+
+    # ── Per-segment narrative ─────────────────────────────────────────────────
+    for i, (yr_s, yr_e, region, prices) in enumerate(segments):
+        lo, hi = round(min(prices)), round(max(prices))
+        price_range = f"~${lo:,}/MT" if lo == hi else f"~${lo:,}–${hi:,}/MT"
+        yr_range = str(yr_s) if yr_s == yr_e else f"{yr_s}–{yr_e}"
+
+        if i == 0:
+            parts.append(
+                f"**{yr_range} — {region} is the first fully-served region "
+                f"({price_range}).**  "
+                f"With supply allocated to the highest-WTP buyers first, {region} "
+                f"reaches 100 % physical coverage before any other region. Its "
+                f"clearing price equals the {region} regional WTP"
+                + (f" and rises from ${lo:,} to ${hi:,}/MT as WTP grows year-on-year."
+                   if lo != hi else ".")
+            )
+        else:
+            prev_region_name = segments[i - 1][2]
+            prev_hi = round(max(segments[i - 1][3]))
+            direction = "lower" if lo < prev_hi else "higher"
+            delta = abs(lo - prev_hi)
+            parts.append(
+                f"**{yr_range} — composition shift: {prev_region_name} → {region} "
+                f"({price_range}).**  "
+                f"{prev_region_name} demand growth outpaces new capacity additions, "
+                f"pushing it back to partial coverage. {region} simultaneously "
+                f"crosses the fully-served threshold at a {direction} regional WTP "
+                f"(~${prev_hi:,} → ~${lo:,}/MT, a ${delta:,}/MT step). "
+                "This is a composition change — not a movement in SAF production cost."
+                + (f" The price then trends to ${hi:,}/MT by {yr_e} "
+                   f"as {region}'s WTP evolves." if lo != hi else "")
+            )
+
+    parts.append(
+        "*Note: in any year where only one region is fully served the global price "
+        "equals that region's WTP exactly. The **Compliance Cost Curve** chart below "
+        "provides a more representative picture of market-wide costs by blending "
+        "physical SAF and CORSIA offset costs across all regions proportionally.*"
+    )
+
+    return "\n\n".join(parts)
+
+
 def _history_to_compliance_cost_df(history: list) -> pd.DataFrame:
     """
     Per-year volume-weighted blended SAF compliance cost.
@@ -287,6 +398,8 @@ def render(history: Optional[list] = None) -> None:
                 """
             )
             st.plotly_chart(charts.global_price_chart(prices_df), use_container_width=True)
+
+            st.info("**Reading this chart**\n\n" + _global_price_narrative(prices_df, history))
 
             # ── SAF compliance cost curve (S-curve) ──────────────────────────
             st.markdown(
