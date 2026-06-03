@@ -157,10 +157,12 @@ def trade_sankey(df: pd.DataFrame, year: int) -> go.Figure:
 
     fig = go.Figure(go.Sankey(
         arrangement="fixed",
+        valueformat=".4f",
+        valuesuffix=" Mt",
         node=dict(label=labels, x=x_pos, y=y_pos, pad=15, thickness=20, color=colors),
         link=dict(source=source, target=target, value=value),
     ))
-    fig.update_layout(title=f"SAF Trade Flows (MT) — {year}")
+    fig.update_layout(title=f"SAF Trade Flows (million tonnes) — {year}")
     return fig
 
 
@@ -217,12 +219,14 @@ def trade_pathway_sankey(df: pd.DataFrame, year: int) -> go.Figure:
 
     fig = go.Figure(go.Sankey(
         arrangement="snap",
+        valueformat=".4f",
+        valuesuffix=" Mt",
         node=dict(label=labels, pad=18, thickness=18, color=node_colors),
         link=dict(source=sources, target=targets, value=values, color=link_colors,
-                  hovertemplate="%{source.label} → %{target.label}<br>Volume: %{value:.3f} MT<extra></extra>"),
+                  hovertemplate="%{source.label} → %{target.label}<br>Volume: %{value:.4f} Mt<extra></extra>"),
     ))
     fig.update_layout(
-        title=f"Pathway-Level Trade Flows — {year}",
+        title=f"Pathway-Level Trade Flows (million tonnes) — {year}",
         margin=dict(t=60, l=10, r=10, b=10),
     )
     return fig
