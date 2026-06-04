@@ -2,7 +2,7 @@
 SAF Global Market Model — 20-Year Dynamic Loop
 ===============================================
 Usage:
-    python main.py                        # full 2025-2045 run, baseline scenario
+    python main.py                        # full 2025-2050 run, baseline scenario
     python main.py --start 2025 --end 2030 --scenario baseline
     python main.py --help
 
@@ -102,7 +102,7 @@ def run_model(
     Parameters
     ----------
     start_year : first year of simulation (default 2025)
-    end_year   : last year of simulation inclusive (default 2045)
+    end_year   : last year of simulation inclusive (default 2050)
     scenario   : scenario name tag for output labelling
     output_dir : directory for CSV/Excel outputs; auto-generated if None
     verbose    : print per-year console summary

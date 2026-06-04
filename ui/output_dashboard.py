@@ -445,7 +445,7 @@ def render(history: Optional[list] = None) -> None:
                   CORSIA / ETS / LCFS compliance value, and a regional premium that
                   reflects local regulatory + voluntary drivers:
                     * **EU** baseline + ETS + ReFuelEU non-compliance penalty
-                      ($2,600 → $3,600+ across 2025–2045).
+                      ($2,600 → $3,600+ across 2025–2050).
                     * **US** baseline + CORSIA + LCFS + corporate Scope-3 premium
                       ($1,500 → $2,200).
                     * **APAC** baseline + CORSIA + moderate mandate premium
@@ -463,7 +463,7 @@ def render(history: Optional[list] = None) -> None:
                 > **Final WTP = max(Case 1, Case 2, Case 3)**
 
                 The multi-year line chart shows how each region's WTP evolves as jet fuel prices,
-                carbon credit prices, and technology costs change across the 2025–2045 horizon.
+                carbon credit prices, and technology costs change across the 2025–2050 horizon.
                 """
             )
             wtp_states = list(history)
@@ -616,7 +616,7 @@ def render(history: Optional[list] = None) -> None:
 
                 Capacity accumulates year-over-year: once a plant is built — whether planned or
                 modelled — it remains in the capacity state for the remainder of the horizon.
-                The area charts show how the regional and pathway mix evolves over 2025–2045.
+                The area charts show how the regional and pathway mix evolves over 2025–2050.
 
                 **Dispatched vs idle capacity:** the bar chart shows only dispatched capacity
                 by default. Use the **Show idle capacity** toggle below to split the view into

@@ -31,7 +31,7 @@ class BackgroundRunner:
 
     Usage (in Streamlit):
         runner = BackgroundRunner()
-        runner.start(start_year=2025, end_year=2045, scenario="baseline", verbose=False)
+        runner.start(start_year=2025, end_year=2050, scenario="baseline", verbose=False)
         while not runner.done:
             events = runner.drain_events()
             update_ui(events)

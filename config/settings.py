@@ -1,7 +1,7 @@
 """Global constants — single source of truth. No magic numbers elsewhere."""
 
 MODEL_START_YEAR = 2025
-MODEL_END_YEAR   = 2045
+MODEL_END_YEAR   = 2050
 HORIZON_YEARS    = list(range(MODEL_START_YEAR, MODEL_END_YEAR + 1))
 
 REGIONS = ["EU", "US", "APAC", "MENA", "LATAM", "ROW"]

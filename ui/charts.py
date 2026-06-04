@@ -706,7 +706,7 @@ def global_price_chart(df: pd.DataFrame) -> go.Figure:
 
     Years with no physical SAF clearing are represented as NaN; connectgaps=True
     interpolates a straight line across any such gaps so the chart is always
-    continuous from 2025 to 2045.
+    continuous from 2025 to 2050.
     """
     from config.settings import HORIZON_YEARS
 

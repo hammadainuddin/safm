@@ -187,7 +187,7 @@ def render() -> None:
                 "**Single CORSIA schedule**: one global mandatory_fraction from corsia_schedule.csv "
                 "is applied to all international routes. Requires route_sample_fraction calibration.\n\n"
                 "**Country-specific SAF targets**: each route carries its own SAF% target "
-                "(saf_pct_2025 … saf_pct_2045 columns), interpolated between key years. "
+                "(saf_pct_2025 … saf_pct_2050 columns), interpolated between key years. "
                 "The 1 274-route dataset is comprehensive — no scaling factor needed."
             ),
             horizontal=False,
@@ -227,7 +227,7 @@ def render() -> None:
             proj_df = pd.DataFrame()
 
         with st.expander(
-            "📊 Projected jet fuel burn and total SAF demand (2025–2045)",
+            "📊 Projected jet fuel burn and total SAF demand (2025–2050)",
             expanded=True,
         ):
             if proj_df.empty:
@@ -985,7 +985,7 @@ def render() -> None:
             - **Case 3 — Total Market WTP ceiling:** The full price airlines in the
               region will actually pay, combining jet-fuel baseline + CORSIA / ETS / LCFS
               compliance value + a regional regulatory or voluntary premium.
-              `WTP₃ = case3_penalty_usd_per_mt`. Default 2025 → 2045 trajectories:
+              `WTP₃ = case3_penalty_usd_per_mt`. Default 2025 → 2050 trajectories:
               EU $2,600 → $3,600+ (ETS + ReFuelEU penalty),
               US $1,500 → $2,200 (LCFS + Scope-3 corporate premium),
               APAC $1,300 → $1,800 (Singapore SAF levy + emerging mandates),

@@ -10,7 +10,7 @@ Two demand modes:
       A route_sample_fraction scales up from the sample to the full global fleet.
 
   Mode 2 — "route_targets":
-      Per-route SAF% target columns (saf_pct_2025/2030/2035/2040/2045) in
+      Per-route SAF% target columns (saf_pct_2025/2030/2035/2040/2045/2050) in
       flight_routes.csv are used directly.  Values are linearly interpolated
       between the key years for every model year.  Because the route dataset is
       comprehensive (full global coverage) route_sample_fraction defaults to 1.0
@@ -47,7 +47,7 @@ logger = get_logger("demand_bottom_up")
 _MOCK = os.path.join(os.path.dirname(__file__), "..", "data", "mock")
 
 # SAF% key years present in the routes CSV
-_SAF_KEY_YEARS = [2025, 2030, 2035, 2040, 2045]
+_SAF_KEY_YEARS = [2025, 2030, 2035, 2040, 2045, 2050]
 
 # Fraction of fuel attributed to origin (departure) airport region.
 _ORIGIN_SHARE = 0.60
