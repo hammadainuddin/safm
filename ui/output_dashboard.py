@@ -17,19 +17,40 @@ from ui import charts
 def _history_to_prices_df(history: list) -> pd.DataFrame:
     rows = []
     for s in history:
+        # CORSIA offset price for this year (credit price × lifecycle CI factor).
+        # Used as the effective cost for regions not served by physical SAF.
+        offset_price = s.market.corsia_offset_price_usd_per_mt
+
         for p in s.market.prices:
-            rows.append({
-                "year": p.year,
-                "region": p.region,
-                "clearing_price_usd_per_mt": p.clearing_price_usd_per_mt,
-                "pricing_regime": p.pricing_regime,
-                "shadow_price_usd_per_mt": p.shadow_price_usd_per_mt,
-                "supply_cost_usd_per_mt": p.supply_cost_usd_per_mt,
-                "transport_premium_usd_per_mt": p.transport_premium_usd_per_mt,
-                "mandate_premium_usd_per_mt": p.mandate_premium_usd_per_mt,
-                "carbon_offset_usd_per_mt": p.carbon_offset_usd_per_mt,
-                "margin_usd_per_mt": p.margin_usd_per_mt,
-            })
+            if p.pricing_regime == "corsia_offset":
+                # Region is unserved — buyers fall back to purchasing CORSIA
+                # credits. Show the offset price as the effective clearing cost
+                # so the decomposition chart has a visible bar every year.
+                rows.append({
+                    "year": p.year,
+                    "region": p.region,
+                    "clearing_price_usd_per_mt": round(offset_price, 2),
+                    "pricing_regime": p.pricing_regime,
+                    "shadow_price_usd_per_mt": p.shadow_price_usd_per_mt,
+                    "supply_cost_usd_per_mt": 0.0,
+                    "transport_premium_usd_per_mt": 0.0,
+                    "mandate_premium_usd_per_mt": 0.0,
+                    "carbon_offset_usd_per_mt": round(offset_price, 2),
+                    "margin_usd_per_mt": 0.0,
+                })
+            else:
+                rows.append({
+                    "year": p.year,
+                    "region": p.region,
+                    "clearing_price_usd_per_mt": p.clearing_price_usd_per_mt,
+                    "pricing_regime": p.pricing_regime,
+                    "shadow_price_usd_per_mt": p.shadow_price_usd_per_mt,
+                    "supply_cost_usd_per_mt": p.supply_cost_usd_per_mt,
+                    "transport_premium_usd_per_mt": p.transport_premium_usd_per_mt,
+                    "mandate_premium_usd_per_mt": p.mandate_premium_usd_per_mt,
+                    "carbon_offset_usd_per_mt": p.carbon_offset_usd_per_mt,
+                    "margin_usd_per_mt": p.margin_usd_per_mt,
+                })
 
     # Volume-weighted global price per year.
     # Only regions that received physical SAF (wtp_priority_allocation) contribute.
@@ -554,12 +575,13 @@ def render(history: Optional[list] = None) -> None:
             with st.expander("Price Decomposition", expanded=True):
                 st.markdown(
                     """
-                    Each bar decomposes the clearing price into: **Supply Cost** (LCOSAF of
-                    the dispatched pathway), **Transport** (CIF shipping premium from origin
+                    Each bar decomposes the effective SAF cost into: **Supply Cost** (LCOSAF
+                    of the dispatched pathway), **Transport** (CIF shipping premium from origin
                     region), **Mandate Premium** (additional cost for regulated buyers),
-                    **Carbon Offset** (value of avoided CORSIA offset purchases), and
-                    **Margin** (producer surplus above break-even). Years where a region is
-                    not served by physical SAF appear as zero-height gaps.
+                    **Carbon Offset** (CORSIA credit cost — shown alone for years where the
+                    region is not yet served by physical SAF), and **Margin** (producer surplus
+                    above break-even). A bar composed entirely of Carbon Offset indicates that
+                    the region fell back to CORSIA credits that year.
                     """
                 )
                 region_prices_df = prices_df[prices_df["region"] != "Global (vol-wtd)"]
