@@ -314,18 +314,39 @@ class PriceQuantityClearing:
             is_served  = served_vol >= demand_vol - MARKET_BALANCE_TOL
 
             if not is_served:
-                # Demand unmet by physical SAF — falls to CORSIA offset credits
-                prices.append(RegionalPrice(
-                    year=year, region=d_region,
-                    clearing_price_usd_per_mt=0.0,
-                    pricing_regime="corsia_offset",
-                    shadow_price_usd_per_mt=wtp,
-                    supply_cost_usd_per_mt=0.0,
-                    transport_premium_usd_per_mt=0.0,
-                    mandate_premium_usd_per_mt=0.0,
-                    carbon_offset_usd_per_mt=0.0,
-                    margin_usd_per_mt=0.0,
-                ))
+                if served_vol > MARKET_BALANCE_TOL:
+                    # Partially served — physical SAF did flow to this region but
+                    # did not fully cover demand. Use the actual supply cost and
+                    # transport cost for the volume that was physically delivered.
+                    ms = marginal_supplier.get(d_region)
+                    sc = supply_costs.get(ms, 0.0) if ms else 0.0
+                    tc_avg = (tc_numerator.get(d_region, 0.0) / tc_denominator[d_region]
+                              if tc_denominator.get(d_region, 0.0) > 0 else 0.0)
+                    prices.append(RegionalPrice(
+                        year=year, region=d_region,
+                        clearing_price_usd_per_mt=round(sc + tc_avg, 2),
+                        pricing_regime="partial_supply",
+                        shadow_price_usd_per_mt=wtp,
+                        supply_cost_usd_per_mt=round(sc, 2),
+                        transport_premium_usd_per_mt=round(tc_avg, 2),
+                        mandate_premium_usd_per_mt=0.0,
+                        carbon_offset_usd_per_mt=0.0,
+                        margin_usd_per_mt=0.0,
+                    ))
+                else:
+                    # Completely unserved — no physical SAF at all; falls entirely
+                    # to CORSIA offset credits.
+                    prices.append(RegionalPrice(
+                        year=year, region=d_region,
+                        clearing_price_usd_per_mt=0.0,
+                        pricing_regime="corsia_offset",
+                        shadow_price_usd_per_mt=wtp,
+                        supply_cost_usd_per_mt=0.0,
+                        transport_premium_usd_per_mt=0.0,
+                        mandate_premium_usd_per_mt=0.0,
+                        carbon_offset_usd_per_mt=0.0,
+                        margin_usd_per_mt=0.0,
+                    ))
                 continue
 
             # Clearing price = WTP (buyers pay their willingness-to-pay in a

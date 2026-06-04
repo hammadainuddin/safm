@@ -23,9 +23,9 @@ def _history_to_prices_df(history: list) -> pd.DataFrame:
 
         for p in s.market.prices:
             if p.pricing_regime == "corsia_offset":
-                # Region is unserved — buyers fall back to purchasing CORSIA
-                # credits. Show the offset price as the effective clearing cost
-                # so the decomposition chart has a visible bar every year.
+                # Completely unserved — no physical SAF reached this region.
+                # Show the CORSIA credit cost as the effective cost so the
+                # decomposition chart has a visible bar (Carbon Offset component).
                 rows.append({
                     "year": p.year,
                     "region": p.region,
@@ -39,6 +39,8 @@ def _history_to_prices_df(history: list) -> pd.DataFrame:
                     "margin_usd_per_mt": 0.0,
                 })
             else:
+                # partial_supply and wtp_priority_allocation both carry real
+                # supply cost decomposition data — pass through directly.
                 rows.append({
                     "year": p.year,
                     "region": p.region,
@@ -53,16 +55,17 @@ def _history_to_prices_df(history: list) -> pd.DataFrame:
                 })
 
     # Volume-weighted global price per year.
-    # Only regions that received physical SAF (wtp_priority_allocation) contribute.
-    # min/max across served regions are also recorded so the chart can render a
-    # shaded band showing the regional price spread behind the average line.
+    # Both fully-served (wtp_priority_allocation) and partially-served
+    # (partial_supply) regions contribute — both received physical SAF with a
+    # real price. Completely-unserved (corsia_offset) regions are excluded.
+    # min/max across physically-served regions render the shaded range band.
     for s in history:
         demand_vols = s.demand.volume_by_region(s.year)
         total_vol = 0.0
         weighted_price = 0.0
         served_prices = []
         for p in s.market.prices:
-            if p.pricing_regime == "wtp_priority_allocation":
+            if p.pricing_regime in ("wtp_priority_allocation", "partial_supply"):
                 vol = demand_vols.get(p.region, 0.0)
                 weighted_price += p.clearing_price_usd_per_mt * vol
                 total_vol += vol
@@ -575,13 +578,22 @@ def render(history: Optional[list] = None) -> None:
             with st.expander("Price Decomposition", expanded=True):
                 st.markdown(
                     """
-                    Each bar decomposes the effective SAF cost into: **Supply Cost** (LCOSAF
-                    of the dispatched pathway), **Transport** (CIF shipping premium from origin
-                    region), **Mandate Premium** (additional cost for regulated buyers),
-                    **Carbon Offset** (CORSIA credit cost — shown alone for years where the
-                    region is not yet served by physical SAF), and **Margin** (producer surplus
-                    above break-even). A bar composed entirely of Carbon Offset indicates that
-                    the region fell back to CORSIA credits that year.
+                    Each bar shows the effective cost of SAF for a region in a given year.
+                    Three regimes are possible:
+
+                    **Fully served** (`wtp_priority_allocation`) — demand is completely met by
+                    physical SAF. The bar decomposes into Supply Cost (LCOSAF of the dispatched
+                    pathway), Transport (CIF shipping premium), Mandate Premium, Carbon Offset
+                    value, and Margin (producer surplus above break-even). Clearing price = WTP.
+
+                    **Partially served** (`partial_supply`) — some physical SAF reached the
+                    region but did not fully cover demand; the shortfall fell to CORSIA offsets.
+                    The bar shows the actual Supply Cost and Transport for the SAF that was
+                    physically delivered, priced at marginal cost rather than WTP.
+
+                    **Unserved** (`corsia_offset`) — no physical SAF reached this region; the
+                    entire demand was covered by CORSIA carbon credits. The bar shows only the
+                    Carbon Offset cost (credit price × lifecycle CI factor).
                     """
                 )
                 region_prices_df = prices_df[prices_df["region"] != "Global (vol-wtd)"]

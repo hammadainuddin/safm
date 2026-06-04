@@ -45,7 +45,7 @@ class RegionalPrice(BaseModel):
     @classmethod
     def valid_regime(cls, v: str) -> str:
         valid = {"regulated_refueleu", "voluntary_cost_plus", "wtp_priority_allocation",
-                 "unserved", "corsia_offset"}
+                 "unserved", "corsia_offset", "partial_supply"}
         if v not in valid:
             raise ValueError(f"pricing_regime must be one of {valid}")
         return v
