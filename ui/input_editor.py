@@ -842,51 +842,27 @@ def render() -> None:
             "Co-processing ≈ 0.45 t SAF / t feedstock)."
         )
 
-        # ── Time-series charts ────────────────────────────────────────────────
+        # ── Time-series chart ─────────────────────────────────────────────────
         feedstock_types = sorted(df["feedstock_type"].unique())
-        col_av, col_co = st.columns(2)
-
-        with col_av:
-            st.markdown("**Max Availability (Mt / yr) by Region**")
-            sel_ft_av = st.selectbox(
-                "Feedstock type", feedstock_types, key="fs_ts_feedstock_av",
+        st.markdown("**Max Availability (Mt / yr) by Region**")
+        sel_ft_av = st.selectbox(
+            "Feedstock type", feedstock_types, key="fs_ts_feedstock_av",
+        )
+        av_df = df[df["feedstock_type"] == sel_ft_av].sort_values("year")
+        if not av_df.empty:
+            import plotly.express as _px
+            fig_av = _px.line(
+                av_df, x="year", y="max_available_mt", color="region",
+                markers=True,
+                labels={"max_available_mt": "Mt / yr", "year": "Year", "region": "Region"},
             )
-            av_df = df[df["feedstock_type"] == sel_ft_av].sort_values("year")
-            if not av_df.empty:
-                import plotly.express as _px
-                fig_av = _px.line(
-                    av_df, x="year", y="max_available_mt", color="region",
-                    markers=True,
-                    labels={"max_available_mt": "Mt / yr", "year": "Year", "region": "Region"},
-                )
-                fig_av.update_layout(
-                    height=320, margin=dict(t=20, b=40),
-                    xaxis=dict(tickformat="d"),
-                    hovermode="x unified",
-                    legend=dict(orientation="h", yanchor="top", y=-0.25),
-                )
-                st.plotly_chart(fig_av, use_container_width=True)
-
-        with col_co:
-            st.markdown("**Delivered Cost (USD / t feedstock) by Region**")
-            sel_ft_co = st.selectbox(
-                "Feedstock type", feedstock_types, key="fs_ts_feedstock_co",
+            fig_av.update_layout(
+                height=320, margin=dict(t=20, b=40),
+                xaxis=dict(tickformat="d"),
+                hovermode="x unified",
+                legend=dict(orientation="h", yanchor="top", y=-0.25),
             )
-            co_df = df[df["feedstock_type"] == sel_ft_co].sort_values("year")
-            if not co_df.empty:
-                import plotly.express as _px
-                fig_co = _px.line(
-                    co_df, x="year", y="cost_usd_per_mt", color="region",
-                    markers=True,
-                    labels={"cost_usd_per_mt": "USD / t", "year": "Year", "region": "Region"},
-                )
-                fig_co.update_layout(
-                    height=320, margin=dict(t=20, b=40),
-                    xaxis=dict(tickformat="d"),
-                    hovermode="x unified",
-                    legend=dict(orientation="h", yanchor="top", y=-0.25),
-                )
-                st.plotly_chart(fig_co, use_container_width=True)
+            st.plotly_chart(fig_av, use_container_width=True)
 
         # ── Single-year snapshot ──────────────────────────────────────────────
         year_options = sorted(df["year"].unique())
