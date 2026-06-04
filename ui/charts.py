@@ -876,34 +876,62 @@ def global_price_chart(df: pd.DataFrame) -> go.Figure:
     mn  = gdf["min_price_usd_per_mt"].tolist() if "min_price_usd_per_mt" in gdf.columns else avg
     mx  = gdf["max_price_usd_per_mt"].tolist() if "max_price_usd_per_mt" in gdf.columns else avg
 
+    import math
+
+    def _sparse_labels(series, label_years, fmt="${}"):
+        """Return text list with a formatted label only at key years; blank elsewhere."""
+        return [
+            fmt.format(f"{v:,.0f}") if (y in label_years and v is not None
+                                        and not (isinstance(v, float) and math.isnan(v)))
+            else ""
+            for y, v in zip(years, series)
+        ]
+
+    key_years = {y for y in years if y % 5 == 0}
+    lbl_mx  = _sparse_labels(mx,  key_years)
+    lbl_avg = _sparse_labels(avg, key_years)
+    lbl_mn  = _sparse_labels(mn,  key_years)
+
     fig = go.Figure()
 
-    # Upper bound — invisible anchor for the fill-between
+    # Upper bound — anchor for fill-between; carries Max data labels
     fig.add_trace(go.Scatter(
-        x=years, y=mx, mode="lines",
-        line=dict(width=0), showlegend=False, hoverinfo="skip",
+        x=years, y=mx,
+        mode="lines+text",
+        line=dict(width=0), showlegend=False,
+        hovertemplate="Max: $%{y:,.0f}/MT<extra></extra>",
+        text=lbl_mx,
+        textposition="top center",
+        textfont=dict(size=10, color="rgba(90,130,180,0.85)"),
         connectgaps=True,
     ))
 
-    # Lower bound — filled up to the max trace, forming the shaded band
+    # Lower bound — filled up to the max trace; carries Min data labels
     fig.add_trace(go.Scatter(
-        x=years, y=mn, mode="lines",
+        x=years, y=mn,
+        mode="lines+text",
         line=dict(width=0),
         fill="tonexty",
         fillcolor="rgba(135, 206, 250, 0.25)",
         name="Regional price range (min–max)",
         hovertemplate="Min: $%{y:,.0f}/MT<extra></extra>",
+        text=lbl_mn,
+        textposition="bottom center",
+        textfont=dict(size=10, color="rgba(90,130,180,0.85)"),
         connectgaps=True,
     ))
 
-    # Volume-weighted average line on top
+    # Volume-weighted average line on top; carries Avg data labels
     fig.add_trace(go.Scatter(
         x=years, y=avg,
-        mode="lines+markers",
+        mode="lines+markers+text",
         line=dict(color="steelblue", width=3),
         marker=dict(size=7, color="steelblue"),
         name="Vol-weighted average",
         hovertemplate="Avg: $%{y:,.0f}/MT<extra>Global average</extra>",
+        text=lbl_avg,
+        textposition="top center",
+        textfont=dict(size=10, color="steelblue"),
         connectgaps=True,
     ))
 
