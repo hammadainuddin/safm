@@ -698,20 +698,70 @@ def idle_capacity_chart(df: pd.DataFrame) -> go.Figure:
 
 def global_price_chart(df: pd.DataFrame) -> go.Figure:
     """
-    Volume-weighted global SAF market price over time.
-    df: prices DataFrame filtered to region == 'Global (vol-wtd)'
+    Volume-weighted global SAF market price with min–max range band.
+
+    Average line: volume-weighted clearing price across all wtp_priority_allocation
+    regions per year.  Shaded area: spread between the lowest- and highest-priced
+    served region that year, illustrating the regional composition effect.
+
+    Years with no physical SAF clearing are represented as NaN; connectgaps=True
+    interpolates a straight line across any such gaps so the chart is always
+    continuous from 2025 to 2045.
     """
-    gdf = df[df["region"] == "Global (vol-wtd)"].sort_values("year")
-    if gdf.empty:
-        return go.Figure().update_layout(title="No global price data available")
-    fig = px.line(
-        gdf, x="year", y="clearing_price_usd_per_mt",
-        title="Volume-Weighted Global SAF Market Price (USD/MT)",
-        labels={"clearing_price_usd_per_mt": "Price (USD/MT)", "year": "Year"},
-        markers=True,
+    from config.settings import HORIZON_YEARS
+
+    gdf = (
+        df[df["region"] == "Global (vol-wtd)"]
+        .sort_values("year")
+        .set_index("year")
+        .reindex(HORIZON_YEARS)
     )
-    fig.update_traces(line=dict(color="lightskyblue", width=3))
-    fig.update_layout(xaxis=dict(tickformat="d"), hovermode="x unified")
+    if gdf["clearing_price_usd_per_mt"].isna().all():
+        return go.Figure().update_layout(title="No global price data available")
+
+    years = list(HORIZON_YEARS)
+    avg = gdf["clearing_price_usd_per_mt"].tolist()
+    mn  = gdf["min_price_usd_per_mt"].tolist() if "min_price_usd_per_mt" in gdf.columns else avg
+    mx  = gdf["max_price_usd_per_mt"].tolist() if "max_price_usd_per_mt" in gdf.columns else avg
+
+    fig = go.Figure()
+
+    # Upper bound — invisible anchor for the fill-between
+    fig.add_trace(go.Scatter(
+        x=years, y=mx, mode="lines",
+        line=dict(width=0), showlegend=False, hoverinfo="skip",
+        connectgaps=True,
+    ))
+
+    # Lower bound — filled up to the max trace, forming the shaded band
+    fig.add_trace(go.Scatter(
+        x=years, y=mn, mode="lines",
+        line=dict(width=0),
+        fill="tonexty",
+        fillcolor="rgba(135, 206, 250, 0.25)",
+        name="Regional price range (min–max)",
+        hovertemplate="Min: $%{y:,.0f}/MT<extra></extra>",
+        connectgaps=True,
+    ))
+
+    # Volume-weighted average line on top
+    fig.add_trace(go.Scatter(
+        x=years, y=avg,
+        mode="lines+markers",
+        line=dict(color="steelblue", width=3),
+        marker=dict(size=7, color="steelblue"),
+        name="Vol-weighted average",
+        hovertemplate="Avg: $%{y:,.0f}/MT<extra>Global average</extra>",
+        connectgaps=True,
+    ))
+
+    fig.update_layout(
+        title="Volume-Weighted Global SAF Market Price (USD/MT)",
+        xaxis=dict(tickformat="d", tickvals=years, title="Year"),
+        yaxis=dict(title="Price (USD/MT)"),
+        hovermode="x unified",
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
     return fig
 
 

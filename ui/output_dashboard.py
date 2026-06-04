@@ -31,24 +31,28 @@ def _history_to_prices_df(history: list) -> pd.DataFrame:
                 "margin_usd_per_mt": p.margin_usd_per_mt,
             })
 
-    # Add volume-weighted global price row per year. Regions on the corsia_offset
-    # regime are excluded automatically because we filter on pricing_regime, so
-    # partial-supply years still produce a meaningful weighted average over the
-    # regions that actually received physical SAF.
+    # Volume-weighted global price per year.
+    # Only regions that received physical SAF (wtp_priority_allocation) contribute.
+    # min/max across served regions are also recorded so the chart can render a
+    # shaded band showing the regional price spread behind the average line.
     for s in history:
         demand_vols = s.demand.volume_by_region(s.year)
         total_vol = 0.0
         weighted_price = 0.0
+        served_prices = []
         for p in s.market.prices:
             if p.pricing_regime == "wtp_priority_allocation":
                 vol = demand_vols.get(p.region, 0.0)
                 weighted_price += p.clearing_price_usd_per_mt * vol
                 total_vol += vol
+                served_prices.append(p.clearing_price_usd_per_mt)
         if total_vol > 0:
             rows.append({
                 "year": s.year,
                 "region": "Global (vol-wtd)",
                 "clearing_price_usd_per_mt": round(weighted_price / total_vol, 2),
+                "min_price_usd_per_mt":      round(min(served_prices), 2),
+                "max_price_usd_per_mt":      round(max(served_prices), 2),
                 "pricing_regime": "volume_weighted",
                 "shadow_price_usd_per_mt": 0.0,
                 "supply_cost_usd_per_mt": 0.0,
@@ -123,10 +127,11 @@ def _global_price_narrative(prices_df: pd.DataFrame, history: list) -> str:
         span = (f"{no_price_years[0]}" if len(no_price_years) == 1
                 else f"{no_price_years[0]}–{no_price_years[-1]}")
         parts.append(
-            f"**{span} — no physical clearing price.**  "
+            f"**{span} — no physical clearing price.**\n\n"
             "Throughout this period total SAF supply cannot fully satisfy any single "
-            "region's demand; all regions remain partially covered with the shortfall "
-            "met by CORSIA carbon-offset credits, so no clearing price registers."
+            "region's demand. All regions remain partially covered, with the shortfall "
+            "met by CORSIA carbon-offset credits, so no clearing price registers on "
+            "the chart."
         )
 
     # ── Per-segment narrative ─────────────────────────────────────────────────
@@ -138,9 +143,9 @@ def _global_price_narrative(prices_df: pd.DataFrame, history: list) -> str:
         if i == 0:
             parts.append(
                 f"**{yr_range} — {region} is the first fully-served region "
-                f"({price_range}).**  "
+                f"({price_range}).**\n\n"
                 f"With supply allocated to the highest-WTP buyers first, {region} "
-                f"reaches 100 % physical coverage before any other region. Its "
+                f"reaches 100% physical coverage before any other region. Its "
                 f"clearing price equals the {region} regional WTP"
                 + (f" and rises from ${lo:,} to ${hi:,}/MT as WTP grows year-on-year."
                    if lo != hi else ".")
@@ -151,22 +156,23 @@ def _global_price_narrative(prices_df: pd.DataFrame, history: list) -> str:
             direction = "lower" if lo < prev_hi else "higher"
             delta = abs(lo - prev_hi)
             parts.append(
-                f"**{yr_range} — composition shift: {prev_region_name} → {region} "
-                f"({price_range}).**  "
+                f"**{yr_range} — composition shift: {prev_region_name} to "
+                f"{region} ({price_range}).**\n\n"
                 f"{prev_region_name} demand growth outpaces new capacity additions, "
                 f"pushing it back to partial coverage. {region} simultaneously "
                 f"crosses the fully-served threshold at a {direction} regional WTP "
-                f"(~${prev_hi:,} → ~${lo:,}/MT, a ${delta:,}/MT step). "
-                "This is a composition change — not a movement in SAF production cost."
+                f"(${prev_hi:,} to ${lo:,}/MT, a ${delta:,}/MT step). "
+                "This is a composition change, not a movement in SAF production cost."
                 + (f" The price then trends to ${hi:,}/MT by {yr_e} "
                    f"as {region}'s WTP evolves." if lo != hi else "")
             )
 
     parts.append(
-        "*Note: in any year where only one region is fully served the global price "
-        "equals that region's WTP exactly. The **Compliance Cost Curve** chart below "
-        "provides a more representative picture of market-wide costs by blending "
-        "physical SAF and CORSIA offset costs across all regions proportionally.*"
+        "Note: in any year where only one region is fully served, the global average "
+        "equals that region's WTP exactly. The shaded band shows the spread between "
+        "the lowest- and highest-priced served regions. The Compliance Cost Curve "
+        "chart below gives a fuller picture by blending physical SAF prices and "
+        "CORSIA offset costs across all regions proportionally."
     )
 
     return "\n\n".join(parts)
