@@ -44,7 +44,7 @@ All output charts are interactive (zoomable, hoverable, with exportable data).
 - *Single region — all years*: a single stacked-bar chart for a selected region spanning the full 2025–2050 horizon.
 - *All regions — single year*: a year slider shows all six regions side-by-side for a selected year.
 
-Each bar reflects one of three pricing regimes. **Fully served** (`wtp_priority_allocation`) — demand completely met by physical SAF; bar decomposes into Supply Cost (LCOSAF of the dispatched pathway), Transport (CIF shipping premium), Mandate Premium, and Margin; clearing price equals WTP. **Partially served** (`partial_supply`) — physical SAF reached the region but didn't cover all demand; bar shows the actual Supply Cost and Transport for the volume physically delivered, priced at marginal cost rather than WTP. **Unserved** (`corsia_offset`) — no physical SAF; entire demand met by CORSIA carbon credits; bar shows only the Carbon Offset cost.
+Each bar reflects one of three pricing regimes. **Fully served** (`wtp_priority_allocation`) — demand completely met by physical SAF; bar decomposes into Supply Cost (LCOSAF of the dispatched pathway), Transport (CIF shipping premium), Mandate Premium, and Margin; clearing price equals WTP. **Partially served** (`partial_supply`) — physical SAF reached the region but didn't cover all demand; bar decomposes into Supply Cost, Transport, and Margin at the region's WTP — same price basis as a fully served region. **Unserved** (`corsia_offset`) — no physical SAF; entire demand met by CORSIA carbon credits; bar shows only the Carbon Offset cost.
 
 ### Tab 4 — Scenarios
 
@@ -193,7 +193,7 @@ Each region ends the year in one of three states:
 | Regime | Condition | Clearing price |
 |--------|-----------|----------------|
 | `wtp_priority_allocation` | Fully served by physical SAF | Regional WTP |
-| `partial_supply` | Physical SAF reached region but demand not fully covered | Marginal supply cost + transport (cost-of-supply basis) |
+| `partial_supply` | Physical SAF reached region but demand not fully covered | Regional WTP (same basis as fully served) |
 | `corsia_offset` | No physical SAF at all | CORSIA credit price × lifecycle CI factor |
 
 The volume-weighted global average price includes both fully-served and partially-served regions (both received real physical SAF at a real price), with a min–max shaded band showing the spread across those regions.

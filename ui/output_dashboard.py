@@ -588,8 +588,8 @@ def render(history: Optional[list] = None) -> None:
 
                     **Partially served** (`partial_supply`) — some physical SAF reached the
                     region but did not fully cover demand; the shortfall fell to CORSIA offsets.
-                    The bar shows the actual Supply Cost and Transport for the SAF that was
-                    physically delivered, priced at marginal cost rather than WTP.
+                    The bar decomposes into Supply Cost, Transport, and Margin at the region's
+                    WTP — the same price basis as a fully served region.
 
                     **Unserved** (`corsia_offset`) — no physical SAF reached this region; the
                     entire demand was covered by CORSIA carbon credits. The bar shows only the

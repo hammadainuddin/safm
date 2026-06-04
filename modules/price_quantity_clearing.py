@@ -315,23 +315,25 @@ class PriceQuantityClearing:
 
             if not is_served:
                 if served_vol > MARKET_BALANCE_TOL:
-                    # Partially served — physical SAF did flow to this region but
-                    # did not fully cover demand. Use the actual supply cost and
-                    # transport cost for the volume that was physically delivered.
+                    # Partially served — physical SAF did flow to this region.
+                    # Clearing price = WTP (same as fully served), reflecting
+                    # that buyers still pay their willingness-to-pay for the
+                    # SAF that was physically delivered.
                     ms = marginal_supplier.get(d_region)
                     sc = supply_costs.get(ms, 0.0) if ms else 0.0
                     tc_avg = (tc_numerator.get(d_region, 0.0) / tc_denominator[d_region]
                               if tc_denominator.get(d_region, 0.0) > 0 else 0.0)
+                    margin = max(0.0, wtp - sc - tc_avg)
                     prices.append(RegionalPrice(
                         year=year, region=d_region,
-                        clearing_price_usd_per_mt=round(sc + tc_avg, 2),
+                        clearing_price_usd_per_mt=round(wtp, 2),
                         pricing_regime="partial_supply",
-                        shadow_price_usd_per_mt=wtp,
+                        shadow_price_usd_per_mt=round(sc + tc_avg, 2),
                         supply_cost_usd_per_mt=round(sc, 2),
                         transport_premium_usd_per_mt=round(tc_avg, 2),
                         mandate_premium_usd_per_mt=0.0,
                         carbon_offset_usd_per_mt=0.0,
-                        margin_usd_per_mt=0.0,
+                        margin_usd_per_mt=round(margin, 2),
                     ))
                 else:
                     # Completely unserved — no physical SAF at all; falls entirely
