@@ -147,7 +147,7 @@ def _global_price_narrative(prices_df: pd.DataFrame, history: list) -> str:
                 f"With supply allocated to the highest-WTP buyers first, {region} "
                 f"reaches 100% physical coverage before any other region. Its "
                 f"clearing price equals the {region} regional WTP"
-                + (f" and rises from ${lo:,} to ${hi:,}/MT as WTP grows year-on-year."
+                + (f" and rises from {lo:,} to {hi:,} USD/MT as WTP grows year-on-year."
                    if lo != hi else ".")
             )
         else:
@@ -161,9 +161,9 @@ def _global_price_narrative(prices_df: pd.DataFrame, history: list) -> str:
                 f"{prev_region_name} demand growth outpaces new capacity additions, "
                 f"pushing it back to partial coverage. {region} simultaneously "
                 f"crosses the fully-served threshold at a {direction} regional WTP "
-                f"(${prev_hi:,} to ${lo:,}/MT, a ${delta:,}/MT step). "
+                f"({prev_hi:,} to {lo:,} USD/MT, a {delta:,} USD/MT step). "
                 "This is a composition change, not a movement in SAF production cost."
-                + (f" The price then trends to ${hi:,}/MT by {yr_e} "
+                + (f" The price then trends to {hi:,} USD/MT by {yr_e} "
                    f"as {region}'s WTP evolves." if lo != hi else "")
             )
 
