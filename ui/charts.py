@@ -26,8 +26,15 @@ def price_line_chart(df: pd.DataFrame) -> go.Figure:
 
 
 def price_decomposition_bar(df: pd.DataFrame, region: str) -> go.Figure:
-    """Stacked bar of price components for a single region."""
-    region_df = df[df["region"] == region].sort_values("year")
+    """Stacked bar of price components for a single region, all years."""
+    from config.settings import HORIZON_YEARS
+    region_df = (
+        df[df["region"] == region]
+        .sort_values("year")
+        .set_index("year")
+        .reindex(HORIZON_YEARS)
+        .reset_index()
+    )
     components = [
         "supply_cost_usd_per_mt",
         "transport_premium_usd_per_mt",
@@ -42,18 +49,163 @@ def price_decomposition_bar(df: pd.DataFrame, region: str) -> go.Figure:
         "carbon_offset_usd_per_mt": "Carbon Offset",
         "margin_usd_per_mt": "Margin",
     }
+    COLORS = {
+        "supply_cost_usd_per_mt":      "#2196F3",
+        "transport_premium_usd_per_mt": "#FF9800",
+        "mandate_premium_usd_per_mt":  "#9C27B0",
+        "carbon_offset_usd_per_mt":    "#4CAF50",
+        "margin_usd_per_mt":           "#607D8B",
+    }
     fig = go.Figure()
     for col in components:
         if col in region_df.columns:
             fig.add_trace(go.Bar(
-                x=region_df["year"], y=region_df[col], name=labels.get(col, col)
+                x=region_df["year"],
+                y=region_df[col].fillna(0),
+                name=labels.get(col, col),
+                marker_color=COLORS.get(col),
+                hovertemplate=f"{labels.get(col, col)}: $%{{y:,.0f}}/MT<extra></extra>",
             ))
     fig.update_layout(
         barmode="stack",
         title=f"Price Decomposition — {region}",
-        xaxis_title="Year", yaxis_title="USD/MT",
+        xaxis=dict(tickformat="d", tickvals=list(HORIZON_YEARS), title="Year"),
+        yaxis_title="USD/MT",
         legend_title="Component",
-        xaxis=dict(tickformat="d"),
+        hovermode="x unified",
+    )
+    return fig
+
+
+def price_decomposition_facet(df: pd.DataFrame) -> go.Figure:
+    """
+    2×3 subplot grid — one stacked-bar panel per region, all years shown.
+    Years with no physical clearing appear as zero-height gaps so the x-axis
+    is always complete across the full horizon.
+    """
+    from plotly.subplots import make_subplots
+    from config.settings import HORIZON_YEARS, REGIONS
+
+    components = [
+        "supply_cost_usd_per_mt",
+        "transport_premium_usd_per_mt",
+        "mandate_premium_usd_per_mt",
+        "carbon_offset_usd_per_mt",
+        "margin_usd_per_mt",
+    ]
+    labels = {
+        "supply_cost_usd_per_mt":      "Supply Cost",
+        "transport_premium_usd_per_mt": "Transport",
+        "mandate_premium_usd_per_mt":  "Mandate Premium",
+        "carbon_offset_usd_per_mt":    "Carbon Offset",
+        "margin_usd_per_mt":           "Margin",
+    }
+    COLORS = {
+        "supply_cost_usd_per_mt":      "#2196F3",
+        "transport_premium_usd_per_mt": "#FF9800",
+        "mandate_premium_usd_per_mt":  "#9C27B0",
+        "carbon_offset_usd_per_mt":    "#4CAF50",
+        "margin_usd_per_mt":           "#607D8B",
+    }
+
+    regions = [r for r in REGIONS if r in df["region"].unique()]
+    n_cols = 3
+    n_rows = -(-len(regions) // n_cols)  # ceiling division
+
+    fig = make_subplots(
+        rows=n_rows, cols=n_cols,
+        subplot_titles=regions,
+        shared_yaxes=False,
+        vertical_spacing=0.12,
+        horizontal_spacing=0.08,
+    )
+
+    shown_in_legend = set()
+    for idx, region in enumerate(regions):
+        row = idx // n_cols + 1
+        col = idx % n_cols + 1
+        rdf = (
+            df[df["region"] == region]
+            .sort_values("year")
+            .set_index("year")
+            .reindex(HORIZON_YEARS)
+            .reset_index()
+        )
+        for comp in components:
+            if comp not in rdf.columns:
+                continue
+            show_legend = comp not in shown_in_legend
+            if show_legend:
+                shown_in_legend.add(comp)
+            fig.add_trace(
+                go.Bar(
+                    x=rdf["year"],
+                    y=rdf[comp].fillna(0),
+                    name=labels[comp],
+                    marker_color=COLORS[comp],
+                    showlegend=show_legend,
+                    legendgroup=comp,
+                    hovertemplate=f"{labels[comp]}: $%{{y:,.0f}}/MT<extra>{region}</extra>",
+                ),
+                row=row, col=col,
+            )
+        # x-axis tick formatting per subplot
+        fig.update_xaxes(tickformat="d", tickangle=45, row=row, col=col)
+
+    fig.update_layout(
+        barmode="stack",
+        title="Price Decomposition by Region — All Years",
+        height=320 * n_rows,
+        legend_title="Component",
+        hovermode="x unified",
+    )
+    return fig
+
+
+def price_decomposition_by_year(df: pd.DataFrame, year: int) -> go.Figure:
+    """
+    Stacked bar for a single year showing all regions side-by-side.
+    """
+    components = [
+        "supply_cost_usd_per_mt",
+        "transport_premium_usd_per_mt",
+        "mandate_premium_usd_per_mt",
+        "carbon_offset_usd_per_mt",
+        "margin_usd_per_mt",
+    ]
+    labels = {
+        "supply_cost_usd_per_mt":      "Supply Cost",
+        "transport_premium_usd_per_mt": "Transport",
+        "mandate_premium_usd_per_mt":  "Mandate Premium",
+        "carbon_offset_usd_per_mt":    "Carbon Offset",
+        "margin_usd_per_mt":           "Margin",
+    }
+    COLORS = {
+        "supply_cost_usd_per_mt":      "#2196F3",
+        "transport_premium_usd_per_mt": "#FF9800",
+        "mandate_premium_usd_per_mt":  "#9C27B0",
+        "carbon_offset_usd_per_mt":    "#4CAF50",
+        "margin_usd_per_mt":           "#607D8B",
+    }
+    year_df = df[df["year"] == year].copy()
+    fig = go.Figure()
+    for comp in components:
+        if comp not in year_df.columns:
+            continue
+        fig.add_trace(go.Bar(
+            x=year_df["region"],
+            y=year_df[comp].fillna(0),
+            name=labels[comp],
+            marker_color=COLORS[comp],
+            hovertemplate=f"{labels[comp]}: $%{{y:,.0f}}/MT<extra></extra>",
+        ))
+    fig.update_layout(
+        barmode="stack",
+        title=f"Price Decomposition by Region — {year}",
+        xaxis_title="Region",
+        yaxis_title="USD/MT",
+        legend_title="Component",
+        hovermode="x unified",
     )
     return fig
 

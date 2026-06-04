@@ -551,29 +551,51 @@ def render(history: Optional[list] = None) -> None:
                 st.info("No model history loaded.")
 
             # ── Per-region price decomposition ────────────────────────────────
-            with st.expander("Per-Region Price Decomposition"):
+            with st.expander("Price Decomposition", expanded=True):
                 st.markdown(
                     """
-                    The stacked bar chart decomposes the clearing price for a selected region
-                    into its constituent components: **supply cost** (LCOSAF of the dispatched
-                    supply source), **transport premium** (CIF cost of shipping from the origin
-                    region), **mandate premium** (additional cost borne by regulated buyers),
-                    **carbon offset** (value of avoided CORSIA offset purchases), and **margin**
-                    (producer surplus above break-even). In the current WTP-priority clearing
-                    model, the clearing price equals the region's WTP, so the sum of components
-                    equals WTP by construction.
+                    Each bar decomposes the clearing price into: **Supply Cost** (LCOSAF of
+                    the dispatched pathway), **Transport** (CIF shipping premium from origin
+                    region), **Mandate Premium** (additional cost for regulated buyers),
+                    **Carbon Offset** (value of avoided CORSIA offset purchases), and
+                    **Margin** (producer surplus above break-even). Years where a region is
+                    not served by physical SAF appear as zero-height gaps.
                     """
                 )
                 region_prices_df = prices_df[prices_df["region"] != "Global (vol-wtd)"]
                 if not region_prices_df.empty:
-                    regions = sorted(region_prices_df["region"].unique())
-                    sel_region = st.selectbox(
-                        "Region for price decomposition", regions, key="price_region"
+                    decomp_view = st.radio(
+                        "View",
+                        ["All regions — all years", "Single region — all years", "All regions — single year"],
+                        horizontal=True,
+                        key="decomp_view",
                     )
-                    st.plotly_chart(
-                        charts.price_decomposition_bar(region_prices_df, sel_region),
-                        use_container_width=True,
-                    )
+
+                    if decomp_view == "All regions — all years":
+                        st.plotly_chart(
+                            charts.price_decomposition_facet(region_prices_df),
+                            use_container_width=True,
+                        )
+
+                    elif decomp_view == "Single region — all years":
+                        regions = sorted(region_prices_df["region"].unique())
+                        sel_region = st.selectbox(
+                            "Region", regions, key="decomp_region"
+                        )
+                        st.plotly_chart(
+                            charts.price_decomposition_bar(region_prices_df, sel_region),
+                            use_container_width=True,
+                        )
+
+                    else:  # All regions — single year
+                        years = sorted(region_prices_df["year"].unique())
+                        sel_year = st.select_slider(
+                            "Year", options=years, key="decomp_year"
+                        )
+                        st.plotly_chart(
+                            charts.price_decomposition_by_year(region_prices_df, sel_year),
+                            use_container_width=True,
+                        )
 
             st.subheader("Raw Price Data")
             st.dataframe(
