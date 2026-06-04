@@ -38,7 +38,13 @@ All output charts are interactive (zoomable, hoverable, with exportable data).
 
 **Trade Flows** presents a Sankey diagram of inter-regional SAF trade (exporter regions on the left, importer regions on the right, flow width proportional to traded volume). Below the Sankey, ranked bar charts show the top exporting and importing regions for a user-selected year, and a detailed trade flow table lists every origin–destination–pathway flow with volume, transport cost, and CIF price.
 
-**Price Decomposition** displays a stacked bar chart breaking each region's clearing price into its cost components (feedstock, processing OPEX, CAPEX annuity, transport) alongside a narrative paragraph explaining the dominant pricing regime and how the global average price composition shifts over the horizon.
+**Price Decomposition** shows every region's effective SAF cost broken down into components for every year across the full horizon. Three view modes are available via a radio selector:
+
+- *All regions — all years*: a 2×3 faceted grid with one stacked-bar panel per region, all years on the x-axis. Every year is always present; years with no data for a given component show a zero-height gap rather than being omitted.
+- *Single region — all years*: a single stacked-bar chart for a selected region spanning the full 2025–2050 horizon.
+- *All regions — single year*: a year slider shows all six regions side-by-side for a selected year.
+
+Each bar reflects one of three pricing regimes. **Fully served** (`wtp_priority_allocation`) — demand completely met by physical SAF; bar decomposes into Supply Cost (LCOSAF of the dispatched pathway), Transport (CIF shipping premium), Mandate Premium, and Margin; clearing price equals WTP. **Partially served** (`partial_supply`) — physical SAF reached the region but didn't cover all demand; bar shows the actual Supply Cost and Transport for the volume physically delivered, priced at marginal cost rather than WTP. **Unserved** (`corsia_offset`) — no physical SAF; entire demand met by CORSIA carbon credits; bar shows only the Carbon Offset cost.
 
 ### Tab 4 — Scenarios
 
@@ -52,10 +58,10 @@ Each simulation year runs four sequential steps:
 
 | Step | Module | What it does |
 |------|--------|-------------|
-| 1. Demand | `BottomUpDemandModule` | Derives SAF demand from 1,274 international routes and domestic blending mandates. Two modes: **Single CORSIA schedule** (global mandatory fraction × route-sample scaling) or **Country-specific SAF targets** (per-route SAF% interpolated across 2025/2030/2035/2040/2045 key years, no sampling). Demand attributed 60/40 origin/destination per CORSIA uplift rules. |
+| 1. Demand | `BottomUpDemandModule` | Derives SAF demand from 1,274 international routes and domestic blending mandates. Two modes: **Single CORSIA schedule** (global mandatory fraction × route-sample scaling) or **Country-specific SAF targets** (per-route SAF% interpolated across 2025/2030/2035/2040/2045/2050 key years, no sampling). Demand attributed 60/40 origin/destination per CORSIA uplift rules. |
 | 2. Expansion | `CapacityExpansionModule` | Assesses supply gap → solves a least-cost Pyomo LP → ranks candidate plants by LCOSAF → brings new plants online subject to feedstock availability and regional refinery co-processing caps. |
 | 3. WTP | `WTPModel` | Computes regional WTP as `max(Case 1: jet+CORSIA, Case 2: LCOSAF@IRR, Case 3: policy penalty)`. |
-| 4. Clearing | `PriceQuantityClearing` | Dispatches cheapest-CIF supply to highest-WTP regions. Domestic supply is reserved first (configurable share per region). Unserved demand routes to CORSIA carbon offsets. Clearing price = WTP of each served region. |
+| 4. Clearing | `PriceQuantityClearing` | Dispatches cheapest-CIF supply to highest-WTP regions. Domestic supply is reserved first (configurable share per region). Produces three pricing regimes per region: `wtp_priority_allocation` (fully served, price = WTP), `partial_supply` (partially served, price = marginal cost), `corsia_offset` (unserved, price = CORSIA credit). |
 
 Capacity state accumulates year-over-year. Endogenous plants built in year *t* are available from year *t+1*.
 
@@ -135,7 +141,7 @@ saf_market_model/
 A global `mandatory_fraction` from `corsia_schedule.csv` is applied uniformly to all CORSIA-eligible international routes. A `route_sample_fraction` scales the sample-route volumes up to represent full global traffic. Domestic demand is added from `national_blending_mandates.csv`.
 
 **Mode 2: Country-Specific SAF Targets** (`route_targets`)
-Each of the 1,274 routes carries its own SAF% columns for key years 2025, 2030, 2035, 2040, and 2045. The model linearly interpolates between key years for every simulated year. `route_sample_fraction` is fixed at 1.0 (the full dataset requires no scaling). Domestic mandates are still applied.
+Each of the 1,274 routes carries its own SAF% columns for key years 2025, 2030, 2035, 2040, 2045, and 2050. The model linearly interpolates between key years for every simulated year. `route_sample_fraction` is fixed at 1.0 (the full dataset requires no scaling). Domestic mandates are still applied.
 
 Demand is attributed 60% to the origin region and 40% to the destination region (CORSIA uplift-point rule). MULTI-destination aggregate routes are attributed 100% to the origin.
 
@@ -180,9 +186,17 @@ New plants are ranked by LCOSAF and brought online at the start of the following
 
 1. **Domestic-first phase**: each region's supply is reserved for local consumption up to its `domestic_share` fraction.
 2. **Export pool phase**: surplus supply enters the cross-regional pool; it is dispatched cheapest-CIF first to regions in descending WTP order.
-3. **Offset phase**: any unserved demand is routed to CORSIA carbon offsets at the prevailing offset price.
+3. **Offset phase**: any remaining unserved demand is routed to CORSIA carbon offsets at the prevailing credit price.
 
-Clearing price for each served region = that region's WTP. The volume-weighted global average price (shown in the Outputs tab) covers only regions served by physical SAF, with a min–max band showing the spread across served regions.
+Each region ends the year in one of three states:
+
+| Regime | Condition | Clearing price |
+|--------|-----------|----------------|
+| `wtp_priority_allocation` | Fully served by physical SAF | Regional WTP |
+| `partial_supply` | Physical SAF reached region but demand not fully covered | Marginal supply cost + transport (cost-of-supply basis) |
+| `corsia_offset` | No physical SAF at all | CORSIA credit price × lifecycle CI factor |
+
+The volume-weighted global average price includes both fully-served and partially-served regions (both received real physical SAF at a real price), with a min–max shaded band showing the spread across those regions.
 
 ### Committed Capacity
 
