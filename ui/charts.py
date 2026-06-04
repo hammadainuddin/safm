@@ -878,10 +878,11 @@ def global_price_chart(df: pd.DataFrame) -> go.Figure:
 
     fig = go.Figure()
 
-    # Upper bound — invisible anchor for the fill-between
+    # Upper bound — invisible anchor for the fill-between; contributes Max to hover
     fig.add_trace(go.Scatter(
         x=years, y=mx, mode="lines",
-        line=dict(width=0), showlegend=False, hoverinfo="skip",
+        line=dict(width=0), showlegend=False,
+        hovertemplate="Max: $%{y:,.0f}/MT<extra></extra>",
         connectgaps=True,
     ))
 
