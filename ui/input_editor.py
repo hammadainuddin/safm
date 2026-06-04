@@ -838,8 +838,8 @@ def render() -> None:
             "`cost_usd_per_mt` is the **delivered price per metric tonne of feedstock** "
             "(e.g. UCO ≈ \$350/t). The same \"MT\" suffix in this CSV is overloaded — volumes "
             "are millions of tonnes, prices are per single tonne. SAF yield per tonne of "
-            "feedstock varies by pathway (HEFA ≈ 0.80, ATJ ≈ 0.40, FT ≈ 0.25, PtL ≈ 0.36, "
-            "Co-processing ≈ 1.67 t SAF / t feedstock)."
+            "feedstock varies by pathway (HEFA ≈ 0.80, ATJ ≈ 0.22, FT-MSW ≈ 0.15, PtL ≈ 0.28, "
+            "Co-processing ≈ 0.45 t SAF / t feedstock)."
         )
 
         year_options = sorted(df["year"].unique())
@@ -1100,7 +1100,7 @@ def render() -> None:
             - **Processing OPEX** — non-feedstock operating cost in USD per **MT SAF** produced
             - **Feedstock $/t feed** — delivered feedstock cost per **MT of raw feedstock**
             - **Yield** — MT SAF produced per **MT of raw feedstock** (e.g. HEFA ≈ 0.80,
-              ATJ ≈ 0.40, FT ≈ 0.25, PtL ≈ 0.36, Co-processing ≈ 1.67)
+              ATJ ≈ 0.22, FT-MSW ≈ 0.15, PtL ≈ 0.28, Co-processing ≈ 0.45)
             """
         )
 

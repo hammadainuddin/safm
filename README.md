@@ -1,21 +1,63 @@
 # SAF Global Market Model
 
-A 20-year (2025–2045) dynamic simulation of the global Sustainable Aviation Fuel (SAF) market. The model combines bottom-up flight-demand estimation, least-cost capacity expansion, willingness-to-pay (WTP) pricing, and regional trade clearing — all presented through an interactive Streamlit dashboard.
+A 20-year (2025–2045) dynamic simulation of the global Sustainable Aviation Fuel (SAF) market. The model combines bottom-up flight-demand estimation from a comprehensive 1,274-route dataset, least-cost capacity expansion, willingness-to-pay (WTP) pricing, and regional price–quantity clearing — all presented through an interactive four-tab Streamlit dashboard.
 
 ---
 
-## Overview
+## Dashboard
 
-Each model year runs four sequential steps:
+### Tab 1 — Model Inputs
+Edit every model input directly in the browser. Changes auto-save to the CSV layer and immediately refresh the preview charts.
 
-| Step | Module | Description |
+![Inputs – Demand Module](docs/screenshots/tab1_demand.png)
+*Demand Module: CORSIA schedule editor, route-level SAF target table, and projected demand bar chart by region.*
+
+![Inputs – Capacity](docs/screenshots/tab1_capacity.png)
+*Committed Capacity: plant-level table with inline editing, capacity-by-region stacked bar, and pathway breakdown.*
+
+![Inputs – LCOSAF Explorer](docs/screenshots/tab1_lcosaf.png)
+*LCOSAF Explorer: interactive cost-stack adjustments (CAPEX, OPEX, feedstock price, yield) with a real-time levelised-cost bar chart.*
+
+### Tab 2 — Run Model
+Configure the scenario, start year / end year, and click **▶ Run Model**. A live step-progress table and scrollable log track execution year-by-year.
+
+![Run Model tab](docs/screenshots/tab2_run.png)
+*Live progress: per-year step table (Demand → Expansion → Equilibrium → Done) with elapsed time and estimated remaining.*
+
+### Tab 3 — Model Outputs
+Rich interactive charts rendered from the completed model history. All charts are zoomable and hoverable.
+
+![Outputs – Global Price](docs/screenshots/tab3_price.png)
+*Volume-weighted global SAF price (steelblue line) with min–max regional range (shaded band), all years 2025–2045.*
+
+![Outputs – WTP Trends](docs/screenshots/tab3_wtp.png)
+*Regional WTP trends and MAC supply-demand curve (Compliance Cost Curve).*
+
+![Outputs – Capacity](docs/screenshots/tab3_capacity.png)
+*Cumulative SAF capacity split by region and pathway, with annual new-build additions.*
+
+![Outputs – Trade Flows](docs/screenshots/tab3_trade.png)
+*Sankey diagram of inter-regional SAF trade and exporter/importer league tables.*
+
+### Tab 4 — Scenarios
+Side-by-side comparison of multiple model runs.
+
+![Scenarios tab](docs/screenshots/tab4_scenarios.png)
+
+---
+
+## Model Architecture
+
+Each simulation year runs four sequential steps:
+
+| Step | Module | What it does |
 |------|--------|-------------|
-| 1. Demand | `BottomUpDemandModule` | Derives SAF demand from CORSIA-eligible international flights and domestic blending mandates. Demand attributed 60/40 origin/destination per CORSIA uplift rules. |
-| 2. Expansion | `CapacityExpansionModule` | Assesses supply gap → solves a least-cost Pyomo LP → adds new plants to the capacity state. |
-| 3. WTP | `WTPModel` | Computes regional willingness-to-pay as `max(Case 1: jet+CORSIA, Case 2: LCOSAF@IRR, Case 3: policy penalty)`. |
-| 4. Clearing | `PriceQuantityClearing` | Allocates cheapest-CIF supply to highest-WTP regions. Clearing price = WTP of the served region. |
+| 1. Demand | `BottomUpDemandModule` | Derives SAF demand from 1,274 international routes and domestic blending mandates. Two modes: **Single CORSIA schedule** (global mandatory fraction × route-sample scaling) or **Country-specific SAF targets** (per-route SAF% interpolated across 2025/2030/2035/2040/2045 key years, no sampling). Demand attributed 60/40 origin/destination per CORSIA uplift rules. |
+| 2. Expansion | `CapacityExpansionModule` | Assesses supply gap → solves a least-cost Pyomo LP → ranks candidate plants by LCOSAF → brings new plants online subject to feedstock availability and regional refinery co-processing caps. |
+| 3. WTP | `WTPModel` | Computes regional WTP as `max(Case 1: jet+CORSIA, Case 2: LCOSAF@IRR, Case 3: policy penalty)`. |
+| 4. Clearing | `PriceQuantityClearing` | Dispatches cheapest-CIF supply to highest-WTP regions. Domestic supply is reserved first (configurable share per region). Unserved demand routes to CORSIA carbon offsets. Clearing price = WTP of each served region. |
 
-Capacity accumulates year-over-year. Clearing only runs when supply meets demand.
+Capacity state accumulates year-over-year. Endogenous plants built in year *t* are available from year *t+1*.
 
 ---
 
@@ -23,83 +65,128 @@ Capacity accumulates year-over-year. Clearing only runs when supply meets demand
 
 ```
 saf_market_model/
-├── app.py                    # Streamlit UI entry point
-├── main.py                   # CLI entry point (python main.py)
+├── app.py                        # Streamlit UI entry point (4 tabs)
+├── main.py                       # CLI entry point (python main.py)
 ├── requirements.txt
 │
 ├── config/
-│   └── settings.py           # All global constants (CAPEX, OPEX, REGIONS, etc.)
+│   └── settings.py               # Global constants: CAPEX/OPEX tables, FEED_INTENSITY,
+│                                 #   REGION list, HORIZON_YEARS, ROUTE_SAMPLE_FRACTION, etc.
 │
 ├── modules/
-│   ├── demand_bottom_up.py   # Bottom-up flight demand estimation
-│   ├── wtp_model.py          # WTP calculation (3 cases) + supply-demand curve data
-│   ├── price_quantity_clearing.py  # Market clearing (WTP-priority allocation)
-│   ├── capacity_expansion.py # LP-based capacity expansion
-│   └── reporting.py          # CSV + Excel output writer
+│   ├── demand_bottom_up.py       # Bottom-up demand (corsia_schedule + route_targets modes)
+│   ├── capacity_expansion.py     # Pyomo LP capacity expansion
+│   ├── wtp_model.py              # WTP (3-case max) + supply–demand curve
+│   ├── price_quantity_clearing.py# WTP-priority market clearing
+│   └── reporting.py              # CSV + Excel output writer
 │
-├── schemas/                  # Pydantic v2 data schemas
-│   ├── demand_schema.py
-│   ├── supply_schema.py
-│   ├── equilibrium_schema.py
-│   ├── wtp_schema.py
-│   ├── flight_schema.py
-│   └── state_schema.py
+├── schemas/                      # Pydantic v2 data contracts
+│   ├── demand_schema.py          #   DemandMatrix, DemandRecord
+│   ├── supply_schema.py          #   CapacityState, PlantRecord, ExpansionDecision
+│   ├── equilibrium_schema.py     #   MarketClearingResult, TradeFlow, RegionalPrice
+│   ├── wtp_schema.py             #   WTPMatrix, WTPRecord
+│   ├── flight_schema.py          #   FlightRecord, FlightDataset
+│   └── state_schema.py           #   ModelState (annual snapshot passed to next year)
 │
 ├── data/
-│   ├── loaders.py
-│   └── mock/                 # Editable CSV inputs
-│       ├── flight_routes.csv
-│       ├── aircraft_types.csv
-│       ├── airlines.csv
-│       ├── committed_capacity.csv
-│       ├── corsia_schedule.csv
-│       ├── feedstock_availability.csv
-│       ├── transport_costs.csv
-│       ├── regulatory_params.csv
-│       └── wtp_params.csv
+│   ├── loaders.py                # CSV → Pydantic loaders (all I/O isolated here)
+│   ├── keyinputs_SAFM_v1.xlsx    # Source workbook (aircraft, operators, routes)
+│   ├── mock/                     # Live editable CSVs (edited via UI or directly)
+│   │   ├── flight_routes.csv         # 1,274 routes with per-route SAF% targets
+│   │   ├── aircraft_types.csv        # 14 aircraft types with fuel efficiency
+│   │   ├── airlines.csv              # 163 operators with region and CORSIA status
+│   │   ├── committed_capacity.csv    # 149 announced/operating plants (deterministic)
+│   │   ├── corsia_schedule.csv       # Mandatory blending fraction by year
+│   │   ├── corsia_suppression.csv    # Voluntary-only region demand suppression factors
+│   │   ├── national_blending_mandates.csv  # Country-level mandates (SAF%, year)
+│   │   ├── domestic_supply_priority.csv    # Domestic-first dispatch share by region
+│   │   ├── feedstock_availability.csv      # Regional feedstock caps and costs
+│   │   ├── refinery_capacity.csv           # Regional refinery throughput for co-processing cap
+│   │   ├── regulatory_params.csv           # Penalty rates, IRR targets, jet fuel prices
+│   │   ├── transport_costs.csv             # Inter-regional SAF CIF transport costs
+│   │   └── wtp_params.csv                  # WTP override parameters
+│   └── templates/                # Download-template copies of each mock CSV
 │
 ├── ui/
-│   ├── input_editor.py       # Tab 1: editable input tables + charts
-│   ├── runner.py             # Tab 2: model execution + live logs
-│   ├── output_dashboard.py   # Tab 3: results dashboard
-│   └── charts.py             # All Plotly chart builders
+│   ├── input_editor.py           # Tab 1: editable tables + demand/LCOSAF preview charts
+│   ├── runner.py                 # Tab 2: BackgroundRunner (daemon thread + event queue)
+│   ├── output_dashboard.py       # Tab 3: results charts and narrative text
+│   ├── scenario_builder.py       # Tab 4: multi-scenario comparison
+│   └── charts.py                 # All Plotly figure builders
 │
 ├── utils/
-│   ├── economics.py          # levelised_cost(), crf(), npv()
+│   ├── economics.py              # levelised_cost(), crf(), npv()
 │   └── logging_config.py
 │
 ├── tests/
-│   ├── unit/                 # Unit tests for each module
-│   └── integration/          # Single-year and full 20-year loop tests
+│   ├── unit/                     # Per-module unit tests
+│   └── integration/              # Single-year and full 20-year loop tests
 │
-└── outputs/                  # Model run results (CSV + Excel, timestamped)
+└── outputs/                      # Timestamped run results (auto-created)
 ```
 
 ---
 
 ## Key Modelling Concepts
 
+### Demand — Two Modes
+
+**Mode 1: Single CORSIA Schedule** (`corsia_schedule`)
+A global `mandatory_fraction` from `corsia_schedule.csv` is applied uniformly to all CORSIA-eligible international routes. A `route_sample_fraction` scales the sample-route volumes up to represent full global traffic. Domestic demand is added from `national_blending_mandates.csv`.
+
+**Mode 2: Country-Specific SAF Targets** (`route_targets`)
+Each of the 1,274 routes carries its own SAF% columns for key years 2025, 2030, 2035, 2040, and 2045. The model linearly interpolates between key years for every simulated year. `route_sample_fraction` is fixed at 1.0 (the full dataset requires no scaling). Domestic mandates are still applied.
+
+Demand is attributed 60% to the origin region and 40% to the destination region (CORSIA uplift-point rule). MULTI-destination aggregate routes are attributed 100% to the origin.
+
 ### WTP — Willingness to Pay
+
 Each region's WTP is the maximum of three cases:
 
-- **Case 1 (Market floor):** Jet fuel price + CORSIA carbon credit value (2.5 tCO₂/MT SAF)
-- **Case 2 (Investment floor):** Levelised Cost of SAF (LCOSAF) at the region's target IRR using the cheapest available pathway
-- **Case 3 (Policy ceiling):** Regulatory penalty (e.g. EU ReFuelEU mandate non-compliance penalty = $2,500/MT)
+| Case | Formula | Interpretation |
+|------|---------|----------------|
+| 1 — Market floor | Jet fuel price + CORSIA carbon credit × 2.5 tCO₂/MT SAF | Minimum a buyer pays to avoid purchasing CORSIA offsets |
+| 2 — Investment floor | LCOSAF at region's target IRR (cheapest available pathway) | Minimum needed to make new capacity financially viable |
+| 3 — Policy ceiling | Regulatory non-compliance penalty (e.g. EU ReFuelEU = $2,500/MT) | Maximum a buyer pays before preferring the penalty |
 
-### LCOSAF Formula
-```
-LCOSAF = (CRF(IRR, 20yr) × CAPEX + OPEX) / Utilisation
-```
-Where OPEX includes full feedstock + processing + logistics costs.  
-EU HEFA benchmark: **~$1,531/MT** at 12% IRR, 85% utilisation.
+### LCOSAF
 
-### Demand Scaling
-The 64 representative flight routes ≈ 5% of global scheduled traffic.  
-CORSIA SAF demand is scaled by `ROUTE_SAMPLE_FRACTION = 0.05`.  
-Blending mandate demand is a policy target and is **not** scaled.
+```
+LCOSAF = (CRF(IRR, project_life) × CAPEX + OPEX_processing + OPEX_feedstock) / Utilisation
+```
+
+Feedstock OPEX = `feedstock_price_usd_per_t × feedstock_intensity_t_per_MT_SAF`
+
+Default SAF yields by pathway (MT SAF / MT raw feedstock):
+
+| Pathway | Primary feedstock | Yield |
+|---------|------------------|-------|
+| HEFA | UCO | 0.80 |
+| ATJ | Agricultural residue | 0.22 |
+| FT-MSW | MSW | 0.15 |
+| PtL | CO₂ + green H₂ | 0.28 |
+| Co-processing | UCO | 0.45 |
+
+### Capacity Expansion
+
+The LP minimises total discounted LCOSAF across candidate plants subject to:
+- Regional feedstock availability caps
+- Refinery co-processing headroom cap (regional throughput × configurable share)
+- Minimum supply-gap fill requirement
+
+New plants are ranked by LCOSAF and brought online at the start of the following year.
 
 ### Market Clearing
-Supply is dispatched cheapest-CIF first to the highest-WTP region. Regions are served in descending WTP order until supply is exhausted. The clearing price for each served region equals its WTP.
+
+1. **Domestic-first phase**: each region's supply is reserved for local consumption up to its `domestic_share` fraction.
+2. **Export pool phase**: surplus supply enters the cross-regional pool; it is dispatched cheapest-CIF first to regions in descending WTP order.
+3. **Offset phase**: any unserved demand is routed to CORSIA carbon offsets at the prevailing offset price.
+
+Clearing price for each served region = that region's WTP. The volume-weighted global average price (shown in the Outputs tab) covers only regions served by physical SAF, with a min–max band showing the spread across served regions.
+
+### Committed Capacity
+
+149 announced and operating SAF plants are loaded from `data/mock/committed_capacity.csv`. Plants with `online_year ≤ simulation_year` are included in the initial capacity state for that year. This dataset covers all six regions and all five pathways.
 
 ---
 
@@ -111,10 +198,10 @@ cd safm
 pip install -r requirements.txt
 ```
 
-Requires Python 3.8+ and a compatible LP solver. The model defaults to GLPK:
+Requires Python 3.8+ and a compatible LP solver. Defaults to GLPK:
 
 ```bash
-# macOS (Homebrew)
+# macOS
 brew install glpk
 
 # Linux
@@ -131,10 +218,14 @@ sudo apt-get install glpk-utils
 streamlit run app.py
 ```
 
-Opens three tabs:
-- **📊 Model Inputs** — edit demand, capacity, costs, regulatory parameters, and view LCOSAF charts
-- **▶ Run Model** — configure scenario and horizon, run the model, view live logs
-- **📈 Model Outputs** — global price chart, WTP trends, MAC supply-demand curve, capacity split, trade flow Sankey
+Opens four tabs:
+
+| Tab | Purpose |
+|-----|---------|
+| **📊 Inputs** | Edit all CSVs inline: routes, airlines, aircraft, capacity, costs, regulatory params. Preview demand projections and LCOSAF charts live. |
+| **▶ Run Model** | Set scenario name and year range. Click Run. Watch a per-year step table and live log. |
+| **📈 Outputs** | Global SAF price trend (line + range band), regional WTP, Compliance Cost Curve, capacity mix, Sankey trade flows, and price decomposition. |
+| **🎭 Scenarios** | Load and compare multiple completed runs side-by-side. |
 
 ### CLI
 
@@ -142,11 +233,11 @@ Opens three tabs:
 # Full 2025–2045 baseline run
 python main.py
 
-# Custom horizon and scenario
+# Custom horizon and scenario tag
 python main.py --start 2025 --end 2030 --scenario high_demand
 
-# Output to a specific directory
-python main.py --output-dir ./my_results
+# Quiet (no per-year console output)
+python main.py --quiet
 ```
 
 ---
@@ -157,33 +248,19 @@ Each run writes to `outputs/results_<timestamp>_<scenario>/`:
 
 | File | Contents |
 |------|----------|
-| `prices.csv` | Clearing price by region and year, with price decomposition |
-| `trade_flows.csv` | Inter-regional SAF trade volumes and transport costs |
-| `capacity.csv` | Capacity by region, pathway, and type (Planned / Modelled) |
-| `market_summary.csv` | Annual demand, production, trade totals, balance status |
-| `summary_dashboard.xlsx` | Excel workbook with Prices, Trade Flows, and Capacity sheets |
+| `prices.csv` | Clearing price by region and year, pricing regime, price decomposition |
+| `trade_flows.csv` | Inter-regional SAF trade volumes, CIF transport costs, pathway label |
+| `capacity.csv` | Capacity by region, pathway, and source (Committed / Modelled) |
+| `market_summary.csv` | Annual demand, production, trade totals, offset volume, balance status |
+| `summary_dashboard.xlsx` | Excel workbook: Prices, Trade Flows, Capacity sheets |
 
 ---
 
 ## Regions and Pathways
 
-**Regions:** EU, US, APAC, MENA, LATAM, ROW
+**Regions:** EU · US · APAC · MENA · LATAM · ROW
 
-**SAF Pathways:** HEFA, ATJ, FT-MSW, PtL, Co-processing
-
----
-
-## Tests
-
-```bash
-pytest tests/ -q
-```
-
-180 tests covering unit and integration scenarios including:
-- Demand attribution and CORSIA scaling
-- WTP case calculation
-- Market clearing and supply conservation
-- Full 20-year loop (capacity monotonicity, price validity, output files)
+**SAF Pathways:** HEFA · ATJ · FT-MSW · PtL · Co-processing
 
 ---
 
@@ -193,10 +270,21 @@ Key parameters in `config/settings.py`:
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `ROUTE_SAMPLE_FRACTION` | `0.05` | Fraction of global traffic represented by the 64 sample routes |
+| `ROUTE_SAMPLE_FRACTION` | `1.0` | Fraction of global traffic covered by the route dataset (1.0 = full 1,274-route dataset) |
 | `UTILIZATION_FACTOR` | `0.85` | Nameplate capacity → effective annual output |
-| `PROJECT_LIFE_YR` | `20` | Plant economic life for LCOSAF calculation |
-| `DISCOUNT_RATE` | `0.10` | Default discount rate for NPV/expansion LP |
-| `MARKET_BALANCE_TOL` | `1e-4 MT` | Tolerance for supply-demand balance check |
+| `PROJECT_LIFE_YR` | `20` | Plant economic life for LCOSAF and capacity expansion LP |
+| `DISCOUNT_RATE` | `0.10` | Default discount rate for NPV / expansion LP |
+| `MT_TO_PJ_FACTOR` | `44.0` | Energy content conversion (MJ/kg × 10⁻³) |
+| `MARKET_BALANCE_TOL` | `1e-4` | Supply–demand balance tolerance (MT) |
 
-Regional CAPEX and OPEX tables are also in `settings.py` and can be overridden per-plant in `data/mock/committed_capacity.csv`.
+Regional CAPEX and OPEX tables, feedstock intensities, and WTP parameters are all in `settings.py` and can be overridden per-plant in `data/mock/committed_capacity.csv` or via the Inputs tab in the dashboard.
+
+---
+
+## Tests
+
+```bash
+pytest tests/ -q
+```
+
+Covers unit and integration scenarios including demand attribution, CORSIA scaling, WTP case calculation, market clearing, supply conservation, and the full 20-year dynamic loop (capacity monotonicity, price validity, output file integrity).

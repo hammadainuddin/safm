@@ -93,8 +93,22 @@ class BackgroundRunner:
                 break
         return events
 
+    # Module prefixes that belong to this project and are safe to evict from
+    # sys.modules before each run. This guarantees the background thread
+    # imports a self-consistent set of class objects regardless of what
+    # Streamlit's file watcher has or hasn't reloaded in the main thread.
+    _PROJECT_PREFIXES = (
+        "schemas.", "modules.", "data.", "config.", "utils.", "main",
+    )
+
     def _run(self, **kwargs):
         try:
+            import sys
+            for key in [k for k in list(sys.modules)
+                        if any(k == p or k.startswith(p)
+                               for p in self._PROJECT_PREFIXES)]:
+                sys.modules.pop(key, None)
+
             from main import run_model
             self.history = run_model(
                 on_step=self._on_step,

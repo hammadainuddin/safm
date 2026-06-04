@@ -77,7 +77,7 @@ MARKET_BALANCE_TOL  = 1e-4   # MT; absolute tolerance for market clearing check
 # aviation baseline of ~320 Mt (2.943 / 0.0092 ≈ 320 Mt).
 # The 5% assumption was wrong — one carrier per route at 365-730 flights/yr
 # represents far less than 5% of global multi-carrier traffic.
-ROUTE_SAMPLE_FRACTION = 0.0092
+ROUTE_SAMPLE_FRACTION = 1.0
 
 # CORSIA demand suppression — voluntary regions have reduced effective demand
 # in early years due to cheap jet fuel + CORSIA-eligible carbon offsets.
