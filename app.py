@@ -97,6 +97,7 @@ with tab_run:
                 verbose=False,
                 demand_scale_factor=float(st.session_state.get("demand_scale_factor", 1.0)),
                 route_sample_fraction=float(st.session_state.get("route_sample_fraction", _DEFAULT_RSF)),
+                demand_mode=st.session_state.get("demand_mode", "corsia_schedule"),
             )
             st.rerun()
 

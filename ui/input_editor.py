@@ -87,7 +87,7 @@ def _clear_upload(ss_key: str) -> None:
 def _demand_input_mtimes() -> tuple:
     """
     Cache key for the demand projection: CSV mtimes + module mtime +
-    current route_sample_fraction so the chart re-runs on any change.
+    current route_sample_fraction + demand_mode so the chart re-runs on any change.
     """
     csv_files = (
         "flight_routes.csv", "aircraft_types.csv",
@@ -101,23 +101,26 @@ def _demand_input_mtimes() -> tuple:
     module_path = os.path.join(_HERE, "..", "modules", "demand_bottom_up.py")
     module_mtime = os.path.getmtime(module_path) if os.path.exists(module_path) else 0.0
     from config.settings import ROUTE_SAMPLE_FRACTION as _default_rsf
-    rsf = st.session_state.get("route_sample_fraction", _default_rsf)
-    return csv_mtimes + (module_mtime, rsf)
+    rsf         = st.session_state.get("route_sample_fraction", _default_rsf)
+    demand_mode = st.session_state.get("demand_mode", "corsia_schedule")
+    return csv_mtimes + (module_mtime, rsf, demand_mode)
 
 
 @st.cache_data(ttl=60)
 def _build_demand_projection_df(_cache_buster: tuple) -> pd.DataFrame:
     """
-    Per-year, per-region projection of jet-fuel burn and CORSIA / mandate
-    SAF demand under the current inputs. _cache_buster includes the CSV
-    mtimes and the current route_sample_fraction so the chart invalidates
-    on any change.
+    Per-year, per-region projection of jet-fuel burn and SAF demand under
+    the current inputs.  _cache_buster encodes all inputs that can change.
     """
     from modules.demand_bottom_up import BottomUpDemandModule
     from config.settings import HORIZON_YEARS, ROUTE_SAMPLE_FRACTION as _default_rsf
 
-    rsf = st.session_state.get("route_sample_fraction", _default_rsf)
-    mod = BottomUpDemandModule(route_sample_fraction=float(rsf))
+    demand_mode = st.session_state.get("demand_mode", "corsia_schedule")
+    rsf         = st.session_state.get("route_sample_fraction", _default_rsf)
+    mod = BottomUpDemandModule(
+        route_sample_fraction=float(rsf),
+        demand_mode=demand_mode,
+    )
     rows = []
     for yr in HORIZON_YEARS:
         try:
@@ -125,7 +128,7 @@ def _build_demand_projection_df(_cache_buster: tuple) -> pd.DataFrame:
         except Exception:
             continue
         for region, vol in r.fuel_by_region.items():
-            corsia = r.corsia_saf_demand_by_region.get(region, 0.0)
+            corsia  = r.corsia_saf_demand_by_region.get(region, 0.0)
             mandate = r.mandate_saf_demand_by_region.get(region, 0.0)
             rows.append({
                 "year": yr,
@@ -169,24 +172,51 @@ def render() -> None:
         )
 
         from config.settings import ROUTE_SAMPLE_FRACTION as _default_rsf
-        with st.expander("🔬 Route Sample Fraction", expanded=False):
-            st.markdown(
-                "The flight routes dataset is a representative sample of global scheduled "
-                "traffic. All computed fuel burn and CORSIA demand volumes are extrapolated "
-                "to the full global fleet by dividing by this fraction. "
-                "Set it to match the share of global traffic your route dataset represents "
-                "(e.g. 0.01 = 1 %, 0.05 = 5 %)."
-            )
-            st.number_input(
-                "Route sample fraction",
-                min_value=0.001,
-                max_value=1.0,
-                value=float(st.session_state.get("route_sample_fraction", _default_rsf)),
-                step=0.001,
-                format="%.4f",
-                key="route_sample_fraction",
-                help="Fraction of global scheduled traffic represented by the route dataset. "
-                     "Computed volumes are divided by this value to extrapolate to the full fleet.",
+
+        # ── Demand mode selector ──────────────────────────────────────────────
+        st.markdown("#### Demand Mode")
+        demand_mode = st.radio(
+            "CORSIA SAF demand method",
+            options=["corsia_schedule", "route_targets"],
+            format_func=lambda x: {
+                "corsia_schedule": "Single CORSIA schedule — global mandatory fraction applied uniformly",
+                "route_targets":   "Country-specific SAF targets — per-route SAF% from the routes dataset",
+            }[x],
+            key="demand_mode",
+            help=(
+                "**Single CORSIA schedule**: one global mandatory_fraction from corsia_schedule.csv "
+                "is applied to all international routes. Requires route_sample_fraction calibration.\n\n"
+                "**Country-specific SAF targets**: each route carries its own SAF% target "
+                "(saf_pct_2025 … saf_pct_2045 columns), interpolated between key years. "
+                "The 1 274-route dataset is comprehensive — no scaling factor needed."
+            ),
+            horizontal=False,
+        )
+
+        if demand_mode == "corsia_schedule":
+            with st.expander("🔬 Route Sample Fraction", expanded=False):
+                st.markdown(
+                    "The flight routes dataset is a representative sample of global scheduled "
+                    "traffic. All computed fuel burn and CORSIA demand volumes are extrapolated "
+                    "to the full global fleet by dividing by this fraction. "
+                    "Set it to match the share of global traffic your route dataset represents "
+                    "(e.g. 0.01 = 1 %, 0.05 = 5 %)."
+                )
+                st.number_input(
+                    "Route sample fraction",
+                    min_value=0.001,
+                    max_value=1.0,
+                    value=float(st.session_state.get("route_sample_fraction", _default_rsf)),
+                    step=0.001,
+                    format="%.4f",
+                    key="route_sample_fraction",
+                    help="Fraction of global scheduled traffic represented by the route dataset. "
+                         "Computed volumes are divided by this value to extrapolate to the full fleet.",
+                )
+        else:
+            st.info(
+                "Route-targets mode uses the full 1 274-route dataset — no sample scaling required. "
+                "Route sample fraction is fixed at 1.0 for this mode."
             )
 
         # ── Projection panel: per-region jet-fuel burn + total SAF demand ──────
@@ -373,11 +403,12 @@ def render() -> None:
                     _clear_upload("ss_airlines")
                     st.success("airlines.csv saved.")
             with col_b:
-                region_counts = edited_al.groupby("home_region").size().reset_index(name="count")
+                region_col = "region" if "region" in edited_al.columns else "home_region"
+                region_counts = edited_al.groupby(region_col).size().reset_index(name="count")
                 fig = px.bar(
-                    region_counts, x="home_region", y="count",
-                    title="Airlines by Home Region",
-                    labels={"home_region": "Region", "count": "# Airlines"},
+                    region_counts, x=region_col, y="count",
+                    title="Airlines by Region",
+                    labels={region_col: "Region", "count": "# Airlines"},
                     color="count", color_continuous_scale="Blues",
                 )
                 fig.update_layout(showlegend=False, xaxis=dict(tickformat=""))

@@ -1,21 +1,164 @@
-airline_id,airline_name,home_country,home_region,hub_airport,hub_country,hub_region
-LH,Lufthansa,Germany,EU,FRA,Germany,EU
-AF,Air France,France,EU,CDG,France,EU
-BA,British Airways,UK,EU,LHR,UK,EU
-KL,KLM,Netherlands,EU,AMS,Netherlands,EU
-IB,Iberia,Spain,EU,MAD,Spain,EU
-UA,United Airlines,USA,US,EWR,USA,US
-AA,American Airlines,USA,US,DFW,USA,US
-DL,Delta Air Lines,USA,US,ATL,USA,US
-WN,Southwest Airlines,USA,US,DAL,USA,US
-SQ,Singapore Airlines,Singapore,APAC,SIN,Singapore,APAC
-NH,ANA,Japan,APAC,NRT,Japan,APAC
-CX,Cathay Pacific,Hong Kong,APAC,HKG,Hong Kong,APAC
-CA,Air China,China,APAC,PEK,China,APAC
-QF,Qantas,Australia,APAC,SYD,Australia,APAC
-EK,Emirates,UAE,MENA,DXB,UAE,MENA
-SV,Saudia,Saudi Arabia,MENA,RUH,Saudi Arabia,MENA
-QR,Qatar Airways,Qatar,MENA,DOH,Qatar,MENA
-LA,LATAM Airlines,Brazil,LATAM,GRU,Brazil,LATAM
-ET,Ethiopian Airlines,Ethiopia,ROW,ADD,Ethiopia,ROW
-TK,Turkish Airlines,Turkey,ROW,IST,Turkey,ROW
+airline_id,airline_name,home_country,region,hub_iata,hub_country,hub_region,operator_type,fleet_size,ownership_model,corsia_liability,corsia_phase1,corsia_phase2
+LH,Lufthansa,Germany,EU,FRA,Germany,EU,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+AF,Air France,France,EU,CDG,France,EU,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+BA,British Airways,UK,EU,LHR,UK,EU,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+KL,KLM,Netherlands,EU,AMS,Netherlands,EU,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+IB,Iberia,Spain,EU,MAD,Spain,EU,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+UA,United Airlines,USA,US,EWR,USA,US,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+AA,American Airlines,USA,US,DFW,USA,US,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+DL,Delta Air Lines,USA,US,ATL,USA,US,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+WN,Southwest Airlines,USA,US,DAL,USA,US,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+SQ,Singapore Airlines,Singapore,APAC,SIN,Singapore,APAC,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+NH,ANA,Japan,APAC,NRT,Japan,APAC,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+CX,Cathay Pacific,Hong Kong,APAC,HKG,Hong Kong,APAC,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+CA,Air China,China,APAC,PEK,China,APAC,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Partial,Yes
+QF,Qantas,Australia,APAC,SYD,Australia,APAC,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+EK,Emirates,UAE,MENA,DXB,UAE,MENA,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+SV,Saudia,Saudi Arabia,MENA,RUH,Saudi Arabia,MENA,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+QR,Qatar Airways,Qatar,MENA,DOH,Qatar,MENA,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+LA,LATAM Airlines,Brazil,LATAM,GRU,Brazil,LATAM,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+ET,Ethiopian Airlines,Ethiopia,ROW,ADD,Ethiopia,ROW,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+TK,Turkish Airlines,Turkey,ROW,IST,Turkey,ROW,Passenger Airline,,Direct Owned,CORSIA Direct Liable,Yes,Yes
+FX,FedEx Express,USA,US,MEM,USA,US,Cargo Integrator,700.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+5X,UPS Airlines,USA,US,SDF,USA,US,Cargo Integrator,291.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+D0,DHL Aviation,Germany,EU,CGN,Germany,EU,Hybrid/ACMI,310.0,ACMI Partner,CORSIA via AOC Holder,Yes,Yes
+K9,Amazon Air,USA,US,CVG,USA,US,E-Commerce/ACMI,90.0,Wet Lease,CORSIA via Operator AOC,Yes,Yes
+5Y,Atlas Air,USA,US,JFK,USA,US,ACMI Provider,93.0,ACMI Lessor,CORSIA Direct (Operator),Yes,Yes
+K4,Kalitta Air,USA,US,YIP,USA,US,ACMI Charter,40.0,ACMI Lessor,CORSIA Direct (Operator),Yes,Yes
+ABR,ASL Aviation Holdings,Ireland,EU,DUB,Ireland,EU,ACMI Provider,150.0,ACMI Lessor,CORSIA Direct (Operator),Yes,Yes
+CV,Cargolux,Luxembourg,EU,LUX,Luxembourg,EU,Freighter Airline,30.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+LHC,Lufthansa Cargo,Germany,EU,FRA,Germany,EU,Freighter Airline,20.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+QRC,Qatar Airways Cargo,Qatar,MENA,DOH,Qatar,MENA,Freighter Airline,30.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+EKC,Emirates SkyCargo,UAE,MENA,DXB,UAE,MENA,Freighter Airline,11.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+KE,Korean Air,South Korea,APAC,ICN,South Korea,APAC,Freighter Airline,20.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+CXC,Cathay Pacific Cargo,Hong Kong,APAC,HKG,Hong Kong,APAC,Freighter Airline,22.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+NHC,ANA Cargo,Japan,APAC,NRT,Japan,APAC,Freighter Airline,7.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+SQC,SIA Cargo,Singapore,APAC,SIN,Singapore,APAC,Freighter Airline,7.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+AVC,Avianca Cargo,Colombia,LATAM,BOG,Colombia,LATAM,Freighter Airline,6.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+LAC,LATAM Cargo,Brazil,LATAM,GRU,Brazil,LATAM,Freighter Airline,7.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+ETC,Ethiopian Cargo,Ethiopia,ROW,ADD,Ethiopia,ROW,Freighter Airline,10.0,Direct Owned,Exempt - LDC,No,Yes
+TKC,Turkish Cargo,Turkey,ROW,IST,Turkey,ROW,Freighter Airline,25.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+KZ,Nippon Cargo Airlines,Japan,APAC,NRT,Japan,APAC,Freighter Airline,7.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+D7,AirAsia X,Malaysia,APAC,KUL,Malaysia,APAC,Passenger Airline,36.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+AK,AirAsia,Malaysia,APAC,KUL,Malaysia,APAC,Passenger Airline,220.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+MH,Malaysia Airlines,Malaysia,APAC,KUL,Malaysia,APAC,Passenger Airline,88.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+GA,Garuda Indonesia,Indonesia,APAC,CGK,Indonesia,APAC,Passenger Airline,72.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+OD,Batik Air Malaysia,Malaysia,APAC,KUL,Malaysia,APAC,Passenger Airline,35.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+TR,Scoot,Singapore,APAC,SIN,Singapore,APAC,Passenger Airline,49.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+TG,Thai Airways,Thailand,APAC,BKK,Thailand,APAC,Passenger Airline,70.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+VN,Vietnam Airlines,Vietnam,APAC,HAN,Vietnam,APAC,Passenger Airline,100.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+VJ,VietJet Air,Vietnam,APAC,SGN,Vietnam,APAC,Passenger Airline,80.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+PR,Philippine Airlines,Philippines,APAC,MNL,Philippines,APAC,Passenger Airline,85.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+OZ,Asiana Airlines,South Korea,APAC,ICN,South Korea,APAC,Passenger Airline,84.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+CI,China Airlines,Taiwan,APAC,TPE,Taiwan,APAC,Passenger Airline,90.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+BR,EVA Air,Taiwan,APAC,TPE,Taiwan,APAC,Passenger Airline,79.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+MU,China Eastern,China,APAC,PVG,China,APAC,Passenger Airline,650.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+CZ,China Southern,China,APAC,CAN,China,APAC,Passenger Airline,860.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+HU,Hainan Airlines,China,APAC,PEK,China,APAC,Passenger Airline,100.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+AI,Air India,India,APAC,DEL,India,APAC,Passenger Airline,220.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+6E,IndiGo,India,APAC,DEL,India,APAC,Passenger Airline,360.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+NZ,Air New Zealand,New Zealand,APAC,AKL,New Zealand,APAC,Passenger Airline,108.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+FR,Ryanair,Ireland,EU,DUB,Ireland,EU,Passenger Airline,585.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+U2,easyJet,UK,EU,LGW,UK,EU,Passenger Airline,330.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+W6,Wizz Air,Hungary,EU,BUD,Hungary,EU,Passenger Airline,200.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+DY,Norwegian Air Shuttle,Norway,EU,OSL,Norway,EU,Passenger Airline,85.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+SK,SAS Scandinavian Airlines,Denmark,EU,CPH,Denmark,EU,Passenger Airline,150.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+AY,Finnair,Finland,EU,HEL,Finland,EU,Passenger Airline,80.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+LX,SWISS International Air Lines,Switzerland,EU,ZRH,Switzerland,EU,Passenger Airline,95.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+OS,Austrian Airlines,Austria,EU,VIE,Austria,EU,Passenger Airline,80.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+TP,TAP Air Portugal,Portugal,EU,LIS,Portugal,EU,Passenger Airline,100.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+AZ,ITA Airways,Italy,EU,FCO,Italy,EU,Passenger Airline,95.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+VS,Virgin Atlantic,UK,EU,LHR,UK,EU,Passenger Airline,40.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+AC,Air Canada,Canada,US,YYZ,Canada,US,Passenger Airline,185.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+B6,JetBlue Airways,USA,US,JFK,USA,US,Passenger Airline,290.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+AS,Alaska Airlines,USA,US,SEA,USA,US,Passenger Airline,360.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+AM,Aeromexico,Mexico,LATAM,MEX,Mexico,LATAM,Passenger Airline,115.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+CM,Copa Airlines,Panama,LATAM,PTY,Panama,LATAM,Passenger Airline,105.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+AD,Azul Brazilian Airlines,Brazil,LATAM,VCP,Brazil,LATAM,Passenger Airline,180.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+G3,GOL Airlines,Brazil,LATAM,GRU,Brazil,LATAM,Passenger Airline,140.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+MS,EgyptAir,Egypt,ROW,CAI,Egypt,ROW,Passenger Airline,80.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+KQ,Kenya Airways,Kenya,ROW,NBO,Kenya,ROW,Passenger Airline,44.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+SA,South African Airways,South Africa,ROW,JNB,South Africa,ROW,Passenger Airline,23.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+AT,Royal Air Maroc,Morocco,ROW,CMN,Morocco,ROW,Passenger Airline,55.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+EI,Aer Lingus,Ireland,EU,DUB,Ireland,EU,Passenger Airline,67.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+VY,Vueling Airlines,Spain,EU,BCN,Spain,EU,Passenger Airline,110.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+SN,Brussels Airlines,Belgium,EU,BRU,Belgium,EU,Passenger Airline,47.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+BT,airBaltic,Latvia,EU,RIX,Latvia,EU,Passenger Airline,45.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+LO,LOT Polish Airlines,Poland,EU,WAW,Poland,EU,Passenger Airline,90.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+A3,Aegean Airlines,Greece,EU,ATH,Greece,EU,Passenger Airline,65.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+WS,WestJet,Canada,US,YYC,Canada,US,Passenger Airline,180.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+HA,Hawaiian Airlines,USA,US,HNL,USA,US,Passenger Airline,55.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+EY,Etihad Airways,UAE,MENA,AUH,UAE,MENA,Passenger Airline,90.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+GF,Gulf Air,Bahrain,MENA,BAH,Bahrain,MENA,Passenger Airline,37.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+FZ,flydubai,UAE,MENA,DXB,UAE,MENA,Passenger Airline,65.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+G9,Air Arabia,UAE,MENA,SHJ,UAE,MENA,Passenger Airline,55.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+RJ,Royal Jordanian,Jordan,MENA,AMM,Jordan,MENA,Passenger Airline,30.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+WY,Oman Air,Oman,MENA,MCT,Oman,MENA,Passenger Airline,40.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+KU,Kuwait Airways,Kuwait,MENA,KWI,Kuwait,MENA,Passenger Airline,25.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+JL,Japan Airlines,Japan,APAC,NRT,Japan,APAC,Passenger Airline,240.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+AV,Avianca,Colombia,LATAM,BOG,Colombia,LATAM,Passenger Airline,175.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+4M,LATAM Argentina,Argentina,LATAM,EZE,Argentina,LATAM,Passenger Airline,40.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+MK,Air Mauritius,Mauritius,ROW,MRU,Mauritius,ROW,Passenger Airline,12.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+HV,Transavia,Netherlands,EU,AMS,Netherlands,EU,Passenger Airline,90.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+D8,Norwegian Int'l,Norway,EU,OSL,Norway,EU,Passenger Airline,170.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+LS,Jet2,UK,EU,LBA,UK,EU,Passenger Airline,100.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+PC,Pegasus Airlines,Turkey,EU,SAW,Turkey,EU,Passenger Airline,100.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+XU,ITA Airways,Italy,EU,FCO,Italy,EU,Passenger Airline,70.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+FI,Icelandair,Iceland,EU,KEF,Iceland,EU,Passenger Airline,45.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+OK,Czech Airlines,Czech Republic,EU,PRG,Czech Republic,EU,Passenger Airline,15.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+EW,Eurowings,Germany,EU,DUS,Germany,EU,Passenger Airline,130.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+TS,Air Transat,Canada,US,YUL,Canada,US,Passenger Airline,35.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+PD,Porter Airlines,Canada,US,YTZ,Canada,US,Passenger Airline,30.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+F9,Frontier Airlines,USA,US,DEN,USA,US,Passenger Airline,115.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+NK,Spirit Airlines,USA,US,FLL,USA,US,Passenger Airline,185.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+Y4,Volaris,Mexico,LATAM,MEX,Mexico,LATAM,Passenger Airline,115.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+VB,VivaAerobus,Mexico,LATAM,MTY,Mexico,LATAM,Passenger Airline,50.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+2Z,Interjet,Mexico,LATAM,MEX,Mexico,LATAM,Passenger Airline,40.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+AR,Aerolineas Argentinas,Argentina,LATAM,EZE,Argentina,LATAM,Passenger Airline,80.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+JA,JETSMART,Chile,LATAM,SCL,Chile,LATAM,Passenger Airline,20.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+JJ,LATAM Chile,Chile,LATAM,SCL,Chile,LATAM,Passenger Airline,70.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+H2,Sky Airline,Chile,LATAM,SCL,Chile,LATAM,Passenger Airline,20.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+IT,Tigerair Taiwan,Taiwan,APAC,TPE,Taiwan,APAC,Passenger Airline,20.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+MM,Peach Aviation,Japan,APAC,KIX,Japan,APAC,Passenger Airline,35.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+GK,Jetstar Japan,Japan,APAC,NRT,Japan,APAC,Passenger Airline,25.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+ZL,Rex Regional Express,Australia,APAC,SYD,Australia,APAC,Passenger Airline,65.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+JQ,Jetstar Airways,Australia,APAC,MEL,Australia,APAC,Passenger Airline,130.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+VA,Virgin Australia,Australia,APAC,BNE,Australia,APAC,Passenger Airline,90.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+FD,Thai AirAsia,Thailand,APAC,DMK,Thailand,APAC,Passenger Airline,65.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+Z2,Philippines AirAsia,Philippines,APAC,MNL,Philippines,APAC,Passenger Airline,25.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+XW,NokScoot,Thailand,APAC,DMK,Thailand,APAC,Passenger Airline,15.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+VZ,Thai Vietjet,Thailand,APAC,DMK,Thailand,APAC,Passenger Airline,20.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+MI,SilkAir,Singapore,APAC,SIN,Singapore,APAC,Passenger Airline,35.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+XY,flynas,Saudi Arabia,MENA,RUH,Saudi Arabia,MENA,Passenger Airline,35.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+F3,flyadeal,Saudi Arabia,MENA,JED,Saudi Arabia,MENA,Passenger Airline,30.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+J9,Jazeera Airways,Kuwait,MENA,KWI,Kuwait,MENA,Passenger Airline,15.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+G5,Gulf Air,Bahrain,MENA,BAH,Bahrain,MENA,Passenger Airline,20.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+QZ,AirAsia Indonesia,Indonesia,APAC,CGK,Indonesia,APAC,Passenger Airline,25.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+SJ,Sriwijaya Air,Indonesia,APAC,CGK,Indonesia,APAC,Passenger Airline,40.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+3U,Sichuan Airlines,China,APAC,CTU,China,APAC,Passenger Airline,180.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+ZH,Shenzhen Airlines,China,APAC,SZX,China,APAC,Passenger Airline,120.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+9C,Spring Airlines,China,APAC,PVG,China,APAC,Passenger Airline,105.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+PN,West Air,China,APAC,CKG,China,APAC,Passenger Airline,30.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+GS,Tianjin Airline,China,APAC,TSN,China,APAC,Passenger Airline,40.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+KN,China United Airlines,China,APAC,PEK,China,APAC,Passenger Airline,55.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+FM,Shanghai Airlines,China,APAC,PVG,China,APAC,Passenger Airline,65.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+SC,Shandong Airlines,China,APAC,TAO,China,APAC,Passenger Airline,100.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+IX,Air India Express,India,APAC,COK,India,APAC,Passenger Airline,60.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+SG,SpiceJet,India,APAC,DEL,India,APAC,Passenger Airline,90.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+G8,Go First,India,APAC,BOM,India,APAC,Passenger Airline,55.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+QP,Akasa Air,India,APAC,BOM,India,APAC,Passenger Airline,20.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+BL,Jetstar Pacific,Vietnam,APAC,SGN,Vietnam,APAC,Passenger Airline,30.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+QH,Bamboo Airways,Vietnam,APAC,HAN,Vietnam,APAC,Passenger Airline,30.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+SU,Aeroflot,Russia,ROW,SVO,Russia,ROW,Passenger Airline,250.0,Direct Owned,CORSIA Direct Liable,No,Yes
+U6,Ural Airlines,Russia,ROW,SVX,Russia,ROW,Passenger Airline,50.0,Direct Owned,CORSIA Direct Liable,No,Yes
+S7,S7 Airlines,Russia,ROW,OVB,Russia,ROW,Passenger Airline,100.0,Direct Owned,CORSIA Direct Liable,No,Yes
+DP,Pobeda Airlines,Russia,ROW,VKO,Russia,ROW,Passenger Airline,40.0,Direct Owned,CORSIA Direct Liable,No,Yes
+FV,Rossiya Airlines,Russia,ROW,LED,Russia,ROW,Passenger Airline,65.0,Direct Owned,CORSIA Direct Liable,No,Yes
+QP,Akasa Air,India,APAC,BOM,India,APAC,Passenger Airline,20.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+BL,Jetstar Pacific,Vietnam,APAC,SGN,Vietnam,APAC,Passenger Airline,30.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+QH,Bamboo Airways,Vietnam,APAC,HAN,Vietnam,APAC,Passenger Airline,30.0,Direct Owned,CORSIA Direct Liable,Yes,Yes
+SU,Aeroflot,Russia,ROW,SVO,Russia,ROW,Passenger Airline,250.0,Direct Owned,CORSIA Direct Liable,No,Yes
+U6,Ural Airlines,Russia,ROW,SVX,Russia,ROW,Passenger Airline,50.0,Direct Owned,CORSIA Direct Liable,No,Yes
+S7,S7 Airlines,Russia,ROW,OVB,Russia,ROW,Passenger Airline,100.0,Direct Owned,CORSIA Direct Liable,No,Yes
+DP,Pobeda Airlines,Russia,ROW,VKO,Russia,ROW,Passenger Airline,40.0,Direct Owned,CORSIA Direct Liable,No,Yes
+FV,Rossiya Airlines,Russia,ROW,LED,Russia,ROW,Passenger Airline,65.0,Direct Owned,CORSIA Direct Liable,No,Yes
