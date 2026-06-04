@@ -1,48 +1,48 @@
 # SAF Global Market Model
 
-A 20-year (2025–2045) dynamic simulation of the global Sustainable Aviation Fuel (SAF) market. The model combines bottom-up flight-demand estimation from a comprehensive 1,274-route dataset, least-cost capacity expansion, willingness-to-pay (WTP) pricing, and regional price–quantity clearing — all presented through an interactive four-tab Streamlit dashboard.
+A 20-year (2025–2050) dynamic simulation of the global Sustainable Aviation Fuel (SAF) market. The model combines bottom-up flight-demand estimation from a comprehensive 1,274-route dataset, least-cost capacity expansion, willingness-to-pay (WTP) pricing, and regional price–quantity clearing — all presented through an interactive four-tab Streamlit dashboard.
 
 ---
 
 ## Dashboard
 
 ### Tab 1 — Model Inputs
-Edit every model input directly in the browser. Changes auto-save to the CSV layer and immediately refresh the preview charts.
 
-![Inputs – Demand Module](docs/screenshots/tab1_demand.png)
-*Demand Module: CORSIA schedule editor, route-level SAF target table, and projected demand bar chart by region.*
+All model inputs are editable directly in the browser across seven sub-tabs. Changes auto-save to the underlying CSV layer and immediately refresh the inline preview charts.
 
-![Inputs – Capacity](docs/screenshots/tab1_capacity.png)
-*Committed Capacity: plant-level table with inline editing, capacity-by-region stacked bar, and pathway breakdown.*
+**Demand Module** presents a radio selector to choose between the two demand modes. In *Single CORSIA Schedule* mode, the CORSIA mandatory blending fraction and carbon credit price are shown as an editable year-by-year table alongside a demand suppression table for voluntary-only regions. In *Country-Specific SAF Targets* mode, the full 1,274-route dataset is displayed with per-route SAF% target columns for key years 2025–2050. Both modes conclude with a stacked bar chart showing projected SAF demand by region across the full horizon.
 
-![Inputs – LCOSAF Explorer](docs/screenshots/tab1_lcosaf.png)
-*LCOSAF Explorer: interactive cost-stack adjustments (CAPEX, OPEX, feedstock price, yield) with a real-time levelised-cost bar chart.*
+**Airlines, Aircraft & Routes** exposes the three flight-activity datasets — the 163-operator airline register, 14-aircraft-type efficiency table, and the complete route network — as inline editable grids with download-template and CSV-upload controls.
+
+**Committed Capacity** shows all 149 announced and operating SAF plants as an editable table, with a stacked bar chart summarising capacity by region and a pathway breakdown chart. A refinery co-processing capacity cap section lets users adjust regional refinery throughput and the share available for co-processing, with an implied capacity ceiling chart updated in real time.
+
+**Feedstock & Costs** contains editable tables for regional feedstock availability (by type, year, and cost), inter-regional SAF transport costs, and domestic supply priority shares (the fraction of each region's output reserved for local consumption before export).
+
+**Regulatory Parameters** displays the per-region, per-year regulatory input table covering pricing regime, mandate fraction, non-compliance penalty, carbon tax, jet fuel price, and green premium — all editable inline.
+
+**WTP Parameters** provides the per-region, per-year willingness-to-pay input table (jet fuel price, CORSIA credit price, Case 3 penalty, target IRR) and a live LCOSAF Explorer. The explorer lets users adjust CAPEX, processing OPEX, feedstock price, and yield for any region–pathway combination and immediately see the updated levelised cost bar chart, cost-stack waterfall, and implied break-even SAF price.
+
+**National Blending Mandates** shows the country-level mandate schedule as an editable table and a grouped bar chart of mandate fractions by country and year.
 
 ### Tab 2 — Run Model
-Configure the scenario, start year / end year, and click **▶ Run Model**. A live step-progress table and scrollable log track execution year-by-year.
 
-![Run Model tab](docs/screenshots/tab2_run.png)
-*Live progress: per-year step table (Demand → Expansion → Equilibrium → Done) with elapsed time and estimated remaining.*
+Users configure a scenario name and start/end year, then click **▶ Run Model**. The model executes in a background thread and streams progress back to the UI in real time. A per-year step table tracks each of the four annual steps (Demand, Expansion, Equilibrium, Done) with tick marks as they complete. A scrollable log shows a plain-English description of each step's outcome. Elapsed time and estimated time remaining are displayed throughout the run.
 
 ### Tab 3 — Model Outputs
-Rich interactive charts rendered from the completed model history. All charts are zoomable and hoverable.
 
-![Outputs – Global Price](docs/screenshots/tab3_price.png)
-*Volume-weighted global SAF price (steelblue line) with min–max regional range (shaded band), all years 2025–2045.*
+All output charts are interactive (zoomable, hoverable, with exportable data).
 
-![Outputs – WTP Trends](docs/screenshots/tab3_wtp.png)
-*Regional WTP trends and MAC supply-demand curve (Compliance Cost Curve).*
+**Prices & WTP** shows three exhibits: (1) a volume-weighted global SAF market price chart with a steelblue average line and a light-blue shaded band representing the min–max spread across served regions for each year; (2) a regional WTP trend chart with one line per region showing how each region's willingness-to-pay evolves over the horizon; and (3) a Compliance Cost Curve (MAC supply-demand chart) that blends physical SAF clearing prices with CORSIA offset costs weighted by each region's served/unserved volume, giving a market-wide average abatement cost per year.
 
-![Outputs – Capacity](docs/screenshots/tab3_capacity.png)
-*Cumulative SAF capacity split by region and pathway, with annual new-build additions.*
+**Capacity** contains two area charts: cumulative SAF capacity stacked by region, and cumulative capacity stacked by pathway. New-build additions by year are overlaid as bar marks. A summary table lists each plant with its region, pathway, nameplate capacity, and online year.
 
-![Outputs – Trade Flows](docs/screenshots/tab3_trade.png)
-*Sankey diagram of inter-regional SAF trade and exporter/importer league tables.*
+**Trade Flows** presents a Sankey diagram of inter-regional SAF trade (exporter regions on the left, importer regions on the right, flow width proportional to traded volume). Below the Sankey, ranked bar charts show the top exporting and importing regions for a user-selected year, and a detailed trade flow table lists every origin–destination–pathway flow with volume, transport cost, and CIF price.
+
+**Price Decomposition** displays a stacked bar chart breaking each region's clearing price into its cost components (feedstock, processing OPEX, CAPEX annuity, transport) alongside a narrative paragraph explaining the dominant pricing regime and how the global average price composition shifts over the horizon.
 
 ### Tab 4 — Scenarios
-Side-by-side comparison of multiple model runs.
 
-![Scenarios tab](docs/screenshots/tab4_scenarios.png)
+Stores and compares completed model runs side-by-side. Each saved scenario appears as a named entry; selecting two or more renders overlay charts for global price, regional WTP, capacity, and trade volume, allowing direct visual comparison of how different input assumptions drive divergent market outcomes.
 
 ---
 
@@ -230,7 +230,7 @@ Opens four tabs:
 ### CLI
 
 ```bash
-# Full 2025–2045 baseline run
+# Full 2025–2050 baseline run
 python main.py
 
 # Custom horizon and scenario tag
