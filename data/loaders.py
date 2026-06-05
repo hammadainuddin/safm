@@ -146,7 +146,6 @@ def load_feedstock_bundles(year: int, path: str = None) -> List[RegionalFeedstoc
                 region=str(region),
                 feedstock_type=str(row["feedstock_type"]),
                 max_available_mt=float(row["max_available_mt"]),
-                cost_usd_per_mt=float(row["cost_usd_per_mt"]),
                 notes=str(row.get("notes", "")),
             )
             for _, row in grp.iterrows()

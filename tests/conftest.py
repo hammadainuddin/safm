@@ -72,17 +72,17 @@ def feedstock_bundles_abundant() -> list:
             year=2025, region=r,
             feedstocks=[
                 FeedstockAvailability(year=2025, region=r, feedstock_type="UCO",
-                                      max_available_mt=100.0, cost_usd_per_mt=350.0),
+                                      max_available_mt=100.0),
                 FeedstockAvailability(year=2025, region=r, feedstock_type="tallow",
-                                      max_available_mt=50.0, cost_usd_per_mt=300.0),
+                                      max_available_mt=50.0),
                 FeedstockAvailability(year=2025, region=r, feedstock_type="agricultural_residue",
-                                      max_available_mt=80.0, cost_usd_per_mt=200.0),
+                                      max_available_mt=80.0),
                 FeedstockAvailability(year=2025, region=r, feedstock_type="MSW",
-                                      max_available_mt=60.0, cost_usd_per_mt=150.0),
+                                      max_available_mt=60.0),
                 FeedstockAvailability(year=2025, region=r, feedstock_type="CO2_green_H2",
-                                      max_available_mt=30.0, cost_usd_per_mt=800.0),
+                                      max_available_mt=30.0),
                 FeedstockAvailability(year=2025, region=r, feedstock_type="other",
-                                      max_available_mt=40.0, cost_usd_per_mt=250.0),
+                                      max_available_mt=40.0),
             ]
         )
         for r in ["EU", "US", "APAC"]
@@ -97,7 +97,7 @@ def feedstock_bundles_tight() -> list:
             year=2025, region=r,
             feedstocks=[
                 FeedstockAvailability(year=2025, region=r, feedstock_type=ft,
-                                      max_available_mt=0.001, cost_usd_per_mt=350.0)
+                                      max_available_mt=0.001)
                 for ft in ["UCO", "tallow", "agricultural_residue", "MSW", "CO2_green_H2", "other"]
             ]
         )

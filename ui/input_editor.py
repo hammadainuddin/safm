@@ -835,11 +835,8 @@ def render() -> None:
         st.caption(
             "**Units convention.** `max_available_mt` is **million tonnes of raw feedstock per "
             "year** (so 0.8 = 0.8 Mt = 800,000 t — a realistic regional UCO collection rate). "
-            "`cost_usd_per_mt` is the **delivered price per metric tonne of feedstock** "
-            "(e.g. UCO ≈ \$350/t). The same \"MT\" suffix in this CSV is overloaded — volumes "
-            "are millions of tonnes, prices are per single tonne. SAF yield per tonne of "
-            "feedstock varies by pathway (HEFA ≈ 0.80, ATJ ≈ 0.22, FT-MSW ≈ 0.15, PtL ≈ 0.28, "
-            "Co-processing ≈ 0.45 t SAF / t feedstock)."
+            "SAF yield per tonne of feedstock varies by pathway (HEFA ≈ 0.80, ATJ ≈ 0.22, "
+            "FT-MSW ≈ 0.15, PtL ≈ 0.28, Co-processing ≈ 0.45 t SAF / t feedstock)."
         )
 
         # ── Time-series chart ─────────────────────────────────────────────────
@@ -883,9 +880,6 @@ def render() -> None:
                     "feedstock_type": st.column_config.TextColumn("Feedstock Type"),
                     "max_available_mt": st.column_config.NumberColumn(
                         "Max Available (Million tonnes / yr)", min_value=0.0, format="%.3f",
-                    ),
-                    "cost_usd_per_mt": st.column_config.NumberColumn(
-                        "Cost (USD / tonne)", min_value=0.0, format="%.0f",
                     ),
                     "notes": st.column_config.TextColumn("Notes"),
                 },

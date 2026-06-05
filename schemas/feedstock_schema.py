@@ -14,14 +14,13 @@ class FeedstockAvailability(BaseModel):
     region: str
     feedstock_type: str
     max_available_mt: float    # million tonnes
-    cost_usd_per_mt: float     # procurement cost, USD per MT
     notes: str = ""
 
-    @field_validator("max_available_mt", "cost_usd_per_mt")
+    @field_validator("max_available_mt")
     @classmethod
     def non_negative(cls, v: float) -> float:
         if v < 0:
-            raise ValueError("feedstock availability and cost must be non-negative")
+            raise ValueError("feedstock availability must be non-negative")
         return v
 
 

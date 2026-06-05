@@ -57,19 +57,16 @@ def saudi_feedstocks_for_year(year: int) -> List[FeedstockAvailability]:
         FeedstockAvailability(
             year=year, region="MENA", feedstock_type="tallow",
             max_available_mt=round(base["tallow"] * growth / 1_000_000, 6),
-            cost_usd_per_mt=300.0,
             notes="Hajj slaughterhouse tallow — SAF_Saudi TALLOW_AVAILABILITY",
         ),
         FeedstockAvailability(
             year=year, region="MENA", feedstock_type="UCO",
             max_available_mt=round(base["UCO"] * growth / 1_000_000, 6),
-            cost_usd_per_mt=350.0,
             notes="Saudi restaurant UCO collection estimate",
         ),
         FeedstockAvailability(
             year=year, region="MENA", feedstock_type="other",
             max_available_mt=round((base["poultry"] + base["jatropha"]) * growth / 1_000_000, 6),
-            cost_usd_per_mt=280.0,
             notes="Poultry fat + Jatropha oil — SAF_Saudi profiles",
         ),
     ]

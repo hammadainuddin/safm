@@ -201,4 +201,4 @@ class TestFeedstockSchema:
     def test_rejects_negative_availability(self):
         with pytest.raises(ValidationError, match="non-negative"):
             FeedstockAvailability(year=2025, region="EU", feedstock_type="UCO",
-                                  max_available_mt=-1.0, cost_usd_per_mt=350.0)
+                                  max_available_mt=-1.0)

@@ -58,7 +58,7 @@ def _feedstock_bundle(region: str, year: int, avail_per_type: float) -> Regional
         feedstocks=[
             FeedstockAvailability(
                 year=year, region=region, feedstock_type=ft,
-                max_available_mt=avail_per_type, cost_usd_per_mt=350.0,
+                max_available_mt=avail_per_type,
             )
             for ft in FEEDSTOCK_TYPES
         ],
@@ -178,12 +178,12 @@ class TestBindingFeedstock:
         from config.settings import FEEDSTOCK_TYPES
         tight_feedstocks = [
             FeedstockAvailability(year=2025, region="EU", feedstock_type="UCO",
-                                  max_available_mt=0.50, cost_usd_per_mt=350.0),
+                                  max_available_mt=0.50),
             FeedstockAvailability(year=2025, region="EU", feedstock_type="tallow",
-                                  max_available_mt=0.50, cost_usd_per_mt=300.0),
+                                  max_available_mt=0.50),
         ] + [
             FeedstockAvailability(year=2025, region="EU", feedstock_type=ft,
-                                  max_available_mt=50.0, cost_usd_per_mt=200.0)
+                                  max_available_mt=50.0)
             for ft in FEEDSTOCK_TYPES if ft not in ("UCO", "tallow")
         ]
         bundles = [RegionalFeedstockBundle(year=2025, region="EU", feedstocks=tight_feedstocks)]
