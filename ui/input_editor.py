@@ -1162,14 +1162,18 @@ def render() -> None:
         yr_wtp["case3_preview"] = yr_wtp["case3_penalty_usd_per_mt"]
 
         def _case2(row):
+            from data.loaders import load_lcosaf_costs
+            from config.settings import SAF_PATHWAYS as _SP, UTILIZATION_FACTOR as _UF, PROJECT_LIFE_YR as _PLY
+            from utils.economics import levelised_cost as _lc
             irr = float(row["target_irr_pct"]) / 100.0
             region = str(row["region"])
-            r_capex = REGIONAL_CAPEX.get(region, REGIONAL_CAPEX.get("ROW", {}))
-            r_opex  = REGIONAL_OPEX.get(region, REGIONAL_OPEX.get("ROW", {}))
+            year = int(row["year"])
+            ct, ot = load_lcosaf_costs(year)
+            r_capex = ct.get(region, ct.get("ROW", {}))
+            r_opex  = ot.get(region, ot.get("ROW", {}))
             return min(
-                levelised_cost(r_capex.get(p, 2000), r_opex.get(p, 600),
-                               UTILIZATION_FACTOR, irr, PROJECT_LIFE_YR)
-                for p in SAF_PATHWAYS
+                _lc(r_capex.get(p, 2000), r_opex.get(p, 600), _UF, irr, _PLY)
+                for p in _SP
             )
 
         yr_wtp["case2_preview"] = yr_wtp.apply(_case2, axis=1)
