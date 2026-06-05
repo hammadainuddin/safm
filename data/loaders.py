@@ -198,3 +198,56 @@ def load_corsia_suppression(path: str = None) -> Dict[tuple, float]:
     if path is None:
         _CORSIA_CACHE = result
     return result
+
+
+# ---------------------------------------------------------------------------
+# LCOSAF cost parameters (capex, processing OPEX, feedstock cost) by year
+# ---------------------------------------------------------------------------
+
+_PRIMARY_FEEDSTOCK: Dict[str, str] = {
+    "HEFA":          "UCO",
+    "ATJ":           "agricultural_residue",
+    "FT-MSW":        "MSW",
+    "PtL":           "CO2_green_H2",
+    "Co-processing": "UCO",
+}
+
+
+def load_lcosaf_costs(year: int, path: str = None):
+    """
+    Return (capex_table, opex_table) for *year* in {region: {pathway: float}} format,
+    suitable as drop-in replacements for REGIONAL_CAPEX / REGIONAL_OPEX.
+
+    opex_table[r][p] = (processing_opex_usd_per_mt_saf
+                        + feedstock_cost_usd_per_t × FEED_INTENSITY[p][primary])
+                       × UTILIZATION_FACTOR
+
+    Falls back to REGIONAL_CAPEX / REGIONAL_OPEX from settings.py if the file
+    is missing or contains no rows for the requested year.
+    """
+    from config.settings import (FEED_INTENSITY, UTILIZATION_FACTOR,
+                                  REGIONAL_CAPEX, REGIONAL_OPEX)
+
+    csv_path = path or _mock_path("lcosaf_costs.csv")
+    if not os.path.exists(csv_path):
+        return REGIONAL_CAPEX, REGIONAL_OPEX
+
+    df = pd.read_csv(csv_path)
+    yr_df = df[df["year"] == year]
+    if yr_df.empty:
+        yr_df = df[df["year"] == df["year"].min()]
+
+    capex_table: Dict[str, Dict[str, float]] = {}
+    opex_table:  Dict[str, Dict[str, float]] = {}
+
+    for _, row in yr_df.iterrows():
+        r = str(row["region"])
+        p = str(row["pathway"])
+        capex_table.setdefault(r, {})[p] = float(row["capex_usd_per_mt"])
+        primary = _PRIMARY_FEEDSTOCK.get(p, "UCO")
+        fi = FEED_INTENSITY.get(p, {}).get(primary, 1.0)
+        eff_opex = (float(row["processing_opex_usd_per_mt_saf"])
+                    + float(row["feedstock_cost_usd_per_t"]) * fi) * UTILIZATION_FACTOR
+        opex_table.setdefault(r, {})[p] = round(eff_opex, 2)
+
+    return capex_table, opex_table

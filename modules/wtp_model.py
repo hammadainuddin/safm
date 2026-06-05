@@ -215,19 +215,20 @@ class WTPModel:
     def _case2(region: str, row: pd.Series) -> float:
         """
         LCOSAF at the region's target IRR — minimum price for investment viability.
-        Uses HEFA (cheapest) CAPEX/OPEX as the reference pathway.
-        levelised_cost(capex, opex×utilization, utilization, irr, life)
+        CAPEX, processing OPEX, and feedstock cost sourced from lcosaf_costs.csv
+        (edited via the Costs sub-tab in the Inputs tab).
         """
+        from data.loaders import load_lcosaf_costs
+        year = int(row.get("year", 2025))
+        capex_table, opex_table = load_lcosaf_costs(year)
         irr = float(row.get("target_irr_pct", 12.0)) / 100.0
-        r_capex = REGIONAL_CAPEX.get(region, REGIONAL_CAPEX.get("ROW", {}))
-        r_opex  = REGIONAL_OPEX.get(region,  REGIONAL_OPEX.get("ROW",  {}))
+        r_capex = capex_table.get(region, capex_table.get("ROW", {}))
+        r_opex  = opex_table.get(region,  opex_table.get("ROW",  {}))
 
         best_lcosaf = float("inf")
         for pathway in SAF_PATHWAYS:
-            capex = r_capex.get(pathway, 2000.0)   # USD / MT/yr capacity
-            opex  = r_opex.get(pathway, 600.0)     # USD / MT produced
-            # OPEX is USD/MT-capacity/yr (includes feedstock as a fixed annual cost).
-            # Formula: LCOSAF = (CRF × CAPEX + OPEX) / UTIL
+            capex = r_capex.get(pathway, 2000.0)
+            opex  = r_opex.get(pathway, 600.0)
             lc = levelised_cost(
                 capex_usd_per_unit=capex,
                 annual_opex_usd=opex,

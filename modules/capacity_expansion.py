@@ -18,6 +18,7 @@ from config.settings import SUPPLY_DEMAND_BALANCE_TOLERANCE
 from data.loaders import (
     load_coprocessing_caps,
     load_feedstock_bundles,
+    load_lcosaf_costs,
     load_transport_costs,
 )
 from modules.supply_model import SupplyModel
@@ -81,8 +82,11 @@ class CapacityExpansionModule:
             wtp_dict = wtp_matrix.to_dict()
             demand_by_region = demand_matrix.volume_by_region(year)
             transport_costs = load_transport_costs()
+            capex_table, opex_table = load_lcosaf_costs(year)
             expansion = self._sm.build_expansion_lp(
                 gaps, feedstock_bundles, year,
+                regional_capex=capex_table,
+                regional_opex=opex_table,
                 existing_capacity=capacity_state,
                 coprocessing_caps=coprocessing_caps,
                 wtp_dict=wtp_dict,

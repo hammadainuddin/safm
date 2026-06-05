@@ -23,7 +23,7 @@ if _HERE not in sys.path:
     sys.path.insert(0, _HERE)
 
 from config.settings import MODEL_END_YEAR, MODEL_START_YEAR, HORIZON_YEARS, ROUTE_SAMPLE_FRACTION as _DEFAULT_RSF
-from ui import input_editor, output_dashboard
+from ui import input_editor, output_dashboard, lcosaf_explorer
 
 st.set_page_config(
     page_title="SAF Market Model",
@@ -45,8 +45,8 @@ if "active_tab" not in st.session_state:
     st.session_state.active_tab = 0
 
 # ── Tab layout ───────────────────────────────────────────────────────────────
-tab_inputs, tab_run, tab_outputs, tab_scenarios = st.tabs([
-    "📊 Inputs", "▶ Run Model", "📈 Outputs", "🎭 Scenarios"
+tab_inputs, tab_run, tab_outputs, tab_scenarios, tab_lcosaf = st.tabs([
+    "📊 Inputs", "▶ Run Model", "📈 Outputs", "🎭 Scenarios", "🔬 LCOSAF Explorer"
 ])
 
 
@@ -188,3 +188,10 @@ with tab_outputs:
 with tab_scenarios:
     from ui import scenario_builder
     scenario_builder.render(st.session_state.history)
+
+
+# ============================================================================
+# TAB 5 — LCOSAF Explorer
+# ============================================================================
+with tab_lcosaf:
+    lcosaf_explorer.render()

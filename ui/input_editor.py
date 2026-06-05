@@ -149,10 +149,10 @@ def render() -> None:
     )
 
     (tab_demand, tab_capacity, tab_feedstock,
-     tab_transport, tab_regulatory, tab_wtp) = st.tabs([
+     tab_costs, tab_transport, tab_regulatory, tab_wtp) = st.tabs([
         "✈️ Demand Module", "🏭 Committed Capacity",
-        "🌿 Feedstock Availability", "🚢 Transport Costs",
-        "📋 Regulatory Params", "💰 WTP Parameters",
+        "🌿 Feedstock Availability", "💵 Costs",
+        "🚢 Transport Costs", "📋 Regulatory Params", "💰 WTP Parameters",
     ])
 
     # ════════════════════════════════════════════════════════════════════════
@@ -890,6 +890,114 @@ def render() -> None:
                 st.success("feedstock_availability.csv saved.")
 
     # ════════════════════════════════════════════════════════════════════════
+    # 💵  COSTS — annual CAPEX, processing OPEX, feedstock cost
+    # ════════════════════════════════════════════════════════════════════════
+    with tab_costs:
+        st.subheader("Plant Cost Assumptions")
+        st.markdown(
+            """
+            ### Methodology
+            These annual cost inputs drive the **capacity expansion LP** (which new plants to
+            build each year) and **WTP Case 2** (the minimum SAF price at which a rational
+            investor would build new capacity).
+
+            Three cost components are specified per **(year, region, pathway)** combination:
+
+            - **CAPEX** — one-time capital cost in **USD per MT/yr of nameplate capacity**
+            - **Processing OPEX** — non-feedstock operating cost in **USD per MT SAF** produced
+            - **Feedstock cost** — delivered cost per **MT of raw feedstock**
+
+            The model converts these into a levelised cost:
+
+            > **LCOSAF = (CRF(IRR, life) × CAPEX + (Proc. OPEX + Feedstock $/t × Intensity) × UTIL) / UTIL**
+
+            Flat defaults (constant across years) are derived from the built-in regional cost
+            tables. Introduce year-on-year cost declines (e.g. CAPEX learning curves, falling
+            green hydrogen costs) by editing the table below.
+
+            *Committed plant costs are set per-plant in the Committed Capacity tab and are
+            not affected by this table.*
+            """
+        )
+        from config.settings import REGIONS as _REGIONS_C, SAF_PATHWAYS as _PATHWAYS_C
+        import plotly.express as _px_c
+
+        costs_df = _upload_widget("lcosaf_costs.csv", "ss_lcosaf_costs")
+
+        # ── Time-series preview charts ────────────────────────────────────────
+        pathway_sel = st.selectbox("Pathway", _PATHWAYS_C, key="costs_pathway_sel")
+        p_df = costs_df[costs_df["pathway"] == pathway_sel].sort_values("year")
+
+        col_cx, col_fo, col_po = st.columns(3)
+        with col_cx:
+            st.markdown("**CAPEX (USD/MT capacity/yr)**")
+            fig_cx = _px_c.line(
+                p_df, x="year", y="capex_usd_per_mt", color="region",
+                markers=True,
+                labels={"capex_usd_per_mt": "USD/MT", "year": "Year", "region": "Region"},
+            )
+            fig_cx.update_layout(height=280, margin=dict(t=10, b=40),
+                                  xaxis=dict(tickformat="d"), hovermode="x unified",
+                                  legend=dict(orientation="h", yanchor="top", y=-0.28))
+            st.plotly_chart(fig_cx, use_container_width=True)
+
+        with col_fo:
+            st.markdown("**Feedstock Cost (USD/t feedstock)**")
+            fig_fo = _px_c.line(
+                p_df, x="year", y="feedstock_cost_usd_per_t", color="region",
+                markers=True,
+                labels={"feedstock_cost_usd_per_t": "USD/t", "year": "Year", "region": "Region"},
+            )
+            fig_fo.update_layout(height=280, margin=dict(t=10, b=40),
+                                  xaxis=dict(tickformat="d"), hovermode="x unified",
+                                  legend=dict(orientation="h", yanchor="top", y=-0.28))
+            st.plotly_chart(fig_fo, use_container_width=True)
+
+        with col_po:
+            st.markdown("**Processing OPEX (USD/MT SAF)**")
+            fig_po = _px_c.line(
+                p_df, x="year", y="processing_opex_usd_per_mt_saf", color="region",
+                markers=True,
+                labels={"processing_opex_usd_per_mt_saf": "USD/MT SAF",
+                        "year": "Year", "region": "Region"},
+            )
+            fig_po.update_layout(height=280, margin=dict(t=10, b=40),
+                                  xaxis=dict(tickformat="d"), hovermode="x unified",
+                                  legend=dict(orientation="h", yanchor="top", y=-0.28))
+            st.plotly_chart(fig_po, use_container_width=True)
+
+        # ── Download template ─────────────────────────────────────────────────
+        _tmpl_c = _tmpl_path("lcosaf_costs.csv")
+        if os.path.exists(_tmpl_c):
+            with open(_tmpl_c, "rb") as _f:
+                st.download_button(
+                    "⬇️ Download template", _f.read(), "lcosaf_costs.csv",
+                    "text/csv", key="dl_lcosaf_costs",
+                )
+
+        # ── Editable table ────────────────────────────────────────────────────
+        with st.expander("Edit full table"):
+            edited_costs = st.data_editor(
+                costs_df, use_container_width=True, num_rows="dynamic",
+                key="costs_editor",
+                column_config={
+                    "year":                         st.column_config.NumberColumn("Year", format="%d"),
+                    "region":                       st.column_config.TextColumn("Region"),
+                    "pathway":                      st.column_config.TextColumn("Pathway"),
+                    "capex_usd_per_mt":             st.column_config.NumberColumn(
+                        "CAPEX (USD/MT cap/yr)", min_value=0.0, format="%.0f"),
+                    "processing_opex_usd_per_mt_saf": st.column_config.NumberColumn(
+                        "Processing OPEX (USD/MT SAF)", min_value=0.0, format="%.1f"),
+                    "feedstock_cost_usd_per_t":     st.column_config.NumberColumn(
+                        "Feedstock Cost (USD/t)", min_value=0.0, format="%.1f"),
+                },
+            )
+            if st.button("💾 Save Cost Assumptions", key="save_lcosaf_costs"):
+                _save(edited_costs, "lcosaf_costs.csv")
+                _clear_upload("ss_lcosaf_costs")
+                st.success("lcosaf_costs.csv saved.")
+
+    # ════════════════════════════════════════════════════════════════════════
     # 🚢  TRANSPORT COSTS
     # ════════════════════════════════════════════════════════════════════════
     with tab_transport:
@@ -1020,11 +1128,6 @@ def render() -> None:
             """
         )
 
-        from config.settings import (FEED_INTENSITY, REGIONAL_CAPEX, REGIONAL_OPEX,
-                                     SAF_PATHWAYS, UTILIZATION_FACTOR, PROJECT_LIFE_YR,
-                                     REGIONS as _REGIONS)
-        from utils.economics import levelised_cost
-
         wtp_df = _upload_widget("wtp_params.csv", "ss_wtp_params")
 
         # ── Jet fuel price trajectory (drives Case 1 WTP) ────────────────────
@@ -1094,158 +1197,11 @@ def render() -> None:
         fig.update_layout(xaxis=dict(tickformat=""))
         st.plotly_chart(fig, use_container_width=True)
 
-        # ── LCOSAF by Region and Pathway ─────────────────────────────────────
-        st.subheader("LCOSAF by Region and Pathway")
-        st.markdown(
-            """
-            The Levelised Cost of SAF (LCOSAF) is the minimum long-run price at which a
-            producer can recover all capital and operating costs at a given required rate of
-            return:
-
-            > **LCOSAF (USD/MT SAF) = (CRF(IRR, life) × CAPEX + OPEX_eq) / Utilisation**
-            >
-            > where **OPEX_eq (USD/MT capacity/yr) = (Proc. OPEX + Feedstock $/t ÷ Yield) × Utilisation**
-
-            Use the inputs below to set per-pathway, per-region **CAPEX**, **Processing OPEX**,
-            **Feedstock cost per tonne of feedstock**, and **SAF Yield**. The yield converts
-            per-tonne feedstock cost into per-MT-SAF cost: a HEFA plant burning UCO at $600/t
-            with a yield of 0.80 MT SAF / MT UCO incurs $600 ÷ 0.80 = $750/MT SAF in feedstock
-            cost. These values update the charts on this page only and do not affect a model
-            run.
-
-            - **CAPEX** — capital cost in USD per MT/yr of nameplate capacity
-            - **Processing OPEX** — non-feedstock operating cost in USD per **MT SAF** produced
-            - **Feedstock $/t feed** — delivered feedstock cost per **MT of raw feedstock**
-            - **Yield** — MT SAF produced per **MT of raw feedstock** (e.g. HEFA ≈ 0.80,
-              ATJ ≈ 0.22, FT-MSW ≈ 0.15, PtL ≈ 0.28, Co-processing ≈ 0.45)
-            """
+        st.info(
+            "**Case 2 cost inputs** (CAPEX, Processing OPEX, Feedstock cost) are now "
+            "set in the **Costs** tab and applied to every model run. "
+            "The `target_irr_pct` column here remains the only Case 2 input in this table."
         )
-
-        # Primary feedstock used in FEED_INTENSITY for each pathway — used to seed yields.
-        _PRIMARY_FEEDSTOCK = {
-            "HEFA":          "UCO",
-            "ATJ":           "agricultural_residue",
-            "FT-MSW":        "MSW",
-            "PtL":           "CO2_green_H2",
-            "Co-processing": "UCO",
-        }
-
-        def _default_yield(pathway: str) -> float:
-            """MT SAF / MT raw feedstock = 1 / feedstock intensity."""
-            feed = _PRIMARY_FEEDSTOCK.get(pathway)
-            intensity = FEED_INTENSITY.get(pathway, {}).get(feed or "", 0.0)
-            return round(1.0 / intensity, 3) if intensity > 0 else 1.0
-
-        # Initialise grid from settings defaults on first load (75/25 feedstock/processing split,
-        # then back-calculate feedstock $/t feed using the default yield).
-        if "lcosaf_cost_grid" not in st.session_state:
-            grid: dict = {}
-            for r in _REGIONS:
-                grid[r] = {}
-                for p in SAF_PATHWAYS:
-                    opex_cap = REGIONAL_OPEX.get(r, {}).get(p, 600)
-                    opex_saf = opex_cap / UTILIZATION_FACTOR        # USD/MT SAF
-                    yld     = _default_yield(p)                     # MT SAF / MT feed
-                    feed_per_saf = opex_saf * 0.75                  # USD/MT SAF (legacy split)
-                    grid[r][p] = {
-                        "capex":            float(REGIONAL_CAPEX.get(r, {}).get(p, 2000)),
-                        "proc_opex":        round(opex_saf * 0.25, 0),
-                        "feedstock_per_t":  round(feed_per_saf * yld, 0),   # USD/MT feed
-                        "saf_yield":        yld,                            # MT SAF / MT feed
-                    }
-            st.session_state["lcosaf_cost_grid"] = grid
-
-        grid = st.session_state["lcosaf_cost_grid"]
-
-        # Migrate any old session-state entries (without the new fields) so the UI does not crash.
-        for r in _REGIONS:
-            for p in SAF_PATHWAYS:
-                cell = grid.setdefault(r, {}).setdefault(p, {})
-                if "feedstock_per_t" not in cell or "saf_yield" not in cell:
-                    yld = _default_yield(p)
-                    legacy_feed_per_saf = cell.get("feedstock", 0.0)
-                    cell["feedstock_per_t"] = round(legacy_feed_per_saf * yld, 0)
-                    cell["saf_yield"]      = yld
-                    cell.pop("feedstock", None)
-
-        col_reset, _ = st.columns([1, 4])
-        with col_reset:
-            if st.button("↺ Reset to model defaults", key="lcosaf_reset"):
-                st.session_state.pop("lcosaf_cost_grid", None)
-                st.rerun()
-
-        region_tabs_lc = st.tabs(_REGIONS)
-        for rtab, region in zip(region_tabs_lc, _REGIONS):
-            with rtab:
-                hdr = st.columns([1.6, 1.3, 1.4, 1.5, 1.4])
-                hdr[0].markdown("**Pathway**")
-                hdr[1].markdown("**CAPEX** $/MT cap/yr")
-                hdr[2].markdown("**Proc. OPEX** $/MT SAF")
-                hdr[3].markdown("**Feedstock** $/MT feed")
-                hdr[4].markdown("**Yield** MT SAF / MT feed")
-                for pathway in SAF_PATHWAYS:
-                    kp = f"lc_{region}_{pathway}"
-                    row = st.columns([1.6, 1.3, 1.4, 1.5, 1.4])
-                    row[0].write(pathway)
-                    grid[region][pathway]["capex"] = float(row[1].number_input(
-                        "capex", value=grid[region][pathway]["capex"],
-                        min_value=0.0, step=50.0, key=f"{kp}_capex",
-                        label_visibility="collapsed",
-                    ))
-                    grid[region][pathway]["proc_opex"] = float(row[2].number_input(
-                        "proc_opex", value=grid[region][pathway]["proc_opex"],
-                        min_value=0.0, step=10.0, key=f"{kp}_proc",
-                        label_visibility="collapsed",
-                    ))
-                    grid[region][pathway]["feedstock_per_t"] = float(row[3].number_input(
-                        "feedstock_per_t", value=grid[region][pathway]["feedstock_per_t"],
-                        min_value=0.0, step=10.0, key=f"{kp}_feed_t",
-                        label_visibility="collapsed",
-                    ))
-                    grid[region][pathway]["saf_yield"] = float(row[4].number_input(
-                        "saf_yield", value=grid[region][pathway]["saf_yield"],
-                        min_value=0.001, step=0.05, format="%.3f", key=f"{kp}_yield",
-                        label_visibility="collapsed",
-                    ))
-
-        # Build overridden dicts for the charts.
-        # OPEX_eq (USD/MT capacity/yr) = (Proc. OPEX + Feedstock $/t ÷ Yield) × Utilisation
-        def _opex_eq(cell: dict) -> float:
-            yld = cell["saf_yield"] if cell["saf_yield"] > 1e-6 else 1e-6
-            opex_per_saf = cell["proc_opex"] + cell["feedstock_per_t"] / yld
-            return opex_per_saf * UTILIZATION_FACTOR
-
-        custom_capex = {
-            r: {p: grid[r][p]["capex"] for p in SAF_PATHWAYS}
-            for r in _REGIONS
-        }
-        custom_opex = {
-            r: {p: _opex_eq(grid[r][p]) for p in SAF_PATHWAYS}
-            for r in _REGIONS
-        }
-
-        st.markdown("---")
-        irr_sel = st.slider("Target IRR (%)", 8, 20, 12, key="lcosaf_irr") / 100.0
-        col_h, col_b = st.columns(2)
-        with col_h:
-            st.plotly_chart(
-                charts.lcosaf_heatmap(
-                    _REGIONS, SAF_PATHWAYS,
-                    custom_capex, custom_opex,
-                    UTILIZATION_FACTOR, irr_sel, PROJECT_LIFE_YR,
-                ),
-                use_container_width=True,
-            )
-        with col_b:
-            st.plotly_chart(
-                charts.lcosaf_bar(
-                    _REGIONS, SAF_PATHWAYS,
-                    custom_capex, custom_opex,
-                    UTILIZATION_FACTOR, irr_sel, PROJECT_LIFE_YR,
-                ),
-                use_container_width=True,
-            )
-
         st.markdown("**Edit WTP Parameters**")
         with st.expander("Edit full table"):
             edited_wtp = st.data_editor(
