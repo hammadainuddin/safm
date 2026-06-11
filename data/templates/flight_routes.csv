@@ -55,7 +55,6 @@ R053,ET,Ethiopian Airlines,Passenger,ADD,Ethiopia,ROW,PEK,China,APAC,internation
 R054,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,JFK,USA,US,international,B777-300ER,730,9400.0,0.03,0.0,0.01,0.05,0.1,0.2,0.3
 R055,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,LHR,UK,EU,international,B787-9,1460,2860.0,0.03,0.0,0.01,0.05,0.1,0.2,0.3
 R056,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,DXB,UAE,MENA,international,B737-800,1825,3400.0,0.03,0.0,0.01,0.05,0.1,0.2,0.3
-R057,ET,Ethiopian Airlines,Passenger,NBO,Kenya,ROW,LHR,UK,EU,international,B787-9,365,6830.0,0.03,0.0,0.01,0.05,0.1,0.2,0.3
 R058,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,ANK,Turkey,ROW,domestic,B737-800,7300,380.0,0.03,0.0,0.01,0.05,0.1,0.2,0.3
 R059,ET,Ethiopian Airlines,Passenger,ADD,Ethiopia,ROW,JRE,Ethiopia,ROW,domestic,B737-800,1095,1270.0,0.03,0.0,0.01,0.05,0.1,0.2,0.3
 R060,AF,Air France,Passenger,CDG,France,EU,SIN,Singapore,APAC,international,B787-9,365,10750.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5

@@ -98,10 +98,16 @@ class TestGrowthFactor:
 
 
 class TestMandateDemand:
-    def test_eu_mandate_zero_without_domestic_routes(self, result_2025):
-        """Domestic routes are excluded — mandate demand from domestic blending is zero."""
+    def test_eu_mandate_zero_international_only(self, result_2025):
+        """Default (international only) — domestic blending mandate demand is zero."""
         eu_mandate = result_2025.mandate_saf_demand_by_region.get("EU", 0.0)
         assert eu_mandate == pytest.approx(0.0, abs=1e-9)
+
+    def test_eu_mandate_positive_with_domestic(self):
+        """With domestic routes enabled, EU blending-mandate SAF demand is positive."""
+        mod = BottomUpDemandModule(include_domestic=True)
+        r = mod.get_intermediate_result(2025)
+        assert r.mandate_saf_demand_by_region.get("EU", 0.0) > 0.0
 
     def test_us_no_mandatory_blend_in_2025(self, result_2025):
         """US has no mandatory blending in 2025 (SAF Grand Challenge is voluntary)."""

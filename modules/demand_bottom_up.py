@@ -86,18 +86,23 @@ class BottomUpDemandModule:
         mandates_path: str = None,
         route_sample_fraction: float = None,
         demand_mode: str = "corsia_schedule",
+        include_domestic: bool = False,
     ):
         """
         Parameters
         ----------
-        demand_mode : "corsia_schedule"  → Mode 1 (default, legacy behaviour)
-                      "route_targets"    → Mode 2 (per-route SAF% interpolation)
+        demand_mode      : "corsia_schedule"  → Mode 1 (default, legacy behaviour)
+                           "route_targets"    → Mode 2 (per-route SAF% interpolation)
+        include_domestic : when True, domestic routes contribute fuel burn and
+                           blending-mandate SAF demand; CORSIA is international-only
+                           regardless. Default False (international routes only).
         """
         self._routes_path   = routes_path   or os.path.join(_MOCK, "flight_routes.csv")
         self._aircraft_path = aircraft_path or os.path.join(_MOCK, "aircraft_types.csv")
         self._corsia_path   = corsia_path   or os.path.join(_MOCK, "corsia_schedule.csv")
         self._mandates_path = mandates_path or os.path.join(_MOCK, "national_blending_mandates.csv")
-        self._demand_mode   = demand_mode
+        self._demand_mode     = demand_mode
+        self._include_domestic = include_domestic
 
         # Mode 2 is a comprehensive dataset — no extrapolation needed.
         if demand_mode == "route_targets":
@@ -198,7 +203,7 @@ class BottomUpDemandModule:
             d_region = str(row["dest_region"])
             ftype    = str(row["flight_type"])
 
-            if ftype == "domestic":
+            if ftype == "domestic" and not self._include_domestic:
                 continue
 
             if ftype in ("international", "international-fleet"):
@@ -219,6 +224,15 @@ class BottomUpDemandModule:
                         corsia_by_region[o_region] += corsia_saf * _ORIGIN_SHARE
                     if d_region in corsia_by_region:
                         corsia_by_region[d_region] += corsia_saf * _DEST_SHARE
+
+            elif ftype == "domestic":
+                if o_region in fuel_by_region:
+                    fuel_by_region[o_region] += fuel_mt
+                o_country = str(row.get("origin_country", "")).strip()
+                m_frac    = mandate_by_country.get(o_country,
+                            mandate_by_region.get(o_region, 0.0))
+                if m_frac > 0 and o_region in mandate_by_region_saf:
+                    mandate_by_region_saf[o_region] += fuel_mt * m_frac
 
         rsf = self._route_sample_fraction
         fuel_by_region        = {r: v / rsf for r, v in fuel_by_region.items()}
@@ -271,7 +285,7 @@ class BottomUpDemandModule:
             d_region = str(row["dest_region"])
             ftype    = str(row["flight_type"])
 
-            if ftype == "domestic":
+            if ftype == "domestic" and not self._include_domestic:
                 continue
 
             if ftype in ("international", "international-fleet"):
@@ -292,6 +306,13 @@ class BottomUpDemandModule:
                         corsia_by_region[o_region] += saf_demand * _ORIGIN_SHARE
                     if d_region in corsia_by_region:
                         corsia_by_region[d_region] += saf_demand * _DEST_SHARE
+
+            elif ftype == "domestic":
+                if o_region in fuel_by_region:
+                    fuel_by_region[o_region] += fuel_mt
+                saf_demand = fuel_mt * saf_frac
+                if o_region in mandate_by_region_saf:
+                    mandate_by_region_saf[o_region] += saf_demand
 
         total_by_region = {
             r: round(corsia_by_region[r] + mandate_by_region_saf[r], 8)

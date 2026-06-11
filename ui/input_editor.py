@@ -101,9 +101,10 @@ def _demand_input_mtimes() -> tuple:
     module_path = os.path.join(_HERE, "..", "modules", "demand_bottom_up.py")
     module_mtime = os.path.getmtime(module_path) if os.path.exists(module_path) else 0.0
     from config.settings import ROUTE_SAMPLE_FRACTION as _default_rsf
-    rsf         = st.session_state.get("route_sample_fraction", _default_rsf)
-    demand_mode = st.session_state.get("demand_mode", "corsia_schedule")
-    return csv_mtimes + (module_mtime, rsf, demand_mode)
+    rsf              = st.session_state.get("route_sample_fraction", _default_rsf)
+    demand_mode      = st.session_state.get("demand_mode", "corsia_schedule")
+    include_domestic = st.session_state.get("include_domestic", False)
+    return csv_mtimes + (module_mtime, rsf, demand_mode, include_domestic)
 
 
 @st.cache_data(ttl=60)
@@ -115,11 +116,13 @@ def _build_demand_projection_df(_cache_buster: tuple) -> pd.DataFrame:
     from modules.demand_bottom_up import BottomUpDemandModule
     from config.settings import HORIZON_YEARS, ROUTE_SAMPLE_FRACTION as _default_rsf
 
-    demand_mode = st.session_state.get("demand_mode", "corsia_schedule")
-    rsf         = st.session_state.get("route_sample_fraction", _default_rsf)
+    demand_mode      = st.session_state.get("demand_mode", "corsia_schedule")
+    rsf              = st.session_state.get("route_sample_fraction", _default_rsf)
+    include_domestic = st.session_state.get("include_domestic", False)
     mod = BottomUpDemandModule(
         route_sample_fraction=float(rsf),
         demand_mode=demand_mode,
+        include_domestic=bool(include_domestic),
     )
     rows = []
     for yr in HORIZON_YEARS:
@@ -191,6 +194,16 @@ def render() -> None:
                 "The 1 274-route dataset is comprehensive — no scaling factor needed."
             ),
             horizontal=False,
+        )
+
+        st.checkbox(
+            "Include domestic routes",
+            value=bool(st.session_state.get("include_domestic", False)),
+            key="include_domestic",
+            help=(
+                "When enabled, domestic routes contribute fuel burn and blending-mandate "
+                "SAF demand. CORSIA obligations are international-only regardless of this setting."
+            ),
         )
 
         if demand_mode == "corsia_schedule":
@@ -334,8 +347,10 @@ def render() -> None:
 
                 where the efficiency improvement factor decays at **1.5% per year** from the 2025
                 base to reflect progressive fleet renewal. Annual flights grow at the
-                route-specific `annual_growth_rate`. Only international routes are included in
-                the analysis. Domestic routes are excluded.
+                route-specific `annual_growth_rate`. By default only international routes are
+                included. Enable **Include domestic routes** in the Demand Mode section above
+                to also count domestic fuel burn and blending-mandate SAF demand.
+                CORSIA obligations are international-only in both modes.
                 """
             )
             routes_df = _upload_widget("flight_routes.csv", "ss_flight_routes")
