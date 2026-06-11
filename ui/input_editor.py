@@ -334,11 +334,8 @@ def render() -> None:
 
                 where the efficiency improvement factor decays at **1.5% per year** from the 2025
                 base to reflect progressive fleet renewal. Annual flights grow at the
-                route-specific `annual_growth_rate`. For **international** routes, fuel is
-                attributed 60% to the origin region and 40% to the destination region, following
-                the CORSIA uplift-at-departure accounting rule. For **domestic** routes, 100% is
-                attributed to the origin region and the fuel contributes only to blending mandate
-                demand, not CORSIA.
+                route-specific `annual_growth_rate`. Only international routes are included in
+                the analysis. Domestic routes are excluded.
                 """
             )
             routes_df = _upload_widget("flight_routes.csv", "ss_flight_routes")

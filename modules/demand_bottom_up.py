@@ -16,8 +16,7 @@ Two demand modes:
       comprehensive (full global coverage) route_sample_fraction defaults to 1.0
       and is ignored.
 
-In both modes demand is attributed to the refuelling airport's region
-(60/40 origin/destination split per CORSIA uplift rule).
+In both modes only international routes are included. Domestic routes are excluded.
 
 Output: DemandMatrix — same schema as the mock CSV demand.
 """
@@ -199,6 +198,9 @@ class BottomUpDemandModule:
             d_region = str(row["dest_region"])
             ftype    = str(row["flight_type"])
 
+            if ftype == "domestic":
+                continue
+
             if ftype in ("international", "international-fleet"):
                 if d_region == "MULTI" or ftype == "international-fleet":
                     # Fleet aggregate: attribute 100% to origin
@@ -217,15 +219,6 @@ class BottomUpDemandModule:
                         corsia_by_region[o_region] += corsia_saf * _ORIGIN_SHARE
                     if d_region in corsia_by_region:
                         corsia_by_region[d_region] += corsia_saf * _DEST_SHARE
-
-            elif ftype == "domestic":
-                if o_region in fuel_by_region:
-                    fuel_by_region[o_region] += fuel_mt
-                o_country = str(row.get("origin_country", "")).strip()
-                m_frac    = mandate_by_country.get(o_country,
-                            mandate_by_region.get(o_region, 0.0))
-                if m_frac > 0 and o_region in mandate_by_region_saf:
-                    mandate_by_region_saf[o_region] += fuel_mt * m_frac
 
         rsf = self._route_sample_fraction
         fuel_by_region        = {r: v / rsf for r, v in fuel_by_region.items()}
@@ -278,6 +271,9 @@ class BottomUpDemandModule:
             d_region = str(row["dest_region"])
             ftype    = str(row["flight_type"])
 
+            if ftype == "domestic":
+                continue
+
             if ftype in ("international", "international-fleet"):
                 if d_region == "MULTI" or ftype == "international-fleet":
                     # Fleet aggregate or indeterminate destination: 100% to origin
@@ -296,13 +292,6 @@ class BottomUpDemandModule:
                         corsia_by_region[o_region] += saf_demand * _ORIGIN_SHARE
                     if d_region in corsia_by_region:
                         corsia_by_region[d_region] += saf_demand * _DEST_SHARE
-
-            elif ftype == "domestic":
-                if o_region in fuel_by_region:
-                    fuel_by_region[o_region] += fuel_mt
-                saf_demand = fuel_mt * saf_frac
-                if o_region in mandate_by_region_saf:
-                    mandate_by_region_saf[o_region] += saf_demand
 
         total_by_region = {
             r: round(corsia_by_region[r] + mandate_by_region_saf[r], 8)

@@ -98,10 +98,10 @@ class TestGrowthFactor:
 
 
 class TestMandateDemand:
-    def test_eu_mandate_positive(self, result_2025):
-        """EU has a blending mandate in 2025 — mandate demand should be positive."""
+    def test_eu_mandate_zero_without_domestic_routes(self, result_2025):
+        """Domestic routes are excluded — mandate demand from domestic blending is zero."""
         eu_mandate = result_2025.mandate_saf_demand_by_region.get("EU", 0.0)
-        assert eu_mandate > 0.0, "EU should have mandate SAF demand in 2025"
+        assert eu_mandate == pytest.approx(0.0, abs=1e-9)
 
     def test_us_no_mandatory_blend_in_2025(self, result_2025):
         """US has no mandatory blending in 2025 (SAF Grand Challenge is voluntary)."""
