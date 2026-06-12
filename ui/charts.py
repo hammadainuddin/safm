@@ -226,7 +226,8 @@ def capacity_stacked_area(df: pd.DataFrame) -> go.Figure:
             hovertemplate="Total built: %{y:.3f} MT/yr<extra></extra>",
         ))
     fig.update_layout(
-        legend_title="Region",
+        legend=dict(orientation="v", yanchor="top", y=1.0,
+                    xanchor="left", x=1.02, title_text="Region"),
         hovermode="x unified",
         xaxis=dict(tickformat="d"),
     )
@@ -255,7 +256,8 @@ def capacity_by_pathway(df: pd.DataFrame) -> go.Figure:
             hovertemplate="Total built: %{y:.3f} MT/yr<extra></extra>",
         ))
     fig.update_layout(
-        legend_title="Pathway",
+        legend=dict(orientation="v", yanchor="top", y=1.0,
+                    xanchor="left", x=1.02, title_text="Pathway"),
         hovermode="x unified",
         xaxis=dict(tickformat="d"),
     )
@@ -280,42 +282,64 @@ def trade_heatmap(df: pd.DataFrame, year: int) -> go.Figure:
     return fig
 
 
+def _sankey_column_ys(volumes: List[float], lo: float = 0.06, hi: float = 0.94,
+                      gap: float = 0.05) -> List[float]:
+    """
+    Vertical node-centre positions for one Sankey column, stacked top-down
+    proportionally to each node's throughput with a fixed gap between nodes.
+    Keeps every node clear of the figure edges so labels are never clipped.
+    """
+    total = sum(volumes) or 1.0
+    n = len(volumes)
+    avail = max(hi - lo - gap * (n - 1), 0.1)
+    ys, cursor = [], lo
+    for v in volumes:
+        h = (v / total) * avail
+        ys.append(min(max(cursor + h / 2, 0.02), 0.98))
+        cursor += h + gap
+    return ys
+
+
 def trade_sankey(df: pd.DataFrame, year: int) -> go.Figure:
     """Sankey diagram of trade flows for a selected year (loop-safe double node list)."""
     year_df = df[(df["year"] == year) & (df["volume_mt"] > 1e-4)]
     if year_df.empty:
         return go.Figure().update_layout(title=f"No trade flows in {year}")
 
-    regions = sorted(set(year_df["origin_region"]) | set(year_df["destination_region"]))
-    n = len(regions)
-    exp_idx = {r: i for i, r in enumerate(regions)}
-    imp_idx = {r: i + n for i, r in enumerate(regions)}
+    # Only regions that actually export / import get a node in that column,
+    # so no zero-flow nodes clutter the layout or get clipped at the edges.
+    exp_tot = year_df.groupby("origin_region")["volume_mt"].sum()
+    imp_tot = year_df.groupby("destination_region")["volume_mt"].sum()
+    exporters = sorted(exp_tot.index)
+    importers = sorted(imp_tot.index)
 
-    labels = [f"{r} (export)" for r in regions] + [f"{r} (import)" for r in regions]
-    colors = [theme.PRIMARY] * n + ["#2E933C"] * n
-    x_pos = [0.01] * n + [0.99] * n
-    y_pos = [i / max(n - 1, 1) for i in range(n)] + [i / max(n - 1, 1) for i in range(n)]
+    exp_idx = {r: i for i, r in enumerate(exporters)}
+    imp_idx = {r: i + len(exporters) for i, r in enumerate(importers)}
+
+    labels = [f"{r} (export)" for r in exporters] + [f"{r} (import)" for r in importers]
+    colors = [theme.PRIMARY] * len(exporters) + ["#2E933C"] * len(importers)
+    x_pos = [0.05] * len(exporters) + [0.95] * len(importers)
+    y_pos = (_sankey_column_ys([exp_tot[r] for r in exporters])
+             + _sankey_column_ys([imp_tot[r] for r in importers]))
 
     source = [exp_idx[r] for r in year_df["origin_region"]]
     target = [imp_idx[r] for r in year_df["destination_region"]]
     value  = year_df["volume_mt"].tolist()
 
-    _label_font = dict(
-        color="white",
-        size=13,
-        weight="bold",
-        shadow="1px 1px 3px #000, -1px -1px 3px #000, 1px -1px 3px #000, -1px 1px 3px #000",
-    )
-
     fig = go.Figure(go.Sankey(
         arrangement="fixed",
         valueformat=".4f",
         valuesuffix=" Mt",
-        textfont=_label_font,
-        node=dict(label=labels, x=x_pos, y=y_pos, pad=15, thickness=20, color=colors),
-        link=dict(source=source, target=target, value=value),
+        textfont=dict(color=theme.INK, size=13, family=theme.FONT_STACK),
+        node=dict(label=labels, x=x_pos, y=y_pos, pad=20, thickness=18, color=colors),
+        link=dict(source=source, target=target, value=value,
+                  color="rgba(92, 103, 125, 0.25)"),
     ))
-    fig.update_layout(title=f"SAF Trade Flows (million tonnes) — {year}")
+    fig.update_layout(
+        title=f"SAF Trade Flows (million tonnes) — {year}",
+        height=max(440, 70 * max(len(exporters), len(importers)) + 180),
+        margin=dict(l=10, r=10, t=84, b=20),
+    )
     return fig
 
 
@@ -363,25 +387,19 @@ def trade_pathway_sankey(df: pd.DataFrame, year: int) -> go.Figure:
         values.append(row["volume_mt"])
         link_colors.append(_rgba(_PATHWAY_COLORS.get(row["pathway"], "#7f7f7f")))
 
-    _label_font = dict(
-        color="white",
-        size=13,
-        weight="bold",
-        shadow="1px 1px 3px #000, -1px -1px 3px #000, 1px -1px 3px #000, -1px 1px 3px #000",
-    )
-
     fig = go.Figure(go.Sankey(
         arrangement="snap",
         valueformat=".4f",
         valuesuffix=" Mt",
-        textfont=_label_font,
-        node=dict(label=labels, pad=18, thickness=18, color=node_colors),
+        textfont=dict(color=theme.INK, size=13, family=theme.FONT_STACK),
+        node=dict(label=labels, pad=22, thickness=18, color=node_colors),
         link=dict(source=sources, target=targets, value=values, color=link_colors,
                   hovertemplate="%{source.label} → %{target.label}<br>Volume: %{value:.4f} Mt<extra></extra>"),
     ))
     fig.update_layout(
         title=f"Pathway-Level Trade Flows (million tonnes) — {year}",
-        margin=dict(t=60, l=10, r=10, b=10),
+        height=max(440, 50 * len(labels) + 160),
+        margin=dict(t=84, l=10, r=10, b=20),
     )
     return fig
 
@@ -420,7 +438,8 @@ def trade_pathway_stacked(df: pd.DataFrame, year: int) -> go.Figure:
         title=f"Pathway Mix per Destination — {year}",
         xaxis_title="Destination Region",
         yaxis_title="Volume (MT)",
-        legend_title="Origin · Pathway",
+        legend=dict(orientation="v", yanchor="top", y=1.0,
+                    xanchor="left", x=1.02, title_text="Origin · Pathway"),
         hovermode="closest",
     )
     return fig
@@ -775,7 +794,8 @@ def capacity_stacked_split(df: pd.DataFrame) -> go.Figure:
         title="SAF Dispatched Capacity by Region / Type (MT/yr)",
         xaxis_title="Year", yaxis_title="Dispatched Capacity (MT/yr)",
         xaxis=dict(tickformat="d"),
-        legend_title="Region / Type",
+        legend=dict(orientation="v", yanchor="top", y=1.0,
+                    xanchor="left", x=1.02, title_text="Region / Type"),
         hovermode="x unified",
     )
     return fig
@@ -819,7 +839,8 @@ def idle_capacity_chart(df: pd.DataFrame) -> go.Figure:
         title="SAF Idle Capacity by Region / Type (MT/yr)",
         xaxis_title="Year", yaxis_title="Idle Capacity (MT/yr)",
         xaxis=dict(tickformat="d"),
-        legend_title="Region / Type",
+        legend=dict(orientation="v", yanchor="top", y=1.0,
+                    xanchor="left", x=1.02, title_text="Region / Type"),
         hovermode="x unified",
     )
     return fig

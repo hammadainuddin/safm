@@ -76,7 +76,10 @@ def register() -> None:
     saf = go.layout.Template(pio.templates["plotly_white"])
     saf.layout.update(
         font=dict(family=FONT_STACK, size=13, color=INK),
-        title=dict(font=dict(size=16, color=INK), x=0, xanchor="left"),
+        # Title pinned to the very top of the figure so it never collides
+        # with the horizontal legend sitting just above the plot area.
+        title=dict(font=dict(size=16, color=INK), x=0, xanchor="left",
+                   y=0.985, yanchor="top", yref="container"),
         colorway=COLORWAY,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
@@ -85,7 +88,7 @@ def register() -> None:
             bordercolor=GRAY_200,
             font=dict(family=FONT_STACK, size=12, color=INK),
         ),
-        margin=dict(l=10, r=10, t=56, b=10),
+        margin=dict(l=10, r=10, t=84, b=10),
         legend=dict(
             orientation="h", yanchor="bottom", y=1.0,
             xanchor="right", x=1.0, title_text="",
