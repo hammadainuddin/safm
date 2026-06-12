@@ -1,27 +1,31 @@
 """
-Tab 5 — LCOSAF Explorer
-Standalone interactive tool for exploring levelised SAF cost assumptions.
-Values entered here are for scenario analysis only and do NOT affect model runs.
+LCOSAF Explorer page — standalone interactive tool for exploring levelised
+SAF cost assumptions. Values entered here are for scenario analysis only and
+do NOT affect model runs.
 """
 
 from __future__ import annotations
 
 import streamlit as st
 
-from ui import charts
+from ui import charts, components
+from ui.components import plotly_chart
 
 
 def render() -> None:
-    st.header("🔬 LCOSAF Explorer")
-
-    st.info(
-        "**This explorer is a standalone scenario analysis tool.** "
-        "Values entered here do not affect model runs. "
-        "To change the cost assumptions used by the model, edit the "
-        "**Costs** table in the Inputs tab."
+    components.page_header(
+        "LCOSAF Explorer",
+        "Standalone levelised-cost calculator for scenario analysis — values "
+        "entered here do not affect model runs.",
     )
 
-    st.markdown(
+    st.info(
+        "To change the cost assumptions used by the model, edit the "
+        "**Costs** table on the Inputs page.",
+        icon=":material/info:",
+    )
+
+    components.methodology(
         """
         The Levelised Cost of SAF (LCOSAF) is the minimum long-run price at which a
         producer can recover all capital and operating costs at a given required rate of
@@ -82,7 +86,8 @@ def render() -> None:
 
     col_reset, _ = st.columns([1, 4])
     with col_reset:
-        if st.button("↺ Reset to defaults", key="lcosaf_exp_reset"):
+        if st.button("Reset to defaults", key="lcosaf_exp_reset",
+                     icon=":material/restart_alt:"):
             st.session_state.pop("lcosaf_explorer_grid", None)
             st.rerun()
 
@@ -130,7 +135,7 @@ def render() -> None:
     irr_sel = st.slider("Target IRR (%)", 8, 20, 12, key="lcosaf_exp_irr") / 100.0
     col_h, col_b = st.columns(2)
     with col_h:
-        st.plotly_chart(
+        plotly_chart(
             charts.lcosaf_heatmap(
                 REGIONS, SAF_PATHWAYS,
                 custom_capex, custom_opex,
@@ -139,7 +144,7 @@ def render() -> None:
             use_container_width=True,
         )
     with col_b:
-        st.plotly_chart(
+        plotly_chart(
             charts.lcosaf_bar(
                 REGIONS, SAF_PATHWAYS,
                 custom_capex, custom_opex,

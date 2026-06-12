@@ -192,8 +192,13 @@ def build_scenario_excel(name: str, history: Optional[list]) -> bytes:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def render(history: Optional[list] = None) -> None:
-    st.header("Scenario Manager")
-    st.markdown(
+    from ui import components
+
+    components.page_header(
+        "Scenarios",
+        "Save, load, and export named snapshots of all model input tables.",
+    )
+    components.methodology(
         """
         A **scenario** is a named snapshot of all model input tables (CSV files). Saving a
         scenario captures the current state of every input — routes, capacity, CORSIA
@@ -203,46 +208,53 @@ def render(history: Optional[list] = None) -> None:
         market summary).
 
         **Workflow:** Edit inputs → Run model → Save scenario → Download combined Excel
-        """
+        """,
+        title="How scenarios work",
     )
 
     os.makedirs(_SCENARIOS_DIR, exist_ok=True)
 
     # ── Save current inputs ──────────────────────────────────────────────────
-    st.subheader("💾 Save Current Inputs as Scenario")
-    col_name, col_btn = st.columns([3, 1])
-    with col_name:
-        new_name = st.text_input(
-            "Scenario name", value="", placeholder="e.g. high_demand_2040",
-            key="scen_name_input",
-            help="Only letters, numbers, hyphens, and underscores. Max 64 characters.",
-        )
-    with col_btn:
-        st.write("")  # vertical align
-        save_clicked = st.button("💾 Save", key="scen_save_btn", use_container_width=True)
+    with st.container(border=True):
+        st.markdown("**Save current inputs as a scenario**")
+        col_name, col_btn = st.columns([3, 1])
+        with col_name:
+            new_name = st.text_input(
+                "Scenario name", value="", placeholder="e.g. high_demand_2040",
+                key="scen_name_input",
+                help="Only letters, numbers, hyphens, and underscores. Max 64 characters.",
+            )
+        with col_btn:
+            st.write("")  # vertical align
+            save_clicked = st.button(
+                "Save scenario", key="scen_save_btn",
+                icon=":material/save:", type="primary", use_container_width=True,
+            )
 
-    if save_clicked:
-        safe = _safe(new_name)
-        if not safe:
-            st.error("Please enter a valid scenario name.")
-        else:
-            meta = {
-                "scenario_name": safe,
-                "start_year": st.session_state.get("start_year", "—"),
-                "end_year":   st.session_state.get("end_year",   "—"),
-                "run_completed": history is not None,
-            }
-            save_scenario(safe, meta)
-            st.success(f"Scenario **{safe}** saved with {len(INPUT_CSVS)} input files.")
-
-    st.divider()
+        if save_clicked:
+            safe = _safe(new_name)
+            if not safe:
+                st.error("Please enter a valid scenario name.")
+            else:
+                meta = {
+                    "scenario_name": safe,
+                    "start_year": st.session_state.get("start_year", "—"),
+                    "end_year":   st.session_state.get("end_year",   "—"),
+                    "run_completed": history is not None,
+                }
+                save_scenario(safe, meta)
+                st.toast(f"Scenario {safe} saved ({len(INPUT_CSVS)} input files)",
+                         icon=":material/check_circle:")
 
     # ── Saved scenarios list ─────────────────────────────────────────────────
-    st.subheader("📂 Saved Scenarios")
+    st.subheader("Saved Scenarios")
     scenarios = list_scenarios()
 
     if not scenarios:
-        st.info("No scenarios saved yet. Edit inputs above and click **Save**.")
+        components.empty_state(
+            "No scenarios saved yet. Edit your inputs, then save them as a "
+            "named scenario above."
+        )
         return
 
     for name in scenarios:
@@ -250,31 +262,32 @@ def render(history: Optional[list] = None) -> None:
         saved_at = meta.get("saved_at", "unknown")[:19].replace("T", " ")
         run_ok   = meta.get("run_completed", False)
         horizon  = f"{meta.get('start_year','?')}–{meta.get('end_year','?')}"
+        run_str  = "run attached" if run_ok else "inputs only"
 
-        with st.container():
+        with st.container(border=True):
             cols = st.columns([3, 2, 1.2, 1.8])
             cols[0].markdown(f"**{name}**")
-            cols[1].caption(f"Saved: {saved_at}  |  Horizon: {horizon}  |  Run: {'✅' if run_ok else '—'}")
+            cols[1].caption(f"Saved: {saved_at}  ·  Horizon: {horizon}  ·  {run_str}")
 
-            if cols[2].button("⬆️ Load", key=f"load_{name}", use_container_width=True):
+            if cols[2].button("Load", key=f"load_{name}",
+                              icon=":material/upload:", use_container_width=True):
                 load_scenario(name)
                 st.success(
                     f"Scenario **{name}** loaded into the input tables. "
-                    "Switch to the **📊 Inputs** tab to review, then re-run the model."
+                    "Open the **Inputs** page to review, then re-run the model."
                 )
 
             excel_bytes = build_scenario_excel(name, history)
             cols[3].download_button(
-                "📥 Download Excel",
+                "Download Excel",
                 data=excel_bytes,
                 file_name=f"{name}_scenario.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 key=f"dl_{name}",
+                icon=":material/download:",
                 use_container_width=True,
             )
-
-        st.caption(
-            f"Inputs: {len(INPUT_CSVS)} CSVs"
-            + (f" + {len(history)} years of outputs" if history else " (no run output yet)")
-        )
-        st.divider()
+            st.caption(
+                f"Inputs: {len(INPUT_CSVS)} CSVs"
+                + (f" + {len(history)} years of outputs" if history else " (no run output yet)")
+            )

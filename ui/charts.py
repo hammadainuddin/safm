@@ -8,6 +8,17 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
+from ui import theme
+from ui.theme import (
+    COMPONENT_COLORS,
+    COLORWAY,
+    PATHWAY_COLORS,
+    REGION_COLORS,
+    SEQUENTIAL,
+)
+
+theme.register()
+
 
 def price_line_chart(df: pd.DataFrame) -> go.Figure:
     """Clearing price by region over time."""
@@ -49,13 +60,7 @@ def price_decomposition_bar(df: pd.DataFrame, region: str) -> go.Figure:
         "carbon_offset_usd_per_mt": "Carbon Offset",
         "margin_usd_per_mt": "Margin",
     }
-    COLORS = {
-        "supply_cost_usd_per_mt":      "#2196F3",
-        "transport_premium_usd_per_mt": "#FF9800",
-        "mandate_premium_usd_per_mt":  "#9C27B0",
-        "carbon_offset_usd_per_mt":    "#4CAF50",
-        "margin_usd_per_mt":           "#607D8B",
-    }
+    COLORS = COMPONENT_COLORS
     fig = go.Figure()
     for col in components:
         if col in region_df.columns:
@@ -100,13 +105,7 @@ def price_decomposition_facet(df: pd.DataFrame) -> go.Figure:
         "carbon_offset_usd_per_mt":    "Carbon Offset",
         "margin_usd_per_mt":           "Margin",
     }
-    COLORS = {
-        "supply_cost_usd_per_mt":      "#2196F3",
-        "transport_premium_usd_per_mt": "#FF9800",
-        "mandate_premium_usd_per_mt":  "#9C27B0",
-        "carbon_offset_usd_per_mt":    "#4CAF50",
-        "margin_usd_per_mt":           "#607D8B",
-    }
+    COLORS = COMPONENT_COLORS
 
     regions = [r for r in REGIONS if r in df["region"].unique()]
     n_cols = 3
@@ -180,13 +179,7 @@ def price_decomposition_by_year(df: pd.DataFrame, year: int) -> go.Figure:
         "carbon_offset_usd_per_mt":    "Carbon Offset",
         "margin_usd_per_mt":           "Margin",
     }
-    COLORS = {
-        "supply_cost_usd_per_mt":      "#2196F3",
-        "transport_premium_usd_per_mt": "#FF9800",
-        "mandate_premium_usd_per_mt":  "#9C27B0",
-        "carbon_offset_usd_per_mt":    "#4CAF50",
-        "margin_usd_per_mt":           "#607D8B",
-    }
+    COLORS = COMPONENT_COLORS
     year_df = df[df["year"] == year].copy()
     fig = go.Figure()
     for comp in components:
@@ -282,7 +275,7 @@ def trade_heatmap(df: pd.DataFrame, year: int) -> go.Figure:
         pivot, text_auto=".2f",
         title=f"Trade Flows (MT) — {year}",
         labels={"x": "Destination", "y": "Origin", "color": "Volume (MT)"},
-        color_continuous_scale="Blues",
+        color_continuous_scale=SEQUENTIAL,
     )
     return fig
 
@@ -299,7 +292,7 @@ def trade_sankey(df: pd.DataFrame, year: int) -> go.Figure:
     imp_idx = {r: i + n for i, r in enumerate(regions)}
 
     labels = [f"{r} (export)" for r in regions] + [f"{r} (import)" for r in regions]
-    colors = ["steelblue"] * n + ["seagreen"] * n
+    colors = [theme.PRIMARY] * n + ["#2E933C"] * n
     x_pos = [0.01] * n + [0.99] * n
     y_pos = [i / max(n - 1, 1) for i in range(n)] + [i / max(n - 1, 1) for i in range(n)]
 
@@ -326,14 +319,7 @@ def trade_sankey(df: pd.DataFrame, year: int) -> go.Figure:
     return fig
 
 
-_PATHWAY_COLORS = {
-    "HEFA":          "#1f77b4",
-    "FT":            "#ff7f0e",
-    "ATJ":           "#2ca02c",
-    "Co-processing": "#d62728",
-    "PtL":           "#9467bd",
-    "Other":         "#7f7f7f",
-}
+_PATHWAY_COLORS = PATHWAY_COLORS
 
 
 def trade_pathway_sankey(df: pd.DataFrame, year: int) -> go.Figure:
@@ -511,14 +497,8 @@ def supply_demand_curve(demand_steps, supply_steps, year,
                               y-axis height of the offset demand bar.
     max_wtp      : highest regional WTP — fallback only, no longer used directly.
     """
-    _REGION_COLORS = {
-        "EU": "#e6194b", "US": "#3cb44b", "APAC": "#4363d8",
-        "MENA": "#f58231", "LATAM": "#911eb4", "ROW": "#42d4f4",
-    }
-    _default_colors = ["#e6194b", "#3cb44b", "#4363d8", "#f58231", "#911eb4", "#42d4f4"]
-
     def _color(region, idx=0):
-        return _REGION_COLORS.get(region, _default_colors[idx % len(_default_colors)])
+        return REGION_COLORS.get(region, COLORWAY[idx % len(COLORWAY)])
 
     fig = go.Figure()
     # trace_meta: (type, region)  where type ∈ "supply"|"undispatched"|"demand"|"offset"
@@ -706,9 +686,9 @@ def wtp_breakdown_chart(df: pd.DataFrame) -> go.Figure:
     """
     fig = go.Figure()
     cases = [
-        ("case1_value", "Case 1: Jet+CORSIA", "steelblue"),
-        ("case2_value", "Case 2: LCOSAF@IRR", "seagreen"),
-        ("case3_value", "Case 3: Policy Penalty", "tomato"),
+        ("case1_value", "Case 1: Jet+CORSIA", theme.PRIMARY),
+        ("case2_value", "Case 2: LCOSAF@IRR", "#2E933C"),
+        ("case3_value", "Case 3: Policy Penalty", "#D1495B"),
     ]
     for col, label, color in cases:
         if col in df.columns:
@@ -757,10 +737,7 @@ def wtp_trend_chart(df: pd.DataFrame) -> go.Figure:
     return fig
 
 
-_REGION_COLORS = {
-    "EU": "steelblue", "US": "tomato", "APAC": "seagreen",
-    "MENA": "gold", "LATAM": "mediumpurple", "ROW": "darkorange",
-}
+_REGION_COLORS = REGION_COLORS
 
 
 def capacity_stacked_split(df: pd.DataFrame) -> go.Figure:
@@ -788,7 +765,7 @@ def capacity_stacked_split(df: pd.DataFrame) -> go.Figure:
             fig.add_trace(go.Bar(
                 x=grouped["year"], y=grouped[y_col],
                 name=f"{region} ({cap_type})",
-                marker_color=_REGION_COLORS.get(region, "gray"),
+                marker_color=_REGION_COLORS.get(region, theme.INK_MUTED),
                 opacity=base_opacity,
                 hovertemplate=f"<b>{region} {cap_type}</b><br>Dispatched: %{{y:.3f}} MT/yr<extra></extra>",
             ))
@@ -828,7 +805,7 @@ def idle_capacity_chart(df: pd.DataFrame) -> go.Figure:
             fig.add_trace(go.Bar(
                 x=grouped["year"], y=grouped["undispatched_capacity_mt_yr"],
                 name=f"{region} ({cap_type})",
-                marker_color=_REGION_COLORS.get(region, "gray"),
+                marker_color=_REGION_COLORS.get(region, theme.INK_MUTED),
                 marker_pattern_shape="/",
                 opacity=base_opacity * 0.6,
                 hovertemplate=(
@@ -891,7 +868,7 @@ def global_price_chart(df: pd.DataFrame) -> go.Figure:
         x=years, y=mn, mode="lines",
         line=dict(width=0),
         fill="tonexty",
-        fillcolor="rgba(135, 206, 250, 0.25)",
+        fillcolor="rgba(144, 224, 239, 0.30)",
         name="Regional price range (min–max)",
         hovertemplate="Min: $%{y:,.0f}/MT<extra></extra>",
         connectgaps=True,
@@ -901,8 +878,8 @@ def global_price_chart(df: pd.DataFrame) -> go.Figure:
     fig.add_trace(go.Scatter(
         x=years, y=avg,
         mode="lines+markers",
-        line=dict(color="steelblue", width=3),
-        marker=dict(size=7, color="steelblue"),
+        line=dict(color=theme.PRIMARY, width=3),
+        marker=dict(size=7, color=theme.PRIMARY),
         name="Vol-weighted average",
         hovertemplate="Avg: $%{y:,.0f}/MT<extra>Global average</extra>",
         connectgaps=True,
@@ -937,14 +914,17 @@ def saf_compliance_cost_chart(df: pd.DataFrame) -> go.Figure:
         labels={"compliance_cost_usd_per_mt": "Compliance Cost (USD/MT)", "year": "Year"},
         markers=True,
     )
-    fig.update_traces(line=dict(color="mediumseagreen", width=3))
+    fig.update_traces(
+        line=dict(color=theme.SUCCESS, width=3),
+        hovertemplate="$%{y:,.0f}/MT<extra></extra>",
+    )
     fig.update_layout(
         xaxis=dict(tickformat="d"),
         hovermode="x unified",
         annotations=[dict(
             xref="paper", yref="paper", x=0.01, y=0.06, showarrow=False,
             text="Served regions: WTP clearing price · Unserved regions: CORSIA offset cost",
-            font=dict(size=11, color="gray"), align="left",
+            font=dict(size=11, color=theme.INK_MUTED), align="left",
         )],
     )
     return fig
@@ -966,7 +946,7 @@ def lcosaf_heatmap(regions, pathways, capex_dict, opex_dict, util, irr, life) ->
         text_auto=".0f",
         title=f"LCOSAF by Region & Pathway (USD/MT) @ {irr*100:.0f}% IRR",
         labels={"x": "Pathway", "y": "Region", "color": "USD/MT"},
-        color_continuous_scale="RdYlGn_r",
+        color_continuous_scale=SEQUENTIAL,
     )
     fig.update_layout(xaxis=dict(tickformat=""))
     return fig

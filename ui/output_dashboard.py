@@ -1,6 +1,6 @@
 """
-Tab 3 — Output Dashboard
-Tables and charts from a completed model run stored in st.session_state["history"].
+Results page — tables and charts from a completed model run stored in
+st.session_state["history"].
 """
 
 from __future__ import annotations
@@ -9,6 +9,9 @@ from typing import Optional
 
 import pandas as pd
 import streamlit as st
+
+from ui import components
+from ui.components import plotly_chart
 
 from modules.wtp_model import WTPModel
 from ui import charts
@@ -334,7 +337,39 @@ def _history_to_summary_df(history: list) -> pd.DataFrame:
 
 def _download_csv(df: pd.DataFrame, filename: str, label: str = "Download CSV") -> None:
     csv = df.to_csv(index=False)
-    st.download_button(label=label, data=csv, file_name=filename, mime="text/csv")
+    st.download_button(label=label, data=csv, file_name=filename, mime="text/csv",
+                       icon=":material/download:")
+
+
+def _kpi_strip(summary_df: pd.DataFrame, prices_df: pd.DataFrame,
+               capacity_df: pd.DataFrame) -> None:
+    """Final-year headline metrics with delta vs the first model year."""
+    first = summary_df.iloc[0]
+    last = summary_df.iloc[-1]
+    yr = int(last["year"])
+
+    def _delta(v_last: float, v_first: float, unit: str) -> Optional[str]:
+        d = v_last - v_first
+        return f"{d:+,.2f} {unit} vs {int(first['year'])}" if abs(d) > 1e-9 else None
+
+    demand_val = float(last["total_demand_mt"])
+    traded_val = float(last["total_traded_mt"])
+
+    yr_prices = prices_df[prices_df["year"] == yr]["clearing_price_usd_per_mt"]
+    avg_price = float(yr_prices[yr_prices > 0].mean()) if not yr_prices.empty else 0.0
+
+    cap_col = ("total_capacity_mt_yr" if "total_capacity_mt_yr" in capacity_df.columns
+               else "dispatched_capacity_mt_yr")
+    yr_cap = capacity_df[capacity_df["year"] == yr][cap_col].sum() if not capacity_df.empty else 0.0
+
+    components.metric_row([
+        (f"Total demand · {yr}", f"{demand_val:,.2f} MT",
+         _delta(demand_val, float(first["total_demand_mt"]), "MT")),
+        (f"Avg clearing price · {yr}", f"${avg_price:,.0f}/MT", None),
+        (f"Capacity online · {yr}", f"{yr_cap:,.2f} MT/yr", None),
+        (f"Traded volume · {yr}", f"{traded_val:,.2f} MT",
+         _delta(traded_val, float(first["total_traded_mt"]), "MT")),
+    ])
 
 
 def render(history: Optional[list] = None) -> None:
@@ -342,28 +377,38 @@ def render(history: Optional[list] = None) -> None:
         history = st.session_state.get("history")
 
     if not history:
-        st.info("No run results yet. Go to **▶ Run Model** to execute the model.")
+        components.page_header("Results")
+        components.empty_state(
+            "No run results yet. Start a model run to see prices, capacity, "
+            "and trade flows here.",
+            cta_page_key="run",
+        )
         return
 
-    st.header("Model Outputs")
+    components.page_header(
+        "Results",
+        "Prices, capacity build-out, and trade flows from the latest model run.",
+    )
 
     prices_df   = _history_to_prices_df(history)
     flows_df    = _history_to_flows_df(history)
     capacity_df = _history_to_capacity_df(history)
     summary_df  = _history_to_summary_df(history)
 
+    if not summary_df.empty:
+        _kpi_strip(summary_df, prices_df, capacity_df)
+
     tab_summary, tab_prices, tab_capacity, tab_trade = st.tabs([
-        "📊 Market Summary", "💰 Prices & WTP", "🏭 Capacity", "🚢 Trade Flows"
+        "Market Summary", "Prices & WTP", "Capacity", "Trade Flows"
     ])
 
     # ════════════════════════════════════════════════════════════════════════
-    # 📊  MARKET SUMMARY
+    # MARKET SUMMARY
     # ════════════════════════════════════════════════════════════════════════
     with tab_summary:
         st.subheader("Annual Market Summary")
-        st.markdown(
+        components.methodology(
             """
-            ### Methodology
             The market summary consolidates the key aggregate outcomes from each model year into
             a single view. **Total demand** is the sum of CORSIA-driven and mandate-driven SAF
             requirements across all regions, as estimated by the bottom-up demand module.
@@ -394,12 +439,12 @@ def render(history: Optional[list] = None) -> None:
             "corsia_offset_demand_mt": "{:.3f}",
             "total_traded_mt": "{:.3f}",
         }), use_container_width=True)
-        _download_csv(summary_df, "market_summary.csv", "⬇ Download")
+        _download_csv(summary_df, "market_summary.csv", "Download CSV")
 
-        st.plotly_chart(charts.market_balance_bar(summary_df), use_container_width=True)
+        plotly_chart(charts.market_balance_bar(summary_df), use_container_width=True)
 
     # ════════════════════════════════════════════════════════════════════════
-    # 💰  PRICES & WTP
+    # PRICES & WTP
     # ════════════════════════════════════════════════════════════════════════
     with tab_prices:
         if prices_df.empty:
@@ -407,9 +452,8 @@ def render(history: Optional[list] = None) -> None:
         else:
             # ── Global volume-weighted price ──────────────────────────────────
             st.subheader("Global Market Clearing Price")
-            st.markdown(
+            components.methodology(
                 """
-                ### Methodology
                 The global SAF market price is reported as the **demand-volume-weighted average**
                 of all regional clearing prices across every model year. Only regions actually
                 served with physical SAF (`pricing_regime = wtp_priority_allocation`) contribute
@@ -427,7 +471,7 @@ def render(history: Optional[list] = None) -> None:
                 LCOSAF).
                 """
             )
-            st.plotly_chart(charts.global_price_chart(prices_df), use_container_width=True)
+            plotly_chart(charts.global_price_chart(prices_df), use_container_width=True)
 
             st.info("**Reading this chart**\n\n" + _global_price_narrative(prices_df, history))
 
@@ -446,13 +490,12 @@ def render(history: Optional[list] = None) -> None:
                 """
             )
             compliance_df = _history_to_compliance_cost_df(history)
-            st.plotly_chart(charts.saf_compliance_cost_chart(compliance_df), use_container_width=True)
+            plotly_chart(charts.saf_compliance_cost_chart(compliance_df), use_container_width=True)
 
             # ── WTP multi-year trend ──────────────────────────────────────────
             st.subheader("Willingness-to-Pay by Region")
-            st.markdown(
+            components.methodology(
                 """
-                ### Methodology
                 Willingness-to-pay (WTP) is the maximum price each region is prepared to pay for
                 SAF in a given year. It is computed as the maximum of three independent cases:
 
@@ -508,13 +551,12 @@ def render(history: Optional[list] = None) -> None:
                         })
                 if wtp_rows:
                     wtp_trend_df = pd.DataFrame(wtp_rows)
-                    st.plotly_chart(charts.wtp_trend_chart(wtp_trend_df), use_container_width=True)
+                    plotly_chart(charts.wtp_trend_chart(wtp_trend_df), use_container_width=True)
 
             # ── Supply-demand curve ───────────────────────────────────────────
             st.subheader("Supply-Demand Curve")
-            st.markdown(
+            components.methodology(
                 """
-                ### Methodology
                 The supply-demand curve visualises the market clearing equilibrium for a single
                 year by plotting supply and demand as stacked bar charts along a common cumulative
                 volume axis.
@@ -560,7 +602,7 @@ def render(history: Optional[list] = None) -> None:
                         sd_year, sd_state.capacity, demand_by_region,
                         market_result=sd_state.market,
                     )
-                    st.plotly_chart(
+                    plotly_chart(
                         charts.supply_demand_curve(
                             sd_data["demand_steps"],
                             sd_data["supply_steps"],
@@ -606,7 +648,7 @@ def render(history: Optional[list] = None) -> None:
                     )
 
                     if decomp_view == "All regions — all years":
-                        st.plotly_chart(
+                        plotly_chart(
                             charts.price_decomposition_facet(region_prices_df),
                             use_container_width=True,
                         )
@@ -616,7 +658,7 @@ def render(history: Optional[list] = None) -> None:
                         sel_region = st.selectbox(
                             "Region", regions, key="decomp_region"
                         )
-                        st.plotly_chart(
+                        plotly_chart(
                             charts.price_decomposition_bar(region_prices_df, sel_region),
                             use_container_width=True,
                         )
@@ -626,7 +668,7 @@ def render(history: Optional[list] = None) -> None:
                         sel_year = st.select_slider(
                             "Year", options=years, key="decomp_year"
                         )
-                        st.plotly_chart(
+                        plotly_chart(
                             charts.price_decomposition_by_year(region_prices_df, sel_year),
                             use_container_width=True,
                         )
@@ -639,19 +681,18 @@ def render(history: Optional[list] = None) -> None:
                 }),
                 use_container_width=True,
             )
-            _download_csv(prices_df, "prices.csv", "⬇ Download prices.csv")
+            _download_csv(prices_df, "prices.csv", "Download prices.csv")
 
     # ════════════════════════════════════════════════════════════════════════
-    # 🏭  CAPACITY
+    # CAPACITY
     # ════════════════════════════════════════════════════════════════════════
     with tab_capacity:
         if capacity_df.empty:
             st.warning("No capacity data available.")
         else:
             st.subheader("SAF Production Capacity")
-            st.markdown(
+            components.methodology(
                 """
-                ### Methodology
                 Capacity is tracked as **nameplate capacity** (MT/yr) — the rated annual output
                 at 100% utilisation. Effective supply available for dispatch equals nameplate
                 capacity multiplied by the utilisation factor (0.85), reflecting planned
@@ -688,25 +729,25 @@ def render(history: Optional[list] = None) -> None:
             if show_idle:
                 col_disp, col_idle = st.columns(2)
                 with col_disp:
-                    st.plotly_chart(
+                    plotly_chart(
                         charts.capacity_stacked_split(capacity_df), use_container_width=True
                     )
                 with col_idle:
-                    st.plotly_chart(
+                    plotly_chart(
                         charts.idle_capacity_chart(capacity_df), use_container_width=True
                     )
             else:
-                st.plotly_chart(
+                plotly_chart(
                     charts.capacity_stacked_split(capacity_df), use_container_width=True
                 )
 
             col1, col2 = st.columns(2)
             with col1:
-                st.plotly_chart(
+                plotly_chart(
                     charts.capacity_stacked_area(capacity_df), use_container_width=True
                 )
             with col2:
-                st.plotly_chart(
+                plotly_chart(
                     charts.capacity_by_pathway(capacity_df), use_container_width=True
                 )
 
@@ -718,19 +759,18 @@ def render(history: Optional[list] = None) -> None:
                 }),
                 use_container_width=True,
             )
-            _download_csv(capacity_df, "capacity.csv", "⬇ Download capacity.csv")
+            _download_csv(capacity_df, "capacity.csv", "Download capacity.csv")
 
     # ════════════════════════════════════════════════════════════════════════
-    # 🚢  TRADE FLOWS
+    # TRADE FLOWS
     # ════════════════════════════════════════════════════════════════════════
     with tab_trade:
         if flows_df.empty:
             st.warning("No trade flow data available.")
         else:
             st.subheader("Inter-Regional SAF Trade Flows")
-            st.markdown(
+            components.methodology(
                 """
-                ### Methodology
                 SAF trade flows are produced by a **share-aware two-pass dispatch**.
                 Each region's effective supply is split into a **domestic-priority pool**
                 (size = `domestic_share × supply`) and an **export pool** (the remaining
@@ -769,11 +809,11 @@ def render(history: Optional[list] = None) -> None:
 
             col1, col2 = st.columns(2)
             with col1:
-                st.plotly_chart(
+                plotly_chart(
                     charts.trade_heatmap(flows_df, sel_year), use_container_width=True
                 )
             with col2:
-                st.plotly_chart(
+                plotly_chart(
                     charts.trade_sankey(flows_df, sel_year), use_container_width=True
                 )
 
@@ -789,12 +829,12 @@ def render(history: Optional[list] = None) -> None:
             )
             col_p1, col_p2 = st.columns(2)
             with col_p1:
-                st.plotly_chart(
+                plotly_chart(
                     charts.trade_pathway_sankey(flows_df, sel_year),
                     use_container_width=True,
                 )
             with col_p2:
-                st.plotly_chart(
+                plotly_chart(
                     charts.trade_pathway_stacked(flows_df, sel_year),
                     use_container_width=True,
                 )
@@ -804,4 +844,4 @@ def render(history: Optional[list] = None) -> None:
                 flows_df[flows_df["year"] == sel_year].style.format({"year": "{:.0f}"}),
                 use_container_width=True,
             )
-            _download_csv(flows_df, "trade_flows.csv", "⬇ Download trade_flows.csv")
+            _download_csv(flows_df, "trade_flows.csv", "Download trade_flows.csv")

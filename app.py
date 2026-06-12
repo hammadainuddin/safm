@@ -3,17 +3,15 @@ SAF Global Market Model — Streamlit UI
 ======================================
 Launch with:  streamlit run app.py
 
-Three tabs:
-  📊 Inputs    — editable tables + charts for all model inputs
-  ▶  Run Model — scenario configuration, live progress, logs
-  📈 Outputs   — price, capacity, trade flow tables and charts
+Sidebar navigation:
+  Workspace — Inputs, Run Model, Results, Scenarios
+  Analysis  — LCOSAF Explorer
 """
 
 from __future__ import annotations
 
 import os
 import sys
-import time
 
 import streamlit as st
 
@@ -22,15 +20,17 @@ _HERE = os.path.dirname(os.path.abspath(__file__))
 if _HERE not in sys.path:
     sys.path.insert(0, _HERE)
 
-from config.settings import MODEL_END_YEAR, MODEL_START_YEAR, HORIZON_YEARS, ROUTE_SAMPLE_FRACTION as _DEFAULT_RSF
-from ui import input_editor, output_dashboard, lcosaf_explorer
-
 st.set_page_config(
     page_title="SAF Market Model",
-    page_icon="✈️",
+    page_icon=os.path.join(_HERE, "assets", "icon.svg"),
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
+
+from ui import styles, theme
+
+theme.register()
+styles.inject()
 
 # ── Session state initialisation ────────────────────────────────────────────
 if "runner" not in st.session_state:
@@ -41,158 +41,76 @@ if "step_log" not in st.session_state:
     st.session_state.step_log = []  # list of log strings
 if "step_table" not in st.session_state:
     st.session_state.step_table = {}  # {year: {step: status}}
-if "active_tab" not in st.session_state:
-    st.session_state.active_tab = 0
 
-# ── Tab layout ───────────────────────────────────────────────────────────────
-tab_inputs, tab_run, tab_outputs, tab_scenarios, tab_lcosaf = st.tabs([
-    "📊 Inputs", "▶ Run Model", "📈 Outputs", "🎭 Scenarios", "🔬 LCOSAF Explorer"
-])
+# st.navigation only reruns the active page, so widget state on inactive
+# pages would otherwise be garbage-collected. Re-assigning promotes these
+# cross-page keys to persistent session state.
+for _k in (
+    "demand_mode", "include_domestic", "route_sample_fraction",
+    "demand_scale_factor", "scenario", "start_year", "end_year",
+):
+    if _k in st.session_state:
+        st.session_state[_k] = st.session_state[_k]
+
+# Capture run events / finished history on every rerun, whichever page is open.
+from ui import run_model
+
+run_model.sync_runner_state()
+
+st.logo(
+    os.path.join(_HERE, "assets", "wordmark.svg"),
+    icon_image=os.path.join(_HERE, "assets", "icon.svg"),
+)
 
 
-# ============================================================================
-# TAB 1 — Inputs
-# ============================================================================
-with tab_inputs:
+# ── Pages ────────────────────────────────────────────────────────────────────
+def _inputs() -> None:
+    from ui import input_editor
     input_editor.render()
 
 
-# ============================================================================
-# TAB 2 — Run Model
-# ============================================================================
-with tab_run:
-    st.header("Run Model")
-
-    runner = st.session_state.runner
-
-    # ── Configuration ────────────────────────────────────────────────────────
-    with st.expander("⚙️ Run Configuration", expanded=(runner is None or runner.done)):
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            scenario = st.text_input("Scenario name", value="baseline", key="scenario")
-        with col2:
-            start_year = st.selectbox(
-                "Start year", HORIZON_YEARS, index=0, key="start_year"
-            )
-        with col3:
-            end_year = st.selectbox(
-                "End year", HORIZON_YEARS,
-                index=len(HORIZON_YEARS) - 1, key="end_year"
-            )
-
-    # ── Run / Stop buttons ───────────────────────────────────────────────────
-    col_run, col_status = st.columns([1, 3])
-    with col_run:
-        run_disabled = runner is not None and not runner.done
-        if st.button("▶ Run Model", disabled=run_disabled, type="primary", use_container_width=True):
-            from ui.runner import BackgroundRunner
-            new_runner = BackgroundRunner()
-            st.session_state.runner = new_runner
-            st.session_state.step_log = []
-            st.session_state.step_table = {}
-            new_runner.start(
-                start_year=int(start_year),
-                end_year=int(end_year),
-                scenario=scenario,
-                verbose=False,
-                demand_scale_factor=float(st.session_state.get("demand_scale_factor", 1.0)),
-                route_sample_fraction=float(st.session_state.get("route_sample_fraction", _DEFAULT_RSF)),
-                demand_mode=st.session_state.get("demand_mode", "corsia_schedule"),
-                include_domestic=bool(st.session_state.get("include_domestic", False)),
-            )
-            st.rerun()
-
-    runner = st.session_state.runner  # refresh after potential start
-
-    # ── Live progress ────────────────────────────────────────────────────────
-    if runner is not None:
-        # Drain queued events
-        events = runner.drain_events()
-        step_icons = {"demand": "📥", "expansion": "🏗️", "equilibrium": "⚖️", "done": "✅"}
-        step_descriptions = {
-            "demand":      "computed bottom-up CORSIA + national-mandate demand from flight activity, fleet efficiency, and route mix",
-            "expansion":   "solved least-cost LP, sized any new endogenous plants and brought them online (LCOSAF-ranked, feedstock + refinery-cap constrained)",
-            "equilibrium": "cleared the market with WTP-priority dispatch (domestic-first, LCOSAF ≤ regional WTP); unserved demand routed to CORSIA offsets",
-            "done":        "year complete — prices, trade flows, and capacity state written to history",
-        }
-        for ev in events:
-            if ev.step == "complete" and ev.year is None:
-                break
-            if ev.year is not None and ev.step != "complete":
-                icon = step_icons.get(ev.step, "•")
-                desc = step_descriptions.get(ev.step, ev.step)
-                log_line = f"{icon} {ev.year} · {ev.step} — {desc}"
-                st.session_state.step_log.append(log_line)
-                # Update step table
-                if ev.year not in st.session_state.step_table:
-                    st.session_state.step_table[ev.year] = {}
-                st.session_state.step_table[ev.year][ev.step] = "done"
-
-        # Store finished history
-        if runner.done and runner.history is not None and st.session_state.history is None:
-            st.session_state.history = runner.history
-
-        # Progress bar
-        frac = runner.progress_fraction()
-        elapsed = runner.elapsed_seconds
-        remaining = runner.estimated_remaining()
-
-        if runner.done and runner.error is None:
-            st.success(f"✅ Run complete in {elapsed:.1f}s")
-        elif runner.done and runner.error is not None:
-            st.error(f"❌ Run failed: {runner.error}")
-        else:
-            st.progress(frac)
-            with col_status:
-                rem_str = f" — ~{remaining:.0f}s remaining" if remaining else ""
-                st.caption(f"⏱ {elapsed:.1f}s elapsed{rem_str}  |  {int(frac*100)}% complete")
-
-        # Step table
-        if st.session_state.step_table:
-            st.subheader("Step Progress")
-            years = sorted(st.session_state.step_table.keys())
-            steps = ["demand", "expansion", "equilibrium", "done"]
-            import pandas as pd
-            rows = []
-            for y in years:
-                row = {"Year": y}
-                for s in steps:
-                    status = st.session_state.step_table[y].get(s)
-                    row[s.capitalize()] = "✅" if status == "done" else "⏳"
-                rows.append(row)
-            st.dataframe(pd.DataFrame(rows).set_index("Year"), use_container_width=True)
-
-        # Live log
-        with st.expander("📋 Step Log", expanded=not runner.done):
-            log_text = "\n".join(st.session_state.step_log[-100:])  # last 100 lines
-            st.text_area("Log", value=log_text, height=300, key="log_area", disabled=True)
-
-        # Auto-rerun while running
-        if not runner.done:
-            time.sleep(0.5)
-            st.rerun()
-
-    else:
-        st.info("Configure the scenario above and click **▶ Run Model** to start.")
+def _run() -> None:
+    run_model.render()
 
 
-# ============================================================================
-# TAB 3 — Outputs
-# ============================================================================
-with tab_outputs:
+def _results() -> None:
+    from ui import output_dashboard
     output_dashboard.render(st.session_state.history)
 
 
-# ============================================================================
-# TAB 4 — Scenarios
-# ============================================================================
-with tab_scenarios:
+def _scenarios() -> None:
     from ui import scenario_builder
     scenario_builder.render(st.session_state.history)
 
 
-# ============================================================================
-# TAB 5 — LCOSAF Explorer
-# ============================================================================
-with tab_lcosaf:
+def _lcosaf() -> None:
+    from ui import lcosaf_explorer
     lcosaf_explorer.render()
+
+
+pg_inputs = st.Page(_inputs, title="Inputs", icon=":material/edit_note:",
+                    url_path="inputs", default=True)
+pg_run = st.Page(_run, title="Run Model", icon=":material/play_circle:",
+                 url_path="run")
+pg_results = st.Page(_results, title="Results", icon=":material/monitoring:",
+                     url_path="results")
+pg_scenarios = st.Page(_scenarios, title="Scenarios", icon=":material/folder_copy:",
+                       url_path="scenarios")
+pg_lcosaf = st.Page(_lcosaf, title="LCOSAF Explorer", icon=":material/calculate:",
+                    url_path="lcosaf")
+
+# Registry used by components.empty_state for cross-page links.
+st.session_state["_pages"] = {
+    "inputs": pg_inputs,
+    "run": pg_run,
+    "results": pg_results,
+}
+
+nav = st.navigation({
+    "Workspace": [pg_inputs, pg_run, pg_results, pg_scenarios],
+    "Analysis":  [pg_lcosaf],
+})
+nav.run()
+
+with st.sidebar:
+    st.caption("SAF Market Model · v1.0 · horizon 2025–2050")

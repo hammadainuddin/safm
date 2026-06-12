@@ -1,7 +1,7 @@
 """
-Tab 1 — Input Editor
-Editable tables for all mock CSV inputs. The Demand Module tab consolidates
-all demand building blocks as nested sub-tabs with methodology explanations.
+Inputs page — editable tables for all model input CSVs. The Demand sub-tab
+consolidates all demand building blocks as nested sub-tabs with methodology
+explanations.
 """
 
 from __future__ import annotations
@@ -12,7 +12,8 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from ui import charts
+from ui import charts, components
+from ui.components import plotly_chart
 
 _MOCK_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "mock")
 _TMPL_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "templates")
@@ -50,33 +51,7 @@ def _upload_widget(filename: str, ss_key: str) -> pd.DataFrame:
 
     Call _clear_upload(ss_key) after a successful save to reset to on-disk state.
     """
-    tmpl_path = _tmpl_path(filename)
-    if os.path.exists(tmpl_path):
-        with open(tmpl_path, "rb") as f:
-            tmpl_bytes = f.read()
-        st.download_button(
-            label=f"📥 Download template: `{filename}`",
-            data=tmpl_bytes,
-            file_name=filename,
-            mime="text/csv",
-            key=f"_dl_{ss_key}",
-            help="Download the baseline template CSV (with example data) as a starting point.",
-        )
-
-    uploaded = st.file_uploader(
-        f"📂 Upload replacement CSV for `{filename}`",
-        type="csv",
-        key=f"_up_{ss_key}",
-        help="Upload a CSV with the same columns as the existing table. "
-             "The uploaded data will populate the editor below — review, then click Save.",
-    )
-    if uploaded is not None:
-        try:
-            st.session_state[ss_key] = pd.read_csv(uploaded)
-            st.success(f"CSV loaded ({len(st.session_state[ss_key])} rows). Review below and click **Save** to apply.")
-        except Exception as exc:
-            st.error(f"Could not parse CSV: {exc}")
-    return st.session_state.get(ss_key, _load(filename))
+    return components.upload_controls(filename, ss_key, _load, _tmpl_path(filename))
 
 
 def _clear_upload(ss_key: str) -> None:
@@ -145,25 +120,23 @@ def _build_demand_projection_df(_cache_buster: tuple) -> pd.DataFrame:
 
 
 def render() -> None:
-    st.header("Model Inputs")
-    st.caption(
-        "Edit any table below and click **Save** to update the inputs used by the model. "
-        "The original mock data is overwritten in place."
+    components.page_header(
+        "Model Inputs",
+        "Edit any table below and click Save to update the data used by the next run.",
     )
 
     (tab_demand, tab_capacity, tab_feedstock,
      tab_costs, tab_transport, tab_regulatory, tab_wtp) = st.tabs([
-        "✈️ Demand Module", "🏭 Committed Capacity",
-        "🌿 Feedstock Availability", "💵 Costs",
-        "🚢 Transport Costs", "📋 Regulatory Params", "💰 WTP Parameters",
+        "Demand", "Committed Capacity", "Feedstock", "Costs",
+        "Transport", "Regulatory", "WTP",
     ])
 
     # ════════════════════════════════════════════════════════════════════════
-    # ✈️  DEMAND MODULE — all building blocks as nested sub-tabs
+    # DEMAND MODULE — all building blocks as nested sub-tabs
     # ════════════════════════════════════════════════════════════════════════
     with tab_demand:
         st.subheader("Bottom-Up Demand Module")
-        st.markdown(
+        components.methodology(
             """
             CORSIA demand is estimated from first principles using a bottom-up flight-activity
             model rather than a simple top-down trajectory. The module combines four independent
@@ -176,38 +149,39 @@ def render() -> None:
 
         from config.settings import ROUTE_SAMPLE_FRACTION as _default_rsf
 
-        # ── Demand mode selector ──────────────────────────────────────────────
-        st.markdown("#### Demand Mode")
-        demand_mode = st.radio(
-            "CORSIA SAF demand method",
-            options=["corsia_schedule", "route_targets"],
-            format_func=lambda x: {
-                "corsia_schedule": "Single CORSIA schedule — global mandatory fraction applied uniformly",
-                "route_targets":   "Country-specific SAF targets — per-route SAF% from the routes dataset",
-            }[x],
-            key="demand_mode",
-            help=(
-                "**Single CORSIA schedule**: one global mandatory_fraction from corsia_schedule.csv "
-                "is applied to all international routes. Requires route_sample_fraction calibration.\n\n"
-                "**Country-specific SAF targets**: each route carries its own SAF% target "
-                "(saf_pct_2025 … saf_pct_2050 columns), interpolated between key years. "
-                "The 1 274-route dataset is comprehensive — no scaling factor needed."
-            ),
-            horizontal=False,
-        )
+        # ── Demand settings ───────────────────────────────────────────────────
+        with st.container(border=True):
+            st.markdown("**Demand settings**")
+            demand_mode = st.radio(
+                "CORSIA SAF demand method",
+                options=["corsia_schedule", "route_targets"],
+                format_func=lambda x: {
+                    "corsia_schedule": "Single CORSIA schedule — global mandatory fraction applied uniformly",
+                    "route_targets":   "Country-specific SAF targets — per-route SAF% from the routes dataset",
+                }[x],
+                key="demand_mode",
+                help=(
+                    "**Single CORSIA schedule**: one global mandatory_fraction from corsia_schedule.csv "
+                    "is applied to all international routes. Requires route_sample_fraction calibration.\n\n"
+                    "**Country-specific SAF targets**: each route carries its own SAF% target "
+                    "(saf_pct_2025 … saf_pct_2050 columns), interpolated between key years. "
+                    "The 1 274-route dataset is comprehensive — no scaling factor needed."
+                ),
+                horizontal=False,
+            )
 
-        st.checkbox(
-            "Include domestic routes",
-            value=bool(st.session_state.get("include_domestic", False)),
-            key="include_domestic",
-            help=(
-                "When enabled, domestic routes contribute fuel burn and blending-mandate "
-                "SAF demand. CORSIA obligations are international-only regardless of this setting."
-            ),
-        )
+            st.toggle(
+                "Include domestic routes",
+                value=bool(st.session_state.get("include_domestic", False)),
+                key="include_domestic",
+                help=(
+                    "When enabled, domestic routes contribute fuel burn and blending-mandate "
+                    "SAF demand. CORSIA obligations are international-only regardless of this setting."
+                ),
+            )
 
         if demand_mode == "corsia_schedule":
-            with st.expander("🔬 Route Sample Fraction", expanded=False):
+            with st.expander("Route Sample Fraction", icon=":material/science:", expanded=False):
                 st.markdown(
                     "The flight routes dataset is a representative sample of global scheduled "
                     "traffic. All computed fuel burn and CORSIA demand volumes are extrapolated "
@@ -240,7 +214,8 @@ def render() -> None:
             proj_df = pd.DataFrame()
 
         with st.expander(
-            "📊 Projected jet fuel burn and total SAF demand (2025–2050)",
+            "Projected jet fuel burn and total SAF demand (2025–2050)",
+            icon=":material/show_chart:",
             expanded=True,
         ):
             if proj_df.empty:
@@ -263,7 +238,7 @@ def render() -> None:
                         hovermode="x unified",
                         legend_title="Region",
                     )
-                    st.plotly_chart(fig_jf, use_container_width=True)
+                    plotly_chart(fig_jf, use_container_width=True)
                 with col_total:
                     fig_total = px.line(
                         proj_df, x="year", y="total_saf_mt", color="region",
@@ -276,14 +251,15 @@ def render() -> None:
                         hovermode="x unified",
                         legend_title="Region",
                     )
-                    st.plotly_chart(fig_total, use_container_width=True)
+                    plotly_chart(fig_total, use_container_width=True)
                 st.caption(
                     "**Total SAF Demand = CORSIA offsetting obligation + domestic blending mandate.** "
                     "This matches the demand figure used in market clearing and reported in the "
-                    "Output → Market Summary tab. Volumes are in million tonnes per year."
+                    "Results page → Market Summary. Volumes are in million tonnes per year."
                 )
 
-        with st.expander("📊 CORSIA vs Mandate demand breakdown", expanded=False):
+        with st.expander("CORSIA vs Mandate demand breakdown",
+                         icon=":material/stacked_line_chart:", expanded=False):
             if proj_df.empty:
                 st.info("No projection data available.")
             else:
@@ -297,7 +273,7 @@ def render() -> None:
                     )
                     fig_c.update_layout(xaxis=dict(tickformat="d"),
                                         hovermode="x unified", legend_title="Region")
-                    st.plotly_chart(fig_c, use_container_width=True)
+                    plotly_chart(fig_c, use_container_width=True)
                 with col_m:
                     fig_m = px.line(
                         proj_df, x="year", y="mandate_saf_mt", color="region",
@@ -307,10 +283,10 @@ def render() -> None:
                     )
                     fig_m.update_layout(xaxis=dict(tickformat="d"),
                                         hovermode="x unified", legend_title="Region")
-                    st.plotly_chart(fig_m, use_container_width=True)
+                    plotly_chart(fig_m, use_container_width=True)
 
         # ── Demand scaling factor ─────────────────────────────────────────────
-        with st.expander("⚖️ Demand Scaling Factor", expanded=False):
+        with st.expander("Demand Scaling Factor", icon=":material/tune:", expanded=False):
             st.markdown(
                 "Apply a global multiplier to all bottom-up demand volumes before "
                 "market clearing. The default value of **1.0** uses the computed demand "
@@ -331,15 +307,14 @@ def render() -> None:
 
         (sub_routes, sub_airlines, sub_aircraft,
          sub_corsia_sched, sub_corsia_supp, sub_mandates) = st.tabs([
-            "🗺️ Flight Routes", "🏢 Airlines", "🛫 Aircraft Efficiency",
-            "📅 CORSIA Schedule", "🔄 CORSIA Suppression", "📜 Blending Mandates",
+            "Routes", "Airlines", "Aircraft", "CORSIA Schedule",
+            "Suppression", "Mandates",
         ])
 
         # ── Flight Routes ─────────────────────────────────────────────────────
         with sub_routes:
-            st.markdown(
+            components.methodology(
                 """
-                ### Methodology
                 Each row in this table represents a representative scheduled route operated by a
                 named airline. Fuel burn for a given year is computed as:
 
@@ -368,7 +343,7 @@ def render() -> None:
                             "flight_type": "Type"},
                 )
                 fig.update_layout(xaxis=dict(tickformat=""))
-                st.plotly_chart(fig, use_container_width=True)
+                plotly_chart(fig, use_container_width=True)
             with col2:
                 dist_fig = px.histogram(
                     routes_df, x="distance_km", color="flight_type", nbins=20,
@@ -376,23 +351,22 @@ def render() -> None:
                     labels={"distance_km": "Distance (km)", "count": "# Routes"},
                     barmode="overlay", opacity=0.7,
                 )
-                st.plotly_chart(dist_fig, use_container_width=True)
+                plotly_chart(dist_fig, use_container_width=True)
 
             with st.expander("Edit routes table"):
                 edited_rt = st.data_editor(
                     routes_df, use_container_width=True, num_rows="dynamic",
                     key="routes_editor",
                 )
-                if st.button("💾 Save Routes", key="save_routes"):
+                if st.button("Save Routes", key="save_routes", icon=":material/save:", type="primary"):
                     _save(edited_rt, "flight_routes.csv")
                     _clear_upload("ss_flight_routes")
-                    st.success("flight_routes.csv saved.")
+                    st.toast("flight_routes.csv saved", icon=":material/check_circle:")
 
         # ── Airlines ─────────────────────────────────────────────────────────
         with sub_airlines:
-            st.markdown(
+            components.methodology(
                 """
-                ### Methodology
                 The airlines table defines which carriers are included in the model and links each
                 airline to its home region. Airlines serve as the organisational unit connecting
                 flight routes to regional demand attribution. When routes are aggregated, the
@@ -410,10 +384,10 @@ def render() -> None:
                     airlines_df, use_container_width=True, num_rows="dynamic",
                     key="airlines_editor",
                 )
-                if st.button("💾 Save Airlines", key="save_airlines"):
+                if st.button("Save Airlines", key="save_airlines", icon=":material/save:", type="primary"):
                     _save(edited_al, "airlines.csv")
                     _clear_upload("ss_airlines")
-                    st.success("airlines.csv saved.")
+                    st.toast("airlines.csv saved", icon=":material/check_circle:")
             with col_b:
                 region_col = "region" if "region" in edited_al.columns else "home_region"
                 region_counts = edited_al.groupby(region_col).size().reset_index(name="count")
@@ -424,13 +398,12 @@ def render() -> None:
                     color="count", color_continuous_scale="Blues",
                 )
                 fig.update_layout(showlegend=False, xaxis=dict(tickformat=""))
-                st.plotly_chart(fig, use_container_width=True)
+                plotly_chart(fig, use_container_width=True)
 
         # ── Aircraft Fuel Efficiency ──────────────────────────────────────────
         with sub_aircraft:
-            st.markdown(
+            components.methodology(
                 """
-                ### Methodology
                 Fuel efficiency is expressed in **tonnes of fuel per kilometre** for the whole
                 aircraft (not per seat). Each route is assigned an aircraft type from this table,
                 and the base efficiency is multiplied by an annual improvement factor:
@@ -456,22 +429,21 @@ def render() -> None:
                 color_continuous_scale="RdYlGn_r",
             )
             fig.update_layout(showlegend=False, xaxis=dict(tickformat=""))
-            st.plotly_chart(fig, use_container_width=True)
+            plotly_chart(fig, use_container_width=True)
 
             edited_ac = st.data_editor(
                 ac_df, use_container_width=True, num_rows="dynamic",
                 key="aircraft_editor",
             )
-            if st.button("💾 Save Aircraft Types", key="save_aircraft"):
+            if st.button("Save Aircraft Types", key="save_aircraft", icon=":material/save:", type="primary"):
                 _save(edited_ac, "aircraft_types.csv")
                 _clear_upload("ss_aircraft_types")
-                st.success("aircraft_types.csv saved.")
+                st.toast("aircraft_types.csv saved", icon=":material/check_circle:")
 
         # ── CORSIA Schedule ───────────────────────────────────────────────────
         with sub_corsia_sched:
-            st.markdown(
+            components.methodology(
                 """
-                ### Methodology
                 CORSIA (Carbon Offsetting and Reduction Scheme for International Aviation)
                 requires airlines to offset CO₂ growth above the 2019 baseline. SAF counts as
                 a full credit against this obligation because its lifecycle emissions are
@@ -503,7 +475,7 @@ def render() -> None:
                                annotation_text="Phase 1 start",
                                annotation_position="top right")
                 fig1.update_layout(xaxis=dict(tickformat="d"))
-                st.plotly_chart(fig1, use_container_width=True)
+                plotly_chart(fig1, use_container_width=True)
             with col2:
                 fig2 = px.line(
                     cs_df, x="year", y="carbon_credit_usd_per_tco2",
@@ -512,23 +484,22 @@ def render() -> None:
                     markers=True,
                 )
                 fig2.update_layout(xaxis=dict(tickformat="d"))
-                st.plotly_chart(fig2, use_container_width=True)
+                plotly_chart(fig2, use_container_width=True)
 
             with st.expander("Edit CORSIA schedule"):
                 edited_cs = st.data_editor(
                     cs_df, use_container_width=True, num_rows="dynamic",
                     key="corsia_sched_editor",
                 )
-                if st.button("💾 Save CORSIA Schedule", key="save_corsia_sched"):
+                if st.button("Save CORSIA Schedule", key="save_corsia_sched", icon=":material/save:", type="primary"):
                     _save(edited_cs, "corsia_schedule.csv")
                     _clear_upload("ss_corsia_schedule")
-                    st.success("corsia_schedule.csv saved.")
+                    st.toast("corsia_schedule.csv saved", icon=":material/check_circle:")
 
         # ── CORSIA Suppression ────────────────────────────────────────────────
         with sub_corsia_supp:
-            st.markdown(
+            components.methodology(
                 """
-                ### Methodology
                 Not all regions participate in CORSIA on the same timeline. The suppression
                 factor (∈ (0, 1]) scales the effective demand in voluntary-participation
                 regions to reflect the fact that airlines in those regions face a weaker
@@ -546,22 +517,21 @@ def render() -> None:
                 """
             )
             supp_df = _upload_widget("corsia_suppression.csv", "ss_corsia_suppression")
-            st.plotly_chart(charts.corsia_suppression_chart(supp_df), use_container_width=True)
+            plotly_chart(charts.corsia_suppression_chart(supp_df), use_container_width=True)
             with st.expander("Edit suppression factors"):
                 edited_supp = st.data_editor(
                     supp_df, use_container_width=True, num_rows="dynamic",
                     key="corsia_supp_editor",
                 )
-                if st.button("💾 Save CORSIA Suppression", key="save_corsia_supp"):
+                if st.button("Save CORSIA Suppression", key="save_corsia_supp", icon=":material/save:", type="primary"):
                     _save(edited_supp, "corsia_suppression.csv")
                     _clear_upload("ss_corsia_suppression")
-                    st.success("corsia_suppression.csv saved.")
+                    st.toast("corsia_suppression.csv saved", icon=":material/check_circle:")
 
         # ── Blending Mandates ─────────────────────────────────────────────────
         with sub_mandates:
-            st.markdown(
+            components.methodology(
                 """
-                ### Methodology
                 National blending mandates require a minimum fraction of jet fuel sold or
                 uplifted domestically to be SAF. Unlike CORSIA — which is based on growth
                 above a baseline — mandates apply to the **total domestic fuel burn** in
@@ -609,7 +579,7 @@ def render() -> None:
                     markers=True,
                 )
                 fig.update_layout(xaxis=dict(tickformat="d"), hovermode="x unified")
-                st.plotly_chart(fig, use_container_width=True)
+                plotly_chart(fig, use_container_width=True)
                 st.caption(
                     "Lines labelled with a **country name** (e.g. Japan) are country-specific "
                     "mandates; lines labelled with a **region name** (e.g. EU, US) are "
@@ -626,26 +596,25 @@ def render() -> None:
                     color="mandate_fraction", color_continuous_scale="Greens",
                 )
                 fig2.update_layout(showlegend=False)
-                st.plotly_chart(fig2, use_container_width=True)
+                plotly_chart(fig2, use_container_width=True)
 
             with st.expander("Edit mandates table"):
                 edited_mand = st.data_editor(
                     mandates_df, use_container_width=True, num_rows="dynamic",
                     key="mandates_editor",
                 )
-                if st.button("💾 Save Blending Mandates", key="save_mandates"):
+                if st.button("Save Blending Mandates", key="save_mandates", icon=":material/save:", type="primary"):
                     _save(edited_mand, "national_blending_mandates.csv")
                     _clear_upload("ss_national_blending_mandates")
-                    st.success("national_blending_mandates.csv saved.")
+                    st.toast("national_blending_mandates.csv saved", icon=":material/check_circle:")
 
     # ════════════════════════════════════════════════════════════════════════
-    # 🏭  COMMITTED CAPACITY
+    # COMMITTED CAPACITY
     # ════════════════════════════════════════════════════════════════════════
     with tab_capacity:
         st.subheader("Committed (Deterministic) Capacity Pipeline")
-        st.markdown(
+        components.methodology(
             """
-            ### Methodology
             Committed capacity represents SAF plants with known or announced online dates that
             will enter the model regardless of the endogenous LP expansion decision. These plants
             are flagged `is_deterministic = True` in the capacity state and are shown separately
@@ -667,27 +636,26 @@ def render() -> None:
                 color="capacity_mt_yr", color_continuous_scale="Blues",
             )
             fig.update_layout(showlegend=False, xaxis=dict(tickformat=""))
-            st.plotly_chart(fig, use_container_width=True)
+            plotly_chart(fig, use_container_width=True)
         with col2:
             pathway_summary = df.groupby("pathway")["capacity_mt_yr"].sum().reset_index()
             fig2 = px.pie(
                 pathway_summary, names="pathway", values="capacity_mt_yr",
                 title="Committed Capacity by Pathway",
             )
-            st.plotly_chart(fig2, use_container_width=True)
+            plotly_chart(fig2, use_container_width=True)
         edited = st.data_editor(df, use_container_width=True, num_rows="dynamic", key="cap_editor")
-        if st.button("💾 Save Committed Capacity", key="save_cap"):
+        if st.button("Save Committed Capacity", key="save_cap", icon=":material/save:", type="primary"):
             _save(edited, "committed_capacity.csv")
             _clear_upload("ss_committed_capacity")
-            st.success("committed_capacity.csv saved.")
+            st.toast("committed_capacity.csv saved", icon=":material/check_circle:")
 
         st.divider()
 
         # ── Refinery throughput → co-processing cap ─────────────────────────
         st.subheader("Refinery Co-Processing Capacity Cap")
-        st.markdown(
+        components.methodology(
             """
-            ### Methodology
             Co-processing SAF is produced by blending bio-based feedstock (e.g. hydrotreated
             vegetable oils, pyrolysis oil) into an **existing petroleum refinery's** middle-
             distillate processing units — typically the FCC, hydrotreater, or jet hydrocracker.
@@ -722,7 +690,7 @@ def render() -> None:
                 color="refinery_throughput_mt_yr", color_continuous_scale="Greys",
             )
             fig_rc.update_layout(showlegend=False, xaxis=dict(tickformat=""))
-            st.plotly_chart(fig_rc, use_container_width=True)
+            plotly_chart(fig_rc, use_container_width=True)
         with col_r2:
             fig_cp = px.bar(
                 rc_calc, x="region", y="max_coprocessing_mt_yr",
@@ -731,7 +699,7 @@ def render() -> None:
                 color="coprocessing_share_max_pct", color_continuous_scale="Oranges",
             )
             fig_cp.update_layout(xaxis=dict(tickformat=""))
-            st.plotly_chart(fig_cp, use_container_width=True)
+            plotly_chart(fig_cp, use_container_width=True)
 
         st.markdown("**Edit refinery throughput and co-processing share**")
         edited_rc = st.data_editor(
@@ -746,18 +714,17 @@ def render() -> None:
                 ),
             },
         )
-        if st.button("💾 Save Refinery Capacity", key="save_refinery"):
+        if st.button("Save Refinery Capacity", key="save_refinery", icon=":material/save:", type="primary"):
             _save(edited_rc, "refinery_capacity.csv")
             _clear_upload("ss_refinery_capacity")
-            st.success("refinery_capacity.csv saved.")
+            st.toast("refinery_capacity.csv saved", icon=":material/check_circle:")
 
         st.divider()
 
         # ── Domestic vs Export Share ────────────────────────────────────────
         st.subheader("Domestic vs Export Share")
-        st.markdown(
+        components.methodology(
             """
-            ### Methodology
             Each region's effective SAF supply is split into a **domestic-priority
             pool** (reserved for local demand) and an **export-eligible pool**
             (offered to the cross-region import market). The market is cleared in
@@ -802,7 +769,7 @@ def render() -> None:
             },
         )
         fig_share.update_layout(yaxis_range=[0, 100], xaxis=dict(tickformat=""))
-        st.plotly_chart(fig_share, use_container_width=True)
+        plotly_chart(fig_share, use_container_width=True)
 
         st.markdown("**Edit per-region domestic share**")
         edited_dp = st.data_editor(
@@ -817,19 +784,18 @@ def render() -> None:
                 ),
             },
         )
-        if st.button("💾 Save Domestic Supply Priority", key="save_domestic_priority"):
+        if st.button("Save Domestic Supply Priority", key="save_domestic_priority", icon=":material/save:", type="primary"):
             _save(edited_dp, "domestic_supply_priority.csv")
             _clear_upload("ss_domestic_priority")
-            st.success("domestic_supply_priority.csv saved.")
+            st.toast("domestic_supply_priority.csv saved", icon=":material/check_circle:")
 
     # ════════════════════════════════════════════════════════════════════════
-    # 🌿  FEEDSTOCK AVAILABILITY
+    # FEEDSTOCK AVAILABILITY
     # ════════════════════════════════════════════════════════════════════════
     with tab_feedstock:
         st.subheader("Feedstock Availability")
-        st.markdown(
+        components.methodology(
             """
-            ### Methodology
             Feedstock availability constrains which SAF pathways can be expanded in each region
             and year. The capacity expansion LP uses these limits as upper bounds on the total
             throughput of any pathway that relies on a given feedstock. For example, HEFA
@@ -871,7 +837,7 @@ def render() -> None:
                 hovermode="x unified",
                 legend=dict(orientation="h", yanchor="top", y=-0.25),
             )
-            st.plotly_chart(fig_av, use_container_width=True)
+            plotly_chart(fig_av, use_container_width=True)
 
         # ── Single-year snapshot ──────────────────────────────────────────────
         year_options = sorted(df["year"].unique())
@@ -896,19 +862,18 @@ def render() -> None:
                     "notes": st.column_config.TextColumn("Notes"),
                 },
             )
-            if st.button("💾 Save Feedstock Availability", key="save_fs"):
+            if st.button("Save Feedstock Availability", key="save_fs", icon=":material/save:", type="primary"):
                 _save(edited, "feedstock_availability.csv")
                 _clear_upload("ss_feedstock_availability")
-                st.success("feedstock_availability.csv saved.")
+                st.toast("feedstock_availability.csv saved", icon=":material/check_circle:")
 
     # ════════════════════════════════════════════════════════════════════════
-    # 💵  COSTS — annual CAPEX, processing OPEX, feedstock cost
+    # COSTS — annual CAPEX, processing OPEX, feedstock cost
     # ════════════════════════════════════════════════════════════════════════
     with tab_costs:
         st.subheader("Plant Cost Assumptions")
-        st.markdown(
+        components.methodology(
             """
-            ### Methodology
             These annual cost inputs drive the **capacity expansion LP** (which new plants to
             build each year) and **WTP Case 2** (the minimum SAF price at which a rational
             investor would build new capacity).
@@ -951,7 +916,7 @@ def render() -> None:
             fig_cx.update_layout(height=280, margin=dict(t=10, b=40),
                                   xaxis=dict(tickformat="d"), hovermode="x unified",
                                   legend=dict(orientation="h", yanchor="top", y=-0.28))
-            st.plotly_chart(fig_cx, use_container_width=True)
+            plotly_chart(fig_cx, use_container_width=True)
 
         with col_fo:
             st.markdown("**Feedstock Cost (USD/t feedstock)**")
@@ -963,7 +928,7 @@ def render() -> None:
             fig_fo.update_layout(height=280, margin=dict(t=10, b=40),
                                   xaxis=dict(tickformat="d"), hovermode="x unified",
                                   legend=dict(orientation="h", yanchor="top", y=-0.28))
-            st.plotly_chart(fig_fo, use_container_width=True)
+            plotly_chart(fig_fo, use_container_width=True)
 
         with col_po:
             st.markdown("**Processing OPEX (USD/MT SAF)**")
@@ -976,7 +941,7 @@ def render() -> None:
             fig_po.update_layout(height=280, margin=dict(t=10, b=40),
                                   xaxis=dict(tickformat="d"), hovermode="x unified",
                                   legend=dict(orientation="h", yanchor="top", y=-0.28))
-            st.plotly_chart(fig_po, use_container_width=True)
+            plotly_chart(fig_po, use_container_width=True)
 
         # ── Download template ─────────────────────────────────────────────────
         _tmpl_c = _tmpl_path("lcosaf_costs.csv")
@@ -1004,19 +969,18 @@ def render() -> None:
                         "Feedstock Cost (USD/t)", min_value=0.0, format="%.1f"),
                 },
             )
-            if st.button("💾 Save Cost Assumptions", key="save_lcosaf_costs"):
+            if st.button("Save Cost Assumptions", key="save_lcosaf_costs", icon=":material/save:", type="primary"):
                 _save(edited_costs, "lcosaf_costs.csv")
                 _clear_upload("ss_lcosaf_costs")
-                st.success("lcosaf_costs.csv saved.")
+                st.toast("lcosaf_costs.csv saved", icon=":material/check_circle:")
 
     # ════════════════════════════════════════════════════════════════════════
-    # 🚢  TRANSPORT COSTS
+    # TRANSPORT COSTS
     # ════════════════════════════════════════════════════════════════════════
     with tab_transport:
         st.subheader("Transport Cost Matrix (USD/MT)")
-        st.markdown(
+        components.methodology(
             """
-            ### Methodology
             SAF can be produced in one region and shipped to another; the transport cost matrix
             defines the cost (USD per MT) of moving SAF between every origin-destination pair.
             These costs include blending logistics, shipping, and any re-certification costs
@@ -1039,23 +1003,22 @@ def render() -> None:
             labels={"x": "Destination", "y": "Origin", "color": "USD/MT"},
             color_continuous_scale="YlOrRd",
         )
-        st.plotly_chart(fig, use_container_width=True)
+        plotly_chart(fig, use_container_width=True)
         edited = st.data_editor(
             df, use_container_width=True, num_rows="dynamic", key="tc_editor",
         )
-        if st.button("💾 Save Transport Costs", key="save_tc"):
+        if st.button("Save Transport Costs", key="save_tc", icon=":material/save:", type="primary"):
             _save(edited, "transport_costs.csv")
             _clear_upload("ss_transport_costs")
-            st.success("transport_costs.csv saved.")
+            st.toast("transport_costs.csv saved", icon=":material/check_circle:")
 
     # ════════════════════════════════════════════════════════════════════════
-    # 📋  REGULATORY PARAMETERS
+    # REGULATORY PARAMETERS
     # ════════════════════════════════════════════════════════════════════════
     with tab_regulatory:
         st.subheader("Regulatory Parameters")
-        st.markdown(
+        components.methodology(
             """
-            ### Methodology
             Regulatory parameters define the policy environment that shapes CORSIA demand and
             pricing in each region. The key levers are: `mandate_fraction` — the minimum SAF
             blend share required by law (feeds into the Case 3 Total-Market-WTP ceiling);
@@ -1080,7 +1043,7 @@ def render() -> None:
                     markers=True,
                 )
                 fig.update_layout(xaxis=dict(tickformat="d"))
-                st.plotly_chart(fig, use_container_width=True)
+                plotly_chart(fig, use_container_width=True)
         with col2:
             if "non_compliance_penalty_usd_per_mt" in eu_df.columns:
                 fig2 = px.line(
@@ -1091,24 +1054,23 @@ def render() -> None:
                     markers=True,
                 )
                 fig2.update_layout(xaxis=dict(tickformat="d"))
-                st.plotly_chart(fig2, use_container_width=True)
+                plotly_chart(fig2, use_container_width=True)
         with st.expander("Edit full table"):
             edited = st.data_editor(
                 df, use_container_width=True, num_rows="dynamic", key="reg_editor",
             )
-            if st.button("💾 Save Regulatory Params", key="save_reg"):
+            if st.button("Save Regulatory Params", key="save_reg", icon=":material/save:", type="primary"):
                 _save(edited, "regulatory_params.csv")
                 _clear_upload("ss_regulatory_params")
-                st.success("regulatory_params.csv saved.")
+                st.toast("regulatory_params.csv saved", icon=":material/check_circle:")
 
     # ════════════════════════════════════════════════════════════════════════
-    # 💰  WTP PARAMETERS
+    # WTP PARAMETERS
     # ════════════════════════════════════════════════════════════════════════
     with tab_wtp:
         st.subheader("Willingness-to-Pay Parameters")
-        st.markdown(
+        components.methodology(
             """
-            ### Methodology
             Willingness-to-pay (WTP) determines the maximum price each region is prepared to
             pay for SAF. It is computed as the maximum of three independent cases, each
             capturing a different economic rationale for purchasing SAF:
@@ -1156,7 +1118,7 @@ def render() -> None:
             hovermode="x unified",
             legend_title="Region",
         )
-        st.plotly_chart(fig_jet, use_container_width=True)
+        plotly_chart(fig_jet, use_container_width=True)
         st.caption(
             "Per-region jet fuel price over the model horizon. Case 1 WTP = "
             "jet fuel price + CORSIA credit × 3.1 tCO₂ / MT SAF."
@@ -1211,7 +1173,7 @@ def render() -> None:
             marker=dict(symbol="diamond", size=10, color="black"),
         )
         fig.update_layout(xaxis=dict(tickformat=""))
-        st.plotly_chart(fig, use_container_width=True)
+        plotly_chart(fig, use_container_width=True)
 
         st.info(
             "**Case 2 cost inputs** (CAPEX, Processing OPEX, Feedstock cost) are now "
@@ -1223,7 +1185,7 @@ def render() -> None:
             edited_wtp = st.data_editor(
                 wtp_df, use_container_width=True, num_rows="dynamic", key="wtp_editor",
             )
-            if st.button("💾 Save WTP Params", key="save_wtp"):
+            if st.button("Save WTP Params", key="save_wtp", icon=":material/save:", type="primary"):
                 _save(edited_wtp, "wtp_params.csv")
                 _clear_upload("ss_wtp_params")
-                st.success("wtp_params.csv saved.")
+                st.toast("wtp_params.csv saved", icon=":material/check_circle:")
