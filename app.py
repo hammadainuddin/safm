@@ -1,7 +1,7 @@
 """
-SAF Global Market Model — Streamlit UI
-======================================
-Launch with:  streamlit run app.py
+SARUS — Sustainable Aviation (Demand) Rationalization and Utility System model
+==============================================================================
+Streamlit UI. Launch with:  streamlit run app.py
 
 Sidebar navigation:
   Workspace — Inputs, Run Model, Results, Scenarios
@@ -21,7 +21,7 @@ if _HERE not in sys.path:
     sys.path.insert(0, _HERE)
 
 st.set_page_config(
-    page_title="SAF Market Model",
+    page_title="SARUS",
     page_icon=os.path.join(_HERE, "assets", "icon.svg"),
     layout="wide",
     initial_sidebar_state="expanded",
@@ -114,4 +114,7 @@ nav = st.navigation({
 nav.run()
 
 with st.sidebar:
-    st.caption("SAF Market Model · v1.0 · horizon 2025–2050")
+    st.caption(
+        "SARUS · v1.0 · horizon 2025–2050  \n"
+        "Sustainable Aviation Rationalization & Utility System"
+    )

@@ -1,6 +1,8 @@
-# SAF Global Market Model
+# SARUS
 
-A 26-year (2025–2050) dynamic simulation of the global Sustainable Aviation Fuel (SAF) market. The model combines bottom-up flight-demand estimation from a comprehensive 1,273-route dataset, least-cost capacity expansion, willingness-to-pay (WTP) pricing, and regional price–quantity clearing — all presented through a professional Streamlit application with sidebar navigation.
+**Sustainable Aviation (Demand) Rationalization and Utility System model**
+
+A 26-year (2025–2050) dynamic simulation of the global Sustainable Aviation Fuel (SAF) market. SARUS combines bottom-up flight-demand estimation from a comprehensive 1,273-route dataset, least-cost capacity expansion, willingness-to-pay (WTP) pricing, and regional price–quantity clearing — all presented through a professional Streamlit application with sidebar navigation. The mark is a Sarus crane in flight carrying a sustainable-fuel leaf.
 
 ---
 

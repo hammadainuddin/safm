@@ -1,14 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="280" height="48" viewBox="0 0 280 48">
-  <rect x="2" y="6" width="36" height="36" rx="9" fill="#0077B6"/>
-  <path d="M9 30 L19 20 L24 25 L32 15"
-        fill="none" stroke="#FFFFFF" stroke-width="3"
-        stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M26 15 L32 15 L32 21"
-        fill="none" stroke="#FFFFFF" stroke-width="3"
-        stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="10.5" cy="31.5" r="2" fill="#90E0EF"/>
-  <text x="48" y="31" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
-        font-size="19" font-weight="700" fill="#1A2B3C">SAF Market
-    <tspan font-weight="500" fill="#5C677D"> Model</tspan>
-  </text>
+<svg xmlns="http://www.w3.org/2000/svg" width="252" height="52" viewBox="0 0 252 52">
+  <!-- Crane mark (same as icon), scaled to a 44px square -->
+  <g transform="translate(2 4) scale(0.6875)">
+    <rect width="64" height="64" rx="14" fill="#0077B6"/>
+    <g fill="#FFFFFF" stroke="none">
+      <ellipse cx="30" cy="34" rx="11" ry="4.4" transform="rotate(-20 30 34)"/>
+      <path d="M31 31 C24 25 17 19 12 10 C21 16 30 23 36 31 Z"/>
+      <circle cx="52" cy="23" r="2.6"/>
+    </g>
+    <path d="M37 30 L51 23" fill="none" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round"/>
+    <g fill="none" stroke="#FFFFFF" stroke-width="1.7" stroke-linecap="round">
+      <path d="M54 23 L59 22"/>
+      <path d="M25 37 L15 46"/>
+      <path d="M28 38 L19 47"/>
+    </g>
+    <path d="M56 19 Q60 13 63 13 Q61 19 56 19 Z" fill="#5CC85B"/>
+  </g>
+  <!-- Wordmark -->
+  <text x="56" y="30" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="800" letter-spacing="1.5" fill="#1A2B3C">SARUS</text>
+  <text x="57" y="44" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="7.5" font-weight="600" letter-spacing="1.6" fill="#5C677D">SUSTAINABLE AVIATION MODEL</text>
 </svg>

@@ -1,6 +1,7 @@
 """
-SAF Global Market Model — 20-Year Dynamic Loop
-===============================================
+SARUS — Sustainable Aviation (Demand) Rationalization and Utility System model
+==============================================================================
+Dynamic 2025–2050 loop.
 Usage:
     python main.py                        # full 2025-2050 run, baseline scenario
     python main.py --start 2025 --end 2030 --scenario baseline
@@ -130,7 +131,7 @@ def run_model(
     years = [y for y in HORIZON_YEARS if start_year <= y <= end_year]
 
     logger.info("=" * 60)
-    logger.info("SAF Market Model — scenario='%s'  %d–%d", scenario, years[0], years[-1])
+    logger.info("SARUS — scenario='%s'  %d–%d", scenario, years[0], years[-1])
     logger.info("=" * 60)
 
     # ── Module initialisation ─────────────────────────────────────────────────
@@ -222,7 +223,7 @@ def run_model(
 
 def _parse_args(argv=None):
     p = argparse.ArgumentParser(
-        description="SAF Global Market Model — 20-year dynamic spatial equilibrium"
+        description="SARUS — Sustainable Aviation Rationalization & Utility System model"
     )
     p.add_argument("--start",    type=int, default=MODEL_START_YEAR)
     p.add_argument("--end",      type=int, default=MODEL_END_YEAR)
