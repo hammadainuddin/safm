@@ -87,6 +87,7 @@ class BottomUpDemandModule:
         route_sample_fraction: float = None,
         demand_mode: str = "corsia_schedule",
         include_domestic: bool = False,
+        efficiency_improvement_rate: float = None,
     ):
         """
         Parameters
@@ -96,6 +97,9 @@ class BottomUpDemandModule:
         include_domestic : when True, domestic routes contribute fuel burn and
                            blending-mandate SAF demand; CORSIA is international-only
                            regardless. Default False (international routes only).
+        efficiency_improvement_rate : annual fleet fuel-efficiency improvement
+                           (fraction/yr). Defaults to _EFFICIENCY_IMPROVEMENT_PA
+                           (1.5%/yr) when None.
         """
         self._routes_path   = routes_path   or os.path.join(_MOCK, "flight_routes.csv")
         self._aircraft_path = aircraft_path or os.path.join(_MOCK, "aircraft_types.csv")
@@ -103,6 +107,10 @@ class BottomUpDemandModule:
         self._mandates_path = mandates_path or os.path.join(_MOCK, "national_blending_mandates.csv")
         self._demand_mode     = demand_mode
         self._include_domestic = include_domestic
+        self._eff_rate = (
+            efficiency_improvement_rate if efficiency_improvement_rate is not None
+            else _EFFICIENCY_IMPROVEMENT_PA
+        )
 
         # Mode 2 is a comprehensive dataset — no extrapolation needed.
         if demand_mode == "route_targets":
@@ -181,7 +189,7 @@ class BottomUpDemandModule:
                 mandate_by_region[region] = float(rows["mandate_fraction"].iloc[0]) if not rows.empty else 0.0
 
         yr_offset  = year - MODEL_START_YEAR
-        eff_factor = (1 - _EFFICIENCY_IMPROVEMENT_PA) ** yr_offset
+        eff_factor = (1 - self._eff_rate) ** yr_offset
 
         fuel_by_region:        Dict[str, float] = {r: 0.0 for r in REGIONS}
         corsia_by_region:      Dict[str, float] = {r: 0.0 for r in REGIONS}
@@ -261,7 +269,7 @@ class BottomUpDemandModule:
         efficiency = self._load_aircraft_efficiency()
 
         yr_offset  = year - MODEL_START_YEAR
-        eff_factor = (1 - _EFFICIENCY_IMPROVEMENT_PA) ** yr_offset
+        eff_factor = (1 - self._eff_rate) ** yr_offset
 
         fuel_by_region:        Dict[str, float] = {r: 0.0 for r in REGIONS}
         corsia_by_region:      Dict[str, float] = {r: 0.0 for r in REGIONS}

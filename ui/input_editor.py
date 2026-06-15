@@ -79,7 +79,8 @@ def _demand_input_mtimes() -> tuple:
     rsf              = st.session_state.get("route_sample_fraction", _default_rsf)
     demand_mode      = st.session_state.get("demand_mode", "corsia_schedule")
     include_domestic = st.session_state.get("include_domestic", False)
-    return csv_mtimes + (module_mtime, rsf, demand_mode, include_domestic)
+    eff_rate         = st.session_state.get("efficiency_improvement_rate", 0.015)
+    return csv_mtimes + (module_mtime, rsf, demand_mode, include_domestic, eff_rate)
 
 
 @st.cache_data(ttl=60)
@@ -94,10 +95,12 @@ def _build_demand_projection_df(_cache_buster: tuple) -> pd.DataFrame:
     demand_mode      = st.session_state.get("demand_mode", "corsia_schedule")
     rsf              = st.session_state.get("route_sample_fraction", _default_rsf)
     include_domestic = st.session_state.get("include_domestic", False)
+    eff_rate         = st.session_state.get("efficiency_improvement_rate", 0.015)
     mod = BottomUpDemandModule(
         route_sample_fraction=float(rsf),
         demand_mode=demand_mode,
         include_domestic=bool(include_domestic),
+        efficiency_improvement_rate=float(eff_rate),
     )
     rows = []
     for yr in HORIZON_YEARS:
@@ -177,6 +180,23 @@ def render() -> None:
                 help=(
                     "When enabled, domestic routes contribute fuel burn and blending-mandate "
                     "SAF demand. CORSIA obligations are international-only regardless of this setting."
+                ),
+            )
+
+            if "efficiency_improvement_rate" not in st.session_state:
+                st.session_state.efficiency_improvement_rate = 0.015
+            st.number_input(
+                "Annual fleet efficiency improvement rate",
+                min_value=0.0,
+                max_value=0.04,
+                step=0.0025,
+                format="%.4f",
+                key="efficiency_improvement_rate",
+                help=(
+                    "Fraction by which fleet-average fuel burn per km falls each year from the "
+                    "2025 base, reflecting fleet renewal (new-generation aircraft replacing older "
+                    "frames). Fuel for year t scales by (1 − rate)^(t − 2025). Default 0.015 (1.5%/yr); "
+                    "raise for aggressive technology scenarios, lower for conservative ones."
                 ),
             )
 
@@ -412,7 +432,8 @@ def render() -> None:
 
                 The 1.5% per annum improvement rate reflects average fleet-level efficiency gains
                 from new-generation aircraft (A320neo, A350, B787) entering service and retiring
-                older frames. This rate can be adjusted here to test more aggressive or
+                older frames. This rate is adjustable via **Annual fleet efficiency improvement
+                rate** in the Demand settings panel above, to test more aggressive or
                 conservative technology scenarios. Heavier widebody aircraft (A380, B777) have
                 lower efficiency per km in absolute terms but typically serve longer routes, so
                 their contribution to total fuel burn depends heavily on route distance.

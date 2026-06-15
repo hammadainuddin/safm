@@ -372,23 +372,111 @@ def _kpi_strip(summary_df: pd.DataFrame, prices_df: pd.DataFrame,
     ])
 
 
+def _render_compare_runs() -> None:
+    """Compare-runs expander: overlay metrics across persisted DuckDB runs."""
+    from data import results_store
+
+    runs = results_store.list_runs()
+    with st.expander("Compare scenario runs", icon=":material/compare_arrows:",
+                     expanded=False):
+        if runs.empty:
+            st.caption(
+                "No stored runs yet. Runs are saved automatically each time the "
+                "model executes (Run Model page or a Scenarios batch run)."
+            )
+            return
+
+        # Build a human label per run; disambiguate duplicate scenario names.
+        labels, seen = {}, {}
+        for _, r in runs.iterrows():
+            base = str(r["scenario"])
+            seen[base] = seen.get(base, 0) + 1
+            ts = str(r["ran_at"])[5:16].replace("T", " ")
+            labels[r["run_id"]] = f"{base} · {ts}" if seen[base] == 1 or True else base
+
+        st.dataframe(
+            runs[["scenario", "ran_at", "start_year", "end_year", "demand_mode",
+                  "include_domestic", "demand_scale_factor",
+                  "efficiency_improvement_rate"]],
+            use_container_width=True, hide_index=True,
+        )
+
+        chosen = st.multiselect(
+            "Runs to compare",
+            options=list(labels.keys()),
+            format_func=lambda rid: labels[rid],
+            key="compare_run_select",
+        )
+        if len(chosen) < 1:
+            st.caption("Select one or more runs to overlay their results.")
+            return
+
+        lbl = {rid: labels[rid] for rid in chosen}
+
+        ms = results_store.load_table("market_summary", chosen)
+        cap = results_store.load_table("capacity", chosen)
+        pr = results_store.load_table("prices", chosen)
+        dem = results_store.load_table("demand", chosen)
+
+        # Volume-weighted global price per run/year (served regimes only).
+        price_g = pd.DataFrame()
+        if not pr.empty and not dem.empty:
+            served = pr[pr["pricing_regime"].isin(
+                ["wtp_priority_allocation", "partial_supply"])]
+            m = served.merge(dem, on=["run_id", "year", "region"], how="inner")
+            if not m.empty:
+                m["pv"] = m["clearing_price_usd_per_mt"] * m["demand_mt"]
+                g = m.groupby(["run_id", "year"]).agg(
+                    pv=("pv", "sum"), d=("demand_mt", "sum")).reset_index()
+                g["value"] = g["pv"] / g["d"]
+                price_g = g
+
+        def _tag(df):
+            df = df.copy()
+            df["run_label"] = df["run_id"].map(lbl)
+            return df
+
+        c1, c2 = st.columns(2)
+        with c1:
+            if not price_g.empty:
+                plotly_chart(charts.compare_runs_line(
+                    _tag(price_g), "value",
+                    "Volume-Weighted Global Price", "USD/MT"))
+            if not ms.empty:
+                plotly_chart(charts.compare_runs_line(
+                    _tag(ms), "total_demand_mt", "Total SAF Demand", "MT"))
+        with c2:
+            if not cap.empty:
+                capg = cap.groupby(["run_id", "year"])[
+                    "total_capacity_mt_yr"].sum().reset_index()
+                plotly_chart(charts.compare_runs_line(
+                    _tag(capg), "total_capacity_mt_yr",
+                    "Total Capacity Online", "MT/yr"))
+            if not ms.empty:
+                plotly_chart(charts.compare_runs_line(
+                    _tag(ms), "total_traded_mt", "Total Traded Volume", "MT"))
+
+
 def render(history: Optional[list] = None) -> None:
     if history is None:
         history = st.session_state.get("history")
 
+    components.page_header(
+        "Results",
+        "Prices, capacity build-out, and trade flows from the latest model run.",
+    )
+
+    # Cross-run comparison reads the DuckDB warehouse and works even with no
+    # in-session run (e.g. after a restart or a batch run on the Scenarios page).
+    _render_compare_runs()
+
     if not history:
-        components.page_header("Results")
         components.empty_state(
             "No run results yet. Start a model run to see prices, capacity, "
             "and trade flows here.",
             cta_page_key="run",
         )
         return
-
-    components.page_header(
-        "Results",
-        "Prices, capacity build-out, and trade flows from the latest model run.",
-    )
 
     prices_df   = _history_to_prices_df(history)
     flows_df    = _history_to_flows_df(history)

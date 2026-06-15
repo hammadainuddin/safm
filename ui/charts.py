@@ -20,6 +20,25 @@ from ui.theme import (
 theme.register()
 
 
+def compare_runs_line(df: pd.DataFrame, value_col: str, title: str,
+                      y_label: str) -> go.Figure:
+    """One line per run (run_label) over years — for cross-run comparison.
+
+    df must have columns: year, run_label, <value_col>.
+    """
+    if df.empty:
+        return go.Figure().update_layout(title=f"{title} — no data")
+    fig = px.line(
+        df.sort_values(["run_label", "year"]),
+        x="year", y=value_col, color="run_label",
+        title=title, labels={value_col: y_label, "year": "Year",
+                             "run_label": "Run"},
+        markers=True,
+    )
+    fig.update_layout(hovermode="x unified", xaxis=dict(tickformat="d"))
+    return fig
+
+
 def price_line_chart(df: pd.DataFrame) -> go.Figure:
     """Clearing price by region over time."""
     fig = px.line(

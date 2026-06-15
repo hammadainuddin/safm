@@ -47,7 +47,8 @@ if "step_table" not in st.session_state:
 # cross-page keys to persistent session state.
 for _k in (
     "demand_mode", "include_domestic", "route_sample_fraction",
-    "demand_scale_factor", "scenario", "start_year", "end_year",
+    "demand_scale_factor", "efficiency_improvement_rate",
+    "scenario", "start_year", "end_year",
 ):
     if _k in st.session_state:
         st.session_state[_k] = st.session_state[_k]

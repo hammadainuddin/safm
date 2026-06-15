@@ -18,10 +18,11 @@ logger = get_logger("reporting")
 
 
 # ---------------------------------------------------------------------------
-# Individual CSV writers
+# DataFrame builders (pure history → DataFrame; reused by CSV writers and the
+# DuckDB results store so the row logic lives in exactly one place)
 # ---------------------------------------------------------------------------
 
-def prices_to_csv(history: List[ModelState], output_dir: str) -> str:
+def prices_df(history: List[ModelState]) -> pd.DataFrame:
     rows = []
     for state in history:
         for p in state.market.prices:
@@ -37,12 +38,10 @@ def prices_to_csv(history: List[ModelState], output_dir: str) -> str:
                 "carbon_offset_usd_per_mt": p.carbon_offset_usd_per_mt,
                 "margin_usd_per_mt": p.margin_usd_per_mt,
             })
-    path = os.path.join(output_dir, "prices.csv")
-    pd.DataFrame(rows).to_csv(path, index=False)
-    return path
+    return pd.DataFrame(rows)
 
 
-def trade_flows_to_csv(history: List[ModelState], output_dir: str) -> str:
+def trade_flows_df(history: List[ModelState]) -> pd.DataFrame:
     rows = []
     for state in history:
         for f in state.market.trade_flows:
@@ -54,12 +53,10 @@ def trade_flows_to_csv(history: List[ModelState], output_dir: str) -> str:
                 "transport_cost_usd_per_mt": f.transport_cost_usd_per_mt,
                 "is_cross_region": f.origin_region != f.destination_region,
             })
-    path = os.path.join(output_dir, "trade_flows.csv")
-    pd.DataFrame(rows).to_csv(path, index=False)
-    return path
+    return pd.DataFrame(rows)
 
 
-def capacity_to_csv(history: List[ModelState], output_dir: str) -> str:
+def capacity_df(history: List[ModelState]) -> pd.DataFrame:
     rows = []
     for state in history:
         by_rp = state.capacity.capacity_by_region_pathway()
@@ -83,12 +80,10 @@ def capacity_to_csv(history: List[ModelState], output_dir: str) -> str:
                     "solver_status": state.expansion.solver_status,
                     "npv_cost_usd_m": round(state.expansion.npv_cost_usd / 1e6, 3),
                 })
-    path = os.path.join(output_dir, "capacity.csv")
-    pd.DataFrame(rows).to_csv(path, index=False)
-    return path
+    return pd.DataFrame(rows)
 
 
-def market_summary_to_csv(history: List[ModelState], output_dir: str) -> str:
+def market_summary_df(history: List[ModelState]) -> pd.DataFrame:
     rows = []
     for state in history:
         rows.append({
@@ -100,8 +95,34 @@ def market_summary_to_csv(history: List[ModelState], output_dir: str) -> str:
             "expansion_triggered": state.expansion.build_triggered,
             "expansion_npv_usd_m": round(state.expansion.npv_cost_usd / 1e6, 3),
         })
+    return pd.DataFrame(rows)
+
+
+# ---------------------------------------------------------------------------
+# Individual CSV writers
+# ---------------------------------------------------------------------------
+
+def prices_to_csv(history: List[ModelState], output_dir: str) -> str:
+    path = os.path.join(output_dir, "prices.csv")
+    prices_df(history).to_csv(path, index=False)
+    return path
+
+
+def trade_flows_to_csv(history: List[ModelState], output_dir: str) -> str:
+    path = os.path.join(output_dir, "trade_flows.csv")
+    trade_flows_df(history).to_csv(path, index=False)
+    return path
+
+
+def capacity_to_csv(history: List[ModelState], output_dir: str) -> str:
+    path = os.path.join(output_dir, "capacity.csv")
+    capacity_df(history).to_csv(path, index=False)
+    return path
+
+
+def market_summary_to_csv(history: List[ModelState], output_dir: str) -> str:
     path = os.path.join(output_dir, "market_summary.csv")
-    pd.DataFrame(rows).to_csv(path, index=False)
+    market_summary_df(history).to_csv(path, index=False)
     return path
 
 

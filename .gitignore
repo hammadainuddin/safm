@@ -10,3 +10,6 @@ venv/
 *.log
 outputs/results_*/
 scenarios/*/
+
+# Generated results warehouse
+data/results.duckdb

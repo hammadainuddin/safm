@@ -25,17 +25,30 @@ _STEPS = ("demand", "expansion", "equilibrium", "done")
 
 
 def sync_runner_state() -> None:
-    """Drain runner events into session state; store history when done."""
+    """Drain runner events into session state; store history when done.
+
+    step_table is keyed {scenario: {year: {step: "done"}}} to support batches.
+    """
     runner = st.session_state.get("runner")
     if runner is None:
         return
     for ev in runner.drain_events():
         if ev.step == "complete" and ev.year is None:
-            break
-        if ev.year is not None and ev.step != "complete":
+            break  # final batch terminator
+        scen = ev.scenario or "run"
+        if ev.step == "scenario_start":
+            st.session_state.step_log.append(f"▶ scenario '{scen}' started")
+            st.session_state.step_table.setdefault(scen, {})
+        elif ev.step == "scenario_done":
+            st.session_state.step_log.append(f"✓ scenario '{scen}' complete")
+        elif ev.step in ("error", "persist_error"):
+            st.session_state.step_log.append(f"⚠ {ev.step}: {ev.payload}")
+        elif ev.year is not None:
             desc = _STEP_DESCRIPTIONS.get(ev.step, ev.step)
-            st.session_state.step_log.append(f"{ev.year} · {ev.step} — {desc}")
-            st.session_state.step_table.setdefault(ev.year, {})[ev.step] = "done"
+            st.session_state.step_log.append(f"[{scen}] {ev.year} · {ev.step} — {desc}")
+            (st.session_state.step_table
+                .setdefault(scen, {})
+                .setdefault(ev.year, {})[ev.step]) = "done"
     if runner.done and runner.history is not None and st.session_state.history is None:
         st.session_state.history = runner.history
 
@@ -45,15 +58,16 @@ def _render_step_table() -> None:
         return
     import pandas as pd
     st.subheader("Step Progress")
-    years = sorted(st.session_state.step_table.keys())
+    multi = len(st.session_state.step_table) > 1
     rows = []
-    for y in years:
-        row = {"Year": y}
-        for s in _STEPS:
-            status = st.session_state.step_table[y].get(s)
-            row[s.capitalize()] = "Done" if status == "done" else "–"
-        rows.append(row)
-    st.dataframe(pd.DataFrame(rows).set_index("Year"), use_container_width=True)
+    for scen, years in st.session_state.step_table.items():
+        for y in sorted(years):
+            row = {"Scenario": scen, "Year": y} if multi else {"Year": y}
+            for s in _STEPS:
+                row[s.capitalize()] = "Done" if years[y].get(s) == "done" else "–"
+            rows.append(row)
+    idx = ["Scenario", "Year"] if multi else ["Year"]
+    st.dataframe(pd.DataFrame(rows).set_index(idx), use_container_width=True)
 
 
 def render() -> None:
@@ -99,34 +113,42 @@ def render() -> None:
         st.session_state.step_table = {}
         st.session_state["_run_finalized"] = False
         new_runner.start(
+            scenario=scenario,
             start_year=int(start_year),
             end_year=int(end_year),
-            scenario=scenario,
-            verbose=False,
             demand_scale_factor=float(st.session_state.get("demand_scale_factor", 1.0)),
             route_sample_fraction=float(st.session_state.get("route_sample_fraction", _DEFAULT_RSF)),
             demand_mode=st.session_state.get("demand_mode", "corsia_schedule"),
             include_domestic=bool(st.session_state.get("include_domestic", False)),
+            efficiency_improvement_rate=float(st.session_state.get("efficiency_improvement_rate", 0.015)),
         )
         st.rerun()
 
-    runner = st.session_state.runner  # refresh after potential start
+    render_progress(empty_msg="Configure a scenario above and click **Run Model** to start.")
+
+
+def render_progress(empty_msg: str = "No run in progress.") -> None:
+    """Live progress panel — shared by the Run Model and Scenarios pages.
+
+    The fragment polls only while a run is active; on completion it does one
+    app-scoped rerun to stop polling and refresh the sidebar/pages.
+    """
+    runner = st.session_state.get("runner")
     running = runner is not None and not runner.done
 
-    # ── Live progress (fragment polls only while a run is active) ───────────
     @st.fragment(run_every=0.7 if running else None)
     def _progress_panel() -> None:
         sync_runner_state()
-        r = st.session_state.runner
+        r = st.session_state.get("runner")
         if r is None:
-            components.empty_state(
-                "Configure a scenario above and click **Run Model** to start."
-            )
+            components.empty_state(empty_msg)
             return
 
+        n_scen = len(getattr(r, "scenario_names", []) or [])
         if r.done and r.error is None:
+            label = (f"{n_scen} scenarios" if n_scen > 1 else "Run")
             st.success(
-                f"Run complete in {r.elapsed_seconds:.1f}s",
+                f"{label} complete in {r.elapsed_seconds:.1f}s",
                 icon=":material/check_circle:",
             )
         elif r.done and r.error is not None:
@@ -134,9 +156,10 @@ def render() -> None:
         else:
             remaining = r.estimated_remaining()
             rem_str = f" · ~{remaining:.0f}s remaining" if remaining else ""
+            scen_str = f" · {n_scen} scenarios" if n_scen > 1 else ""
             st.progress(
                 r.progress_fraction(),
-                text=f"{r.elapsed_seconds:.0f}s elapsed{rem_str} "
+                text=f"{r.elapsed_seconds:.0f}s elapsed{rem_str}{scen_str} "
                      f"· {int(r.progress_fraction() * 100)}% complete",
             )
 

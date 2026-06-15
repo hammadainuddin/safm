@@ -96,6 +96,7 @@ def run_model(
     route_sample_fraction:  float = None,
     demand_mode:            str = "corsia_schedule",
     include_domestic:       bool = False,
+    efficiency_improvement_rate: float = None,
 ) -> List[ModelState]:
     """
     Execute the dynamic SAF market model.
@@ -137,6 +138,7 @@ def run_model(
         route_sample_fraction=route_sample_fraction,
         demand_mode=demand_mode,
         include_domestic=include_domestic,
+        efficiency_improvement_rate=efficiency_improvement_rate,
     )
     cap_expansion    = CapacityExpansionModule()
     wtp_model        = WTPModel()
