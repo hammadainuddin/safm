@@ -9,4 +9,7 @@ scipy>=1.13.0
 openpyxl>=3.1.0
 pytest>=7.4.0
 python-dotenv>=1.0.0
-duckdb>=0.10,<1.1   # <1.1 retains cp38 wheels (project runs on Python 3.8)
+# duckdb wheels: <1.1 keeps Python 3.8 support (local anaconda); >=1.1 covers
+# Python 3.9+ deploy targets (e.g. Streamlit Cloud). Same API used either way.
+duckdb>=0.10,<1.1; python_version < "3.9"
+duckdb>=1.1;       python_version >= "3.9"
