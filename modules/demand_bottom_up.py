@@ -48,9 +48,8 @@ _MOCK = os.path.join(os.path.dirname(__file__), "..", "data", "mock")
 # SAF% key years present in the routes CSV
 _SAF_KEY_YEARS = [2025, 2030, 2035, 2040, 2045, 2050]
 
-# Fraction of fuel attributed to origin (departure) airport region.
-_ORIGIN_SHARE = 0.60
-_DEST_SHARE   = 1.0 - _ORIGIN_SHARE
+# Fuel is attributed entirely to the origin (departure) airport region,
+# following the CORSIA uplift-at-departure convention.
 
 # Fuel efficiency improves 1.5% per year from 2025 base (fleet renewal).
 _EFFICIENCY_IMPROVEMENT_PA = 0.015
@@ -215,23 +214,13 @@ class BottomUpDemandModule:
                 continue
 
             if ftype in ("international", "international-fleet"):
-                if d_region == "MULTI" or ftype == "international-fleet":
-                    # Fleet aggregate: attribute 100% to origin
-                    if o_region in fuel_by_region:
-                        fuel_by_region[o_region] += fuel_mt
-                    corsia_saf = fuel_mt * corsia_frac
-                    if o_region in corsia_by_region:
-                        corsia_by_region[o_region] += corsia_saf
-                else:
-                    if o_region in fuel_by_region:
-                        fuel_by_region[o_region] += fuel_mt * _ORIGIN_SHARE
-                    if d_region in fuel_by_region:
-                        fuel_by_region[d_region] += fuel_mt * _DEST_SHARE
-                    corsia_saf = fuel_mt * corsia_frac
-                    if o_region in corsia_by_region:
-                        corsia_by_region[o_region] += corsia_saf * _ORIGIN_SHARE
-                    if d_region in corsia_by_region:
-                        corsia_by_region[d_region] += corsia_saf * _DEST_SHARE
+                # Fuel and CORSIA demand attributed 100% to the origin region
+                # (CORSIA uplift-at-departure convention).
+                if o_region in fuel_by_region:
+                    fuel_by_region[o_region] += fuel_mt
+                corsia_saf = fuel_mt * corsia_frac
+                if o_region in corsia_by_region:
+                    corsia_by_region[o_region] += corsia_saf
 
             elif ftype == "domestic":
                 if o_region in fuel_by_region:
@@ -297,23 +286,13 @@ class BottomUpDemandModule:
                 continue
 
             if ftype in ("international", "international-fleet"):
-                if d_region == "MULTI" or ftype == "international-fleet":
-                    # Fleet aggregate or indeterminate destination: 100% to origin
-                    if o_region in fuel_by_region:
-                        fuel_by_region[o_region] += fuel_mt
-                    saf_demand = fuel_mt * saf_frac
-                    if o_region in corsia_by_region:
-                        corsia_by_region[o_region] += saf_demand
-                else:
-                    if o_region in fuel_by_region:
-                        fuel_by_region[o_region] += fuel_mt * _ORIGIN_SHARE
-                    if d_region in fuel_by_region:
-                        fuel_by_region[d_region] += fuel_mt * _DEST_SHARE
-                    saf_demand = fuel_mt * saf_frac
-                    if o_region in corsia_by_region:
-                        corsia_by_region[o_region] += saf_demand * _ORIGIN_SHARE
-                    if d_region in corsia_by_region:
-                        corsia_by_region[d_region] += saf_demand * _DEST_SHARE
+                # Fuel and SAF demand attributed 100% to the origin region
+                # (CORSIA uplift-at-departure convention).
+                if o_region in fuel_by_region:
+                    fuel_by_region[o_region] += fuel_mt
+                saf_demand = fuel_mt * saf_frac
+                if o_region in corsia_by_region:
+                    corsia_by_region[o_region] += saf_demand
 
             elif ftype == "domestic":
                 if o_region in fuel_by_region:

@@ -61,7 +61,7 @@ Each simulation year runs four sequential steps:
 
 | Step | Module | What it does |
 |------|--------|-------------|
-| 1. Demand | `BottomUpDemandModule` | Derives SAF demand from 1,273 routes. Two modes: **Single CORSIA schedule** (global mandatory fraction × route-sample scaling) or **Country-specific SAF targets** (per-route SAF% interpolated across 2025/2030/2035/2040/2045/2050 key years, no sampling). International demand is attributed 60/40 origin/destination per the CORSIA uplift rule. Domestic routes are excluded by default; an Inputs-page toggle includes them (fuel burn + blending-mandate demand — CORSIA stays international-only). |
+| 1. Demand | `BottomUpDemandModule` | Derives SAF demand from 1,273 routes. Two modes: **Single CORSIA schedule** (global mandatory fraction × route-sample scaling) or **Country-specific SAF targets** (per-route SAF% interpolated across 2025/2030/2035/2040/2045/2050 key years, no sampling). International demand is attributed 100% to the origin (departure) region per the CORSIA uplift-at-departure convention. Domestic routes are excluded by default; an Inputs-page toggle includes them (fuel burn + blending-mandate demand — CORSIA stays international-only). |
 | 2. Expansion | `CapacityExpansionModule` | Assesses supply gap → solves a least-cost Pyomo LP → ranks candidate plants by LCOSAF → brings new plants online subject to feedstock availability and regional refinery co-processing caps. Per-year CAPEX/OPEX from `lcosaf_costs.csv`. |
 | 3. WTP | `WTPModel` | Computes regional WTP as `max(Case 1: jet+CORSIA, Case 2: LCOSAF@IRR, Case 3: market WTP ceiling)`. |
 | 4. Clearing | `PriceQuantityClearing` | Dispatches cheapest-CIF supply to highest-WTP regions. Domestic supply is reserved first (configurable share per region). Produces three pricing regimes per region: `wtp_priority_allocation` (fully served, price = WTP), `partial_supply` (partially served, price = WTP), `corsia_offset` (unserved, price = CORSIA credit cost). |
@@ -156,7 +156,7 @@ A global `mandatory_fraction` from `corsia_schedule.csv` is applied uniformly to
 **Mode 2: Country-Specific SAF Targets** (`route_targets`)
 Each route carries its own SAF% columns for key years 2025, 2030, 2035, 2040, 2045, and 2050. The model linearly interpolates between key years for every simulated year. `route_sample_fraction` is fixed at 1.0 (the full dataset requires no scaling).
 
-International demand is attributed 60% to the origin region and 40% to the destination region (CORSIA uplift-point rule). MULTI-destination aggregate routes are attributed 100% to the origin. **Domestic routes are excluded by default**; the *Include domestic routes* toggle on the Inputs page adds their fuel burn and blending-mandate SAF demand (CORSIA obligations remain international-only in both modes).
+International demand is attributed 100% to the origin (departure) region, following the CORSIA uplift-at-departure convention. **Domestic routes are excluded by default**; the *Include domestic routes* toggle on the Inputs page adds their fuel burn and blending-mandate SAF demand (CORSIA obligations remain international-only in both modes).
 
 ### WTP — Willingness to Pay
 

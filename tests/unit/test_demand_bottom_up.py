@@ -9,8 +9,6 @@ from config.settings import REGIONS
 from modules.demand_bottom_up import (
     BottomUpDemandModule,
     _EFFICIENCY_IMPROVEMENT_PA,
-    _ORIGIN_SHARE,
-    _DEST_SHARE,
 )
 from schemas.demand_schema import DemandMatrix
 
@@ -60,11 +58,23 @@ class TestCORSIAAttribution:
         total_corsia = sum(result_2025.corsia_saf_demand_by_region.values())
         assert total_corsia > 0, "Expected non-zero CORSIA demand in 2025"
 
-    def test_origin_gets_larger_share(self):
-        """CORSIA uplift rule: origin region gets 60%, destination 40%."""
-        assert _ORIGIN_SHARE == pytest.approx(0.60)
-        assert _DEST_SHARE   == pytest.approx(0.40)
-        assert _ORIGIN_SHARE + _DEST_SHARE == pytest.approx(1.0)
+    def test_international_fuel_attributed_to_origin_only(self, tmp_path):
+        """International fuel/CORSIA demand is attributed 100% to the origin region."""
+        routes = tmp_path / "routes.csv"
+        routes.write_text(
+            "route_id,airline_id,operator_name,segment,origin_airport,origin_country,"
+            "origin_region,dest_airport,dest_country,dest_region,flight_type,aircraft_type,"
+            "annual_flights_2025,distance_km,annual_growth_rate,"
+            "saf_pct_2025,saf_pct_2030,saf_pct_2035,saf_pct_2040,saf_pct_2045,saf_pct_2050\n"
+            "T1,XX,Test Air,Passenger,AAA,CountryA,EU,BBB,CountryB,US,international,A320neo,"
+            "1000,5000.0,0.0,0.05,0.05,0.05,0.05,0.05,0.05\n"
+        )
+        mod = BottomUpDemandModule(routes_path=str(routes), route_sample_fraction=1.0)
+        r = mod.get_intermediate_result(2025)
+        # Destination region (US) receives nothing; origin (EU) receives the full burn.
+        assert r.fuel_by_region.get("US", 0.0) == pytest.approx(0.0, abs=1e-12)
+        assert r.fuel_by_region.get("EU", 0.0) > 0.0
+        assert r.corsia_saf_demand_by_region.get("US", 0.0) == pytest.approx(0.0, abs=1e-12)
 
     def test_corsia_increases_post_2027(self, result_2025, result_2030):
         """Mandatory CORSIA fraction rises sharply after 2027 — total demand should increase."""

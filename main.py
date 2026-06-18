@@ -13,8 +13,8 @@ Each year t executes four steps in order:
 
     1. Demand     : BottomUpDemandModule estimates SAF demand from CORSIA-eligible
                     international flights + domestic blending mandates.
-                    Demand is attributed to the refuelling airport's region (60/40
-                    origin/destination split per CORSIA uplift rule).
+                    Demand is attributed 100% to the origin (departure) region per
+                    the CORSIA uplift-at-departure convention.
 
     2. Expansion  : CapacityExpansionModule assesses gap → least-cost Pyomo LP →
                     new plants → supply_meets_demand flag.
