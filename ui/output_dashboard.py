@@ -463,8 +463,22 @@ def render(history: Optional[list] = None) -> None:
 
     components.page_header(
         "Results",
-        "Prices, capacity build-out, and trade flows from the latest model run.",
+        "Prices, capacity build-out, and trade flows from the selected model run.",
     )
+
+    # When a batch produced several scenarios, let the user choose which one the
+    # KPI strip and detail tabs below should show (defaults to the last that ran).
+    histories = st.session_state.get("histories") or {}
+    if len(histories) > 1:
+        names = list(histories.keys())
+        if st.session_state.get("results_scenario") not in names:
+            st.session_state["results_scenario"] = names[-1]
+        sel = st.selectbox(
+            "Scenario", names, key="results_scenario",
+            help="Choose which scenario from the last batch run to display below. "
+                 "Use ‘Compare scenario runs’ to overlay multiple runs.",
+        )
+        history = histories.get(sel, history)
 
     # Cross-run comparison reads the DuckDB warehouse and works even with no
     # in-session run (e.g. after a restart or a batch run on the Scenarios page).

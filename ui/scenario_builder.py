@@ -322,6 +322,7 @@ def render(history: Optional[list] = None) -> None:
                 new_runner = BackgroundRunner()
                 st.session_state.runner = new_runner
                 st.session_state.history = None
+                st.session_state.histories = {}
                 st.session_state.step_log = []
                 st.session_state.step_table = {}
                 st.session_state["_run_finalized"] = False

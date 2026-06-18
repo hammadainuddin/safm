@@ -51,6 +51,12 @@ def sync_runner_state() -> None:
                 .setdefault(ev.year, {})[ev.step]) = "done"
     if runner.done and runner.history is not None and st.session_state.history is None:
         st.session_state.history = runner.history
+        # Expose every scenario's history (not just the last) so the Results
+        # page can show whichever scenario the user selects.
+        st.session_state.histories = dict(getattr(runner, "histories", {}) or {})
+        names = getattr(runner, "scenario_names", None) or []
+        # Default the Results selector to the last scenario that ran.
+        st.session_state["results_scenario"] = names[-1] if names else "run"
 
 
 def _render_step_table() -> None:
@@ -109,6 +115,7 @@ def render() -> None:
         new_runner = BackgroundRunner()
         st.session_state.runner = new_runner
         st.session_state.history = None
+        st.session_state.histories = {}
         st.session_state.step_log = []
         st.session_state.step_table = {}
         st.session_state["_run_finalized"] = False
