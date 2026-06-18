@@ -2,7 +2,7 @@
 
 **Sustainable Aviation (Demand) Rationalization and Utility System model**
 
-A 26-year (2025–2050) dynamic simulation of the global Sustainable Aviation Fuel (SAF) market. SARUS combines bottom-up flight-demand estimation from a comprehensive 1,273-route dataset, least-cost capacity expansion, willingness-to-pay (WTP) pricing, and regional price–quantity clearing — all presented through a professional Streamlit application with sidebar navigation. The mark is a Sarus crane in flight carrying a sustainable-fuel leaf.
+A 26-year (2025–2050) dynamic simulation of the global Sustainable Aviation Fuel (SAF) market. SARUS combines bottom-up flight-demand estimation from a comprehensive 1,258-route dataset, least-cost capacity expansion, willingness-to-pay (WTP) pricing, and regional price–quantity clearing — all presented through a professional Streamlit application with sidebar navigation. The mark is a Sarus crane in flight carrying a sustainable-fuel leaf.
 
 ---
 
@@ -22,7 +22,7 @@ The app is organised as five pages in a branded sidebar:
 
 All model inputs are editable directly in the browser across seven sub-tabs. Each section follows the same pattern: a collapsed **Methodology** expander, import controls (download template / upload CSV), live preview charts, and an editable table with a Save button. Saves are confirmed with a toast and immediately refresh the inline charts.
 
-- **Demand** — choose the demand mode (*Single CORSIA schedule* or *Country-specific SAF targets*), toggle whether domestic routes are included (international-only by default), and set the route sample fraction and demand scaling factor. Live projection charts show jet-fuel burn and total SAF demand by region over the full horizon, with a CORSIA-vs-mandate breakdown. Six nested sub-tabs expose the underlying datasets: Routes (1,273 routes), Airlines, Aircraft, CORSIA Schedule, Suppression, and Mandates.
+- **Demand** — choose the demand mode (*Single CORSIA schedule* or *Country-specific SAF targets*), toggle whether domestic routes are included (international-only by default), and set the route sample fraction and demand scaling factor. Live projection charts show jet-fuel burn and total SAF demand by region over the full horizon, with a CORSIA-vs-mandate breakdown. Six nested sub-tabs expose the underlying datasets: Routes (1,258 routes), Airlines, Aircraft, CORSIA Schedule, Suppression, and Mandates.
 - **Committed Capacity** — all announced and operating SAF plants, plus the refinery co-processing capacity cap and the domestic-vs-export supply share.
 - **Feedstock** — regional feedstock availability by type and year.
 - **Costs** — annual (year × region × pathway) CAPEX, processing OPEX, and feedstock cost from `lcosaf_costs.csv`. These values drive both the capacity-expansion LP and the Case 2 WTP floor.
@@ -61,7 +61,7 @@ Each simulation year runs four sequential steps:
 
 | Step | Module | What it does |
 |------|--------|-------------|
-| 1. Demand | `BottomUpDemandModule` | Derives SAF demand from 1,273 routes. Two modes: **Single CORSIA schedule** (global mandatory fraction × route-sample scaling) or **Country-specific SAF targets** (per-route SAF% interpolated across 2025/2030/2035/2040/2045/2050 key years, no sampling). International demand is attributed 100% to the origin (departure) region per the CORSIA uplift-at-departure convention. Domestic routes are excluded by default; an Inputs-page toggle includes them (fuel burn + blending-mandate demand — CORSIA stays international-only). |
+| 1. Demand | `BottomUpDemandModule` | Derives SAF demand from 1,258 routes. Two modes: **Single CORSIA schedule** (global mandatory fraction × route-sample scaling) or **Country-specific SAF targets** (per-route SAF% interpolated across 2025/2030/2035/2040/2045/2050 key years, no sampling). International demand is attributed 100% to the origin (departure) region per the CORSIA uplift-at-departure convention. Domestic routes are excluded by default; an Inputs-page toggle includes them (fuel burn + blending-mandate demand — CORSIA stays international-only). |
 | 2. Expansion | `CapacityExpansionModule` | Assesses supply gap → solves a least-cost Pyomo LP → ranks candidate plants by LCOSAF → brings new plants online subject to feedstock availability and regional refinery co-processing caps. Per-year CAPEX/OPEX from `lcosaf_costs.csv`. |
 | 3. WTP | `WTPModel` | Computes regional WTP as `max(Case 1: jet+CORSIA, Case 2: LCOSAF@IRR, Case 3: market WTP ceiling)`. |
 | 4. Clearing | `PriceQuantityClearing` | Dispatches cheapest-CIF supply to highest-WTP regions. Domestic supply is reserved first (configurable share per region). Produces three pricing regimes per region: `wtp_priority_allocation` (fully served, price = WTP), `partial_supply` (partially served, price = WTP), `corsia_offset` (unserved, price = CORSIA credit cost). |
@@ -104,7 +104,7 @@ saf_market_model/
 ├── data/
 │   ├── loaders.py                # CSV → Pydantic loaders (all I/O isolated here)
 │   ├── mock/                     # Live editable CSVs (edited via UI or directly)
-│   │   ├── flight_routes.csv         # 1,273 routes with per-route SAF% targets
+│   │   ├── flight_routes.csv         # 1,258 routes with per-route SAF% targets
 │   │   ├── aircraft_types.csv        # Aircraft types with fuel efficiency
 │   │   ├── airlines.csv              # Operators with region and CORSIA status
 │   │   ├── committed_capacity.csv    # Announced/operating plants (deterministic)

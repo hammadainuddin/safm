@@ -113,11 +113,36 @@ class TestMandateDemand:
         eu_mandate = result_2025.mandate_saf_demand_by_region.get("EU", 0.0)
         assert eu_mandate == pytest.approx(0.0, abs=1e-9)
 
-    def test_eu_mandate_positive_with_domestic(self):
-        """With domestic routes enabled, EU blending-mandate SAF demand is positive."""
-        mod = BottomUpDemandModule(include_domestic=True)
+    def test_eu_mandate_positive_with_domestic(self, tmp_path):
+        """With domestic routes enabled, an EU domestic route yields EU blending-mandate
+        SAF demand (the EU mandate in national_blending_mandates.csv applies)."""
+        routes = tmp_path / "routes.csv"
+        routes.write_text(
+            "route_id,airline_id,operator_name,segment,origin_airport,origin_country,"
+            "origin_region,dest_airport,dest_country,dest_region,flight_type,aircraft_type,"
+            "annual_flights_2025,distance_km,annual_growth_rate,"
+            "saf_pct_2025,saf_pct_2030,saf_pct_2035,saf_pct_2040,saf_pct_2045,saf_pct_2050\n"
+            "D1,XX,Test Air,Passenger,FRA,Germany,EU,MUC,Germany,EU,domestic,A320neo,"
+            "1000,500.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0\n"
+        )
+        mod = BottomUpDemandModule(routes_path=str(routes), include_domestic=True)
         r = mod.get_intermediate_result(2025)
         assert r.mandate_saf_demand_by_region.get("EU", 0.0) > 0.0
+
+    def test_excluding_domestic_drops_its_mandate_demand(self, tmp_path):
+        """The same domestic route contributes no mandate demand when excluded (default)."""
+        routes = tmp_path / "routes.csv"
+        routes.write_text(
+            "route_id,airline_id,operator_name,segment,origin_airport,origin_country,"
+            "origin_region,dest_airport,dest_country,dest_region,flight_type,aircraft_type,"
+            "annual_flights_2025,distance_km,annual_growth_rate,"
+            "saf_pct_2025,saf_pct_2030,saf_pct_2035,saf_pct_2040,saf_pct_2045,saf_pct_2050\n"
+            "D1,XX,Test Air,Passenger,FRA,Germany,EU,MUC,Germany,EU,domestic,A320neo,"
+            "1000,500.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0\n"
+        )
+        mod = BottomUpDemandModule(routes_path=str(routes), include_domestic=False)
+        r = mod.get_intermediate_result(2025)
+        assert r.mandate_saf_demand_by_region.get("EU", 0.0) == pytest.approx(0.0, abs=1e-9)
 
     def test_us_no_mandatory_blend_in_2025(self, result_2025):
         """US has no mandatory blending in 2025 (SAF Grand Challenge is voluntary)."""
