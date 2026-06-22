@@ -1,0 +1,1259 @@
+route_id,airline_id,operator_name,segment,origin_airport,origin_country,origin_region,dest_airport,dest_country,dest_region,flight_type,aircraft_type,annual_flights_2025,distance_km,annual_growth_rate,saf_pct_2025,saf_pct_2030,saf_pct_2035,saf_pct_2040,saf_pct_2045,saf_pct_2050
+R001,LH,Lufthansa,Passenger,FRA,Germany,EU,JFK,United States,US,international,A350-900,3167,6200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R002,LH,Lufthansa,Passenger,FRA,Germany,EU,PEK,China,APAC,international,A350-900,1584,9200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R003,LH,Lufthansa,Passenger,FRA,Germany,EU,DXB,UAE,MENA,international,B787-9,3167,5100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R004,LH,Lufthansa,Passenger,FRA,Germany,EU,SIN,Singapore,APAC,international,A350-900,1584,10600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R005,AF,Air France,Passenger,CDG,France,EU,JFK,United States,US,international,B787-9,1709,5830.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R006,AF,Air France,Passenger,CDG,France,EU,NRT,Japan,APAC,international,B777-300ER,854,9730.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R007,BA,British Airways,Passenger,LHR,United Kingdom,EU,JFK,United States,US,international,B777-300ER,1501,5555.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R008,BA,British Airways,Passenger,LHR,United Kingdom,EU,DXB,UAE,MENA,international,B777-300ER,1501,5490.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R009,BA,British Airways,Passenger,LHR,United Kingdom,EU,HKG,Hong Kong,APAC,international,B777-300ER,750,9630.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R010,BA,British Airways,Passenger,LHR,United Kingdom,EU,SYD,Australia,APAC,international,B787-9,375,16990.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R011,KL,KLM,Passenger,AMS,Netherlands,EU,GRU,Brazil,LATAM,international,B787-9,476,9980.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R012,IB,Iberia,Passenger,MAD,Spain,EU,GRU,Brazil,LATAM,international,A350-900,750,10000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R013,LH,Lufthansa,Passenger,FRA,Germany,EU,CDG,France,EU,international,A320neo,15835,480.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R014,BA,British Airways,Passenger,LHR,United Kingdom,EU,AMS,Netherlands,EU,international,A320neo,3751,370.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R015,UA,United Airlines,Passenger,EWR,United States,US,LHR,United Kingdom,EU,international,B777-300ER,5330,5570.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R016,UA,United Airlines,Passenger,ORD,United States,US,NRT,Japan,APAC,international,B787-9,2665,10130.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R017,AA,American Airlines,Passenger,DFW,United States,US,LHR,United Kingdom,EU,international,B777-300ER,2665,7640.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R018,AA,American Airlines,Passenger,JFK,United States,US,CDG,France,EU,international,B787-9,2665,5850.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R019,DL,Delta Air Lines,Passenger,ATL,United States,US,CDG,France,EU,international,A350-900,1333,7830.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R020,DL,Delta Air Lines,Passenger,JFK,United States,US,NRT,Japan,APAC,international,B787-9,2665,10800.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R021,UA,United Airlines,Passenger,EWR,United States,US,DXB,UAE,MENA,international,B777-300ER,1333,11560.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R022,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,LHR,United Kingdom,EU,international,A350-900,984,10840.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R023,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,JFK,United States,US,international,A350-900,492,15340.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R024,NH,ANA,Passenger,NRT,Japan,APAC,LAX,United States,US,international,B777-300ER,1473,9570.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R025,NH,ANA,Passenger,NRT,Japan,APAC,LHR,United Kingdom,EU,international,B787-9,982,9570.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R026,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,LHR,United Kingdom,EU,international,A350-900,984,9660.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R027,CA,Air China,Passenger,PEK,China,APAC,LHR,United Kingdom,EU,international,B777-300ER,182,8150.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R028,QF,Qantas,Passenger,SYD,Australia,APAC,LHR,United Kingdom,EU,international,B787-9,183,16990.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R029,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,DXB,UAE,MENA,international,A350-900,1476,6350.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R030,EK,Emirates,Passenger,DXB,UAE,MENA,LHR,United Kingdom,EU,international,A380-800,3960,5490.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R031,EK,Emirates,Passenger,DXB,UAE,MENA,JFK,United States,US,international,A380-800,2640,11060.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R032,EK,Emirates,Passenger,DXB,UAE,MENA,SYD,Australia,APAC,international,A380-800,1980,12050.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R033,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,LHR,United Kingdom,EU,international,A350-900,2861,5720.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R034,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,JFK,United States,US,international,B777-300ER,1144,11825.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R035,SV,Saudia,Passenger,RUH,Saudi Arabia,MENA,LHR,United Kingdom,EU,international,B787-9,1080,6760.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R036,SV,Saudia,Passenger,JED,Saudi Arabia,MENA,JFK,United States,US,international,B787-9,540,11430.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R037,LA,LATAM Airlines,Passenger,GRU,Brazil,LATAM,JFK,United States,US,international,B787-9,222,7710.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R038,LA,LATAM Airlines,Passenger,GRU,Brazil,LATAM,MAD,Spain,EU,international,B787-9,222,9280.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R039,LA,LATAM Airlines,Passenger,SCL,Chile,LATAM,LAX,United States,US,international,B787-9,193,8870.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R040,AV,Avianca,Passenger,BOG,Colombia,LATAM,MAD,Spain,EU,international,B787-9,921,8810.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R041,ET,Ethiopian Airlines,Passenger,ADD,Ethiopia,ROW,LHR,United Kingdom,EU,international,B787-9,2301,6130.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R042,ET,Ethiopian Airlines,Passenger,ADD,Ethiopia,ROW,JFK,United States,US,international,B787-9,1150,12350.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R043,ET,Ethiopian Airlines,Passenger,ADD,Ethiopia,ROW,PEK,China,APAC,international,B787-9,1150,6740.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R044,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,JFK,United States,US,international,B777-300ER,1490,9400.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R045,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,LHR,United Kingdom,EU,international,B787-9,2980,2860.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R046,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,DXB,UAE,MENA,international,B737-800,3725,3400.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R047,AF,Air France,Passenger,CDG,France,EU,SIN,Singapore,APAC,international,B787-9,854,10750.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R048,UA,United Airlines,Passenger,EWR,United States,US,DOH,Qatar,MENA,international,B787-9,1333,11490.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R049,DL,Delta Air Lines,Passenger,ATL,United States,US,GRU,Brazil,LATAM,international,B787-9,1333,9650.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R050,EK,Emirates,Passenger,DXB,UAE,MENA,NRT,Japan,APAC,international,A380-800,1320,7040.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R051,LA,LATAM Airlines,Passenger,GRU,Brazil,LATAM,LHR,United Kingdom,EU,international,B787-9,111,10650.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R052,FX,FedEx Express,Cargo,MEM,United States,US,CDG,France,EU,international,B777F,1333,7480.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R053,FX,FedEx Express,Cargo,MEM,United States,US,NRT,Japan,APAC,international,B777F,1333,11200.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R054,FX,FedEx Express,Cargo,MEM,United States,US,SIN,Singapore,APAC,international,B777F,664,14420.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R055,FX,FedEx Express,Cargo,MEM,United States,US,GRU,Brazil,LATAM,international,B777F,1333,9700.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R056,FX,FedEx Express,Cargo,MEM,United States,US,DXB,UAE,MENA,international,B777F,1333,12030.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R057,FX,FedEx Express,Cargo,ANC,United States,US,NRT,Japan,APAC,international,B747-8F,2665,5650.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R058,FX,FedEx Express,Cargo,IND,United States,US,CGN,Germany,EU,international,B777F,1333,7580.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R059,5X,UPS Airlines,Cargo,SDF,United States,US,CGN,Germany,EU,international,B747-8F,1333,7390.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R060,5X,UPS Airlines,Cargo,SDF,United States,US,HKG,Hong Kong,APAC,international,B747-8F,1333,14200.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R061,5X,UPS Airlines,Cargo,SDF,United States,US,NRT,Japan,APAC,international,B747-8F,1333,11100.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R062,5X,UPS Airlines,Cargo,SDF,United States,US,SIN,Singapore,APAC,international,B747-8F,664,16200.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R063,D0,DHL Aviation,Cargo,CVG,United States,US,CGN,Germany,EU,international,B777F,1333,7220.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R064,D0,DHL Aviation,Cargo,CGN,Germany,EU,PVG,China,APAC,international,B777F,1584,9060.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R065,D0,DHL Aviation,Cargo,CGN,Germany,EU,HKG,Hong Kong,APAC,international,B777F,1584,9600.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R066,D0,DHL Aviation,Cargo,CGN,Germany,EU,DXB,UAE,MENA,international,B757F,3167,4750.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R067,D0,DHL Aviation,Cargo,CGN,Germany,EU,SIN,Singapore,APAC,international,B777F,1584,10700.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R068,5Y,Atlas Air,Cargo,JFK,United States,US,HKG,Hong Kong,APAC,international,B747-8F,1333,13000.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R069,5Y,Atlas Air,Cargo,ORD,United States,US,NRT,Japan,APAC,international,B747-8F,1333,10600.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R070,CV,Cargolux,Cargo,LUX,Luxembourg,EU,ORD,United States,US,international,B747-8F,1717,7300.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R071,CV,Cargolux,Cargo,LUX,Luxembourg,EU,HKG,Hong Kong,APAC,international,B747-8F,3434,9400.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R072,CV,Cargolux,Cargo,LUX,Luxembourg,EU,NRT,Japan,APAC,international,B747-8F,1717,9500.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R073,KE,Korean Air,Cargo,ICN,South Korea,APAC,LAX,United States,US,international,B747-8F,3014,9700.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R074,CXC,Cathay Pacific Cargo,Cargo,HKG,Hong Kong,APAC,LHR,United Kingdom,EU,international,B747-8F,1320,9660.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R075,EKC,Emirates SkyCargo,Cargo,DXB,UAE,MENA,HKG,Hong Kong,APAC,international,B777F,1320,6340.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R076,EKC,Emirates SkyCargo,Cargo,DXB,UAE,MENA,JFK,United States,US,international,B777F,1320,11060.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R077,TKC,Turkish Cargo,Cargo,IST,Turkey,ROW,PVG,China,APAC,international,B777F,745,7500.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R078,K4,Kalitta Air,Cargo,YIP,United States,US,ICN,South Korea,APAC,international,B747-8F,1333,10700.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R079,K4,Kalitta Air,Cargo,YIP,United States,US,NRT,Japan,APAC,international,B747-8F,1333,10500.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R080,ABR,ASL Aviation Holdings,Cargo,DUB,Ireland,EU,CDG,France,EU,international,B737-800,539,780.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R081,ABR,ASL Aviation Holdings,Cargo,DUB,Ireland,EU,CGN,Germany,EU,international,B737-800,539,1000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R082,ABR,ASL Aviation Holdings,Cargo,DUB,Ireland,EU,LHR,United Kingdom,EU,international,B757F,808,440.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R083,LHC,Lufthansa Cargo,Cargo,FRA,Germany,EU,PVG,China,APAC,international,B777F,1584,9200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R084,LHC,Lufthansa Cargo,Cargo,FRA,Germany,EU,NRT,Japan,APAC,international,B777F,1584,9350.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R085,LHC,Lufthansa Cargo,Cargo,FRA,Germany,EU,JFK,United States,US,international,B777F,3167,6200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R086,QRC,Qatar Airways Cargo,Cargo,DOH,Qatar,MENA,FRA,Germany,EU,international,B777F,1144,4850.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R087,QRC,Qatar Airways Cargo,Cargo,DOH,Qatar,MENA,PVG,China,APAC,international,B777F,572,6300.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R088,QRC,Qatar Airways Cargo,Cargo,DOH,Qatar,MENA,JFK,United States,US,international,B777F,572,11000.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R089,NHC,ANA Cargo,Cargo,NRT,Japan,APAC,LAX,United States,US,international,B767F,491,8730.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R090,NHC,ANA Cargo,Cargo,NRT,Japan,APAC,FRA,Germany,EU,international,B767F,491,9350.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R091,SQC,SIA Cargo,Cargo,SIN,Singapore,APAC,FRA,Germany,EU,international,B777F,492,10800.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R092,SQC,SIA Cargo,Cargo,SIN,Singapore,APAC,LAX,United States,US,international,B777F,492,14100.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R093,AVC,Avianca Cargo,Cargo,BOG,Colombia,LATAM,MIA,United States,US,international,B767F,1841,2720.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R094,AVC,Avianca Cargo,Cargo,BOG,Colombia,LATAM,MAD,Spain,EU,international,B767F,921,8810.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R095,LAC,LATAM Cargo,Cargo,GRU,Brazil,LATAM,MIA,United States,US,international,B767F,222,7690.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R096,LAC,LATAM Cargo,Cargo,GRU,Brazil,LATAM,MAD,Spain,EU,international,B767F,111,9250.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R097,ETC,Ethiopian Cargo,Cargo,ADD,Ethiopia,ROW,CDG,France,EU,international,B777F,1150,5750.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R098,ETC,Ethiopian Cargo,Cargo,ADD,Ethiopia,ROW,PEK,China,APAC,international,B777F,1150,7900.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R099,KZ,Nippon Cargo Airlines,Cargo,NRT,Japan,APAC,ORD,United States,US,international,B747-8F,491,10100.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R100,KZ,Nippon Cargo Airlines,Cargo,NRT,Japan,APAC,FRA,Germany,EU,international,B747-8F,491,9350.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R101,KZ,Nippon Cargo Airlines,Cargo,NRT,Japan,APAC,JFK,United States,US,international,B747-8F,491,10800.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R102,D7,AirAsia X,Passenger,KUL,Malaysia,APAC,NRT,Japan,APAC,international,A330-300,140,5440.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R103,D7,AirAsia X,Passenger,KUL,Malaysia,APAC,SYD,Australia,APAC,international,A330-300,210,6600.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R104,D7,AirAsia X,Passenger,KUL,Malaysia,APAC,CDG,France,EU,international,A330-300,70,10700.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R105,AK,AirAsia,Passenger,KUL,Malaysia,APAC,SIN,Singapore,APAC,international,A320neo,1051,297.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R106,AK,AirAsia,Passenger,KUL,Malaysia,APAC,BKK,Thailand,APAC,international,A320neo,420,1200.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R107,AK,AirAsia,Passenger,KUL,Malaysia,APAC,CGK,Indonesia,APAC,international,A320neo,560,1260.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R108,MH,Malaysia Airlines,Passenger,KUL,Malaysia,APAC,LHR,United Kingdom,EU,international,A380-800,140,10580.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R109,MH,Malaysia Airlines,Passenger,KUL,Malaysia,APAC,NRT,Japan,APAC,international,B787-9,210,5440.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R110,MH,Malaysia Airlines,Passenger,KUL,Malaysia,APAC,CDG,France,EU,international,A380-800,70,10700.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R111,GA,Garuda Indonesia,Passenger,CGK,Indonesia,APAC,NRT,Japan,APAC,international,B777-300ER,89,5800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R112,GA,Garuda Indonesia,Passenger,CGK,Indonesia,APAC,SYD,Australia,APAC,international,B777-300ER,134,5600.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R113,GA,Garuda Indonesia,Passenger,CGK,Indonesia,APAC,LHR,United Kingdom,EU,international,B777-300ER,45,11800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R114,OD,Batik Air Malaysia,Passenger,KUL,Malaysia,APAC,CGK,Indonesia,APAC,international,B737-800,560,1260.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R115,OD,Batik Air Malaysia,Passenger,KUL,Malaysia,APAC,SIN,Singapore,APAC,international,B737-800,701,297.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R116,OD,Batik Air Malaysia,Passenger,KUL,Malaysia,APAC,DEL,India,APAC,international,B737-800,140,5900.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R117,TR,Scoot,Passenger,SIN,Singapore,APAC,NRT,Japan,APAC,international,B787-9,984,5350.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R118,TR,Scoot,Passenger,SIN,Singapore,APAC,SYD,Australia,APAC,international,B787-9,984,6300.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R119,TR,Scoot,Passenger,SIN,Singapore,APAC,DEL,India,APAC,international,A320neo,1476,5600.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R120,TG,Thai Airways,Passenger,BKK,Thailand,APAC,LHR,United Kingdom,EU,international,A380-800,649,9500.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R121,TG,Thai Airways,Passenger,BKK,Thailand,APAC,NRT,Japan,APAC,international,B777-300ER,1297,4600.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R122,TG,Thai Airways,Passenger,BKK,Thailand,APAC,FRA,Germany,EU,international,A350-900,649,9300.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R123,VN,Vietnam Airlines,Passenger,HAN,Vietnam,APAC,CDG,France,EU,international,B787-9,154,9100.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R124,VN,Vietnam Airlines,Passenger,HAN,Vietnam,APAC,NRT,Japan,APAC,international,A350-900,307,3800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R125,VN,Vietnam Airlines,Passenger,HAN,Vietnam,APAC,SYD,Australia,APAC,international,B787-9,154,8300.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R126,VJ,VietJet Air,Passenger,SGN,Vietnam,APAC,NRT,Japan,APAC,international,A321neo,307,4300.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R127,VJ,VietJet Air,Passenger,SGN,Vietnam,APAC,ICN,South Korea,APAC,international,A321neo,307,4200.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R128,VJ,VietJet Air,Passenger,SGN,Vietnam,APAC,SIN,Singapore,APAC,international,A321neo,922,1150.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R129,PR,Philippine Airlines,Passenger,MNL,Philippines,APAC,NRT,Japan,APAC,international,A350-900,1790,3000.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R130,PR,Philippine Airlines,Passenger,MNL,Philippines,APAC,LAX,United States,US,international,B777-300ER,447,11600.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R131,PR,Philippine Airlines,Passenger,MNL,Philippines,APAC,LHR,United Kingdom,EU,international,B777-300ER,447,10800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R132,KE,Korean Air,Passenger,ICN,South Korea,APAC,JFK,United States,US,international,B747-8,4520,11100.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R133,KE,Korean Air,Passenger,ICN,South Korea,APAC,LHR,United Kingdom,EU,international,A380-800,3014,8800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R134,KE,Korean Air,Passenger,ICN,South Korea,APAC,SYD,Australia,APAC,international,B787-9,3014,8300.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R135,OZ,Asiana Airlines,Passenger,ICN,South Korea,APAC,LAX,United States,US,international,B777-300ER,3014,9600.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R136,OZ,Asiana Airlines,Passenger,ICN,South Korea,APAC,FRA,Germany,EU,international,A380-800,1507,8700.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R137,OZ,Asiana Airlines,Passenger,ICN,South Korea,APAC,LHR,United Kingdom,EU,international,B777-300ER,3014,8800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R138,CI,China Airlines,Passenger,TPE,Taiwan,APAC,LAX,United States,US,international,B777-300ER,961,10800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R139,CI,China Airlines,Passenger,TPE,Taiwan,APAC,NRT,Japan,APAC,international,B737MAX8,3844,2140.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R140,CI,China Airlines,Passenger,TPE,Taiwan,APAC,FRA,Germany,EU,international,B777-300ER,480,9800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R141,BR,EVA Air,Passenger,TPE,Taiwan,APAC,JFK,United States,US,international,B777-300ER,480,12800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R142,BR,EVA Air,Passenger,TPE,Taiwan,APAC,LHR,United Kingdom,EU,international,B787-9,961,9800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R143,BR,EVA Air,Passenger,TPE,Taiwan,APAC,LAX,United States,US,international,B777-300ER,961,10800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R144,MU,China Eastern,Passenger,PVG,China,APAC,LAX,United States,US,international,B777-300ER,182,10100.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R145,MU,China Eastern,Passenger,PVG,China,APAC,LHR,United Kingdom,EU,international,A350-900,182,9200.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R146,MU,China Eastern,Passenger,PVG,China,APAC,CDG,France,EU,international,A350-900,182,9200.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R147,CZ,China Southern,Passenger,CAN,China,APAC,LAX,United States,US,international,A380-800,182,11700.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R148,CZ,China Southern,Passenger,CAN,China,APAC,SYD,Australia,APAC,international,A380-800,182,7800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R149,CZ,China Southern,Passenger,CAN,China,APAC,LHR,United Kingdom,EU,international,B787-9,91,9600.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R150,HU,Hainan Airlines,Passenger,PEK,China,APAC,LAX,United States,US,international,B787-9,182,9900.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R151,HU,Hainan Airlines,Passenger,PEK,China,APAC,JFK,United States,US,international,B787-9,91,11000.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R152,HU,Hainan Airlines,Passenger,PEK,China,APAC,LHR,United Kingdom,EU,international,B787-9,91,8100.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R153,AI,Air India,Passenger,DEL,India,APAC,LHR,United Kingdom,EU,international,B787-9,583,6700.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R154,AI,Air India,Passenger,DEL,India,APAC,JFK,United States,US,international,B777-300ER,291,11700.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R155,AI,Air India,Passenger,DEL,India,APAC,SIN,Singapore,APAC,international,B787-9,437,5600.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R156,6E,IndiGo,Passenger,DEL,India,APAC,DXB,UAE,MENA,international,A321neo,874,2200.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R157,6E,IndiGo,Passenger,DEL,India,APAC,SIN,Singapore,APAC,international,A321neo,437,5600.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R158,6E,IndiGo,Passenger,DEL,India,APAC,BKK,Thailand,APAC,international,A321neo,583,2900.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R159,NZ,Air New Zealand,Passenger,AKL,New Zealand,APAC,LAX,United States,US,international,B787-9,1847,10500.0,0.04,0.0,0.02,0.05,0.15,0.2,0.3
+R160,NZ,Air New Zealand,Passenger,AKL,New Zealand,APAC,SFO,United States,US,international,B787-9,1231,10600.0,0.04,0.0,0.02,0.05,0.15,0.2,0.3
+R161,NZ,Air New Zealand,Passenger,AKL,New Zealand,APAC,SIN,Singapore,APAC,international,B787-9,1847,8800.0,0.04,0.0,0.02,0.05,0.15,0.2,0.3
+R162,FR,Ryanair,Passenger,DUB,Ireland,EU,BCN,Spain,EU,international,B737MAX8,1616,1630.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R163,FR,Ryanair,Passenger,DUB,Ireland,EU,MAD,Spain,EU,international,B737MAX8,1077,1740.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R164,FR,Ryanair,Passenger,DUB,Ireland,EU,FCO,Italy,EU,international,B737MAX8,1077,1890.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R165,U2,easyJet,Passenger,LGW,United Kingdom,EU,BCN,Spain,EU,international,A320neo,2251,1640.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R166,U2,easyJet,Passenger,LGW,United Kingdom,EU,AMS,Netherlands,EU,international,A320neo,2251,370.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R167,U2,easyJet,Passenger,LGW,United Kingdom,EU,CDG,France,EU,international,A320neo,2251,340.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R168,W6,Wizz Air,Passenger,BUD,Hungary,EU,LHR,United Kingdom,EU,international,A320neo,209,1460.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R169,W6,Wizz Air,Passenger,BUD,Hungary,EU,CDG,France,EU,international,A320neo,157,1480.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R170,W6,Wizz Air,Passenger,BUD,Hungary,EU,DXB,UAE,MENA,international,A321neo,104,4500.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R171,DY,Norwegian Air Shuttle,Passenger,OSL,Norway,EU,LHR,United Kingdom,EU,international,B737MAX8,719,1150.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R172,DY,Norwegian Air Shuttle,Passenger,OSL,Norway,EU,CDG,France,EU,international,B737MAX8,719,1300.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R173,DY,Norwegian Air Shuttle,Passenger,OSL,Norway,EU,BCN,Spain,EU,international,B737MAX8,431,2900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R174,SK,SAS Scandinavian Airlines,Passenger,CPH,Denmark,EU,JFK,United States,US,international,A330-300,293,6600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R175,SK,SAS Scandinavian Airlines,Passenger,CPH,Denmark,EU,LHR,United Kingdom,EU,international,A320neo,1464,1000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R176,SK,SAS Scandinavian Airlines,Passenger,CPH,Denmark,EU,ORD,United States,US,international,A330-300,146,7200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R177,AY,Finnair,Passenger,HEL,Finland,EU,BKK,Thailand,APAC,international,A350-900,203,7800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R178,AY,Finnair,Passenger,HEL,Finland,EU,JFK,United States,US,international,A350-900,203,6800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R179,AY,Finnair,Passenger,HEL,Finland,EU,NRT,Japan,APAC,international,A350-900,101,8000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R180,LX,SWISS International Air Lines,Passenger,ZRH,Switzerland,EU,JFK,United States,US,international,B777-300ER,777,6300.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R181,LX,SWISS International Air Lines,Passenger,ZRH,Switzerland,EU,SIN,Singapore,APAC,international,B777-300ER,259,10200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R182,LX,SWISS International Air Lines,Passenger,ZRH,Switzerland,EU,NRT,Japan,APAC,international,B777-300ER,259,9700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R183,OS,Austrian Airlines,Passenger,VIE,Austria,EU,JFK,United States,US,international,B777-300ER,310,6900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R184,OS,Austrian Airlines,Passenger,VIE,Austria,EU,BKK,Thailand,APAC,international,B777-300ER,310,8600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R185,OS,Austrian Airlines,Passenger,VIE,Austria,EU,NRT,Japan,APAC,international,B777-300ER,155,9400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R186,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,JFK,United States,US,international,A330-300,670,5400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R187,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,GRU,Brazil,LATAM,international,A330-300,447,7600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R188,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,MIA,United States,US,international,A330-300,447,7200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R189,AZ,ITA Airways,Passenger,FCO,Italy,EU,JFK,United States,US,international,A330-300,428,6900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R190,AZ,ITA Airways,Passenger,FCO,Italy,EU,LAX,United States,US,international,A350-900,214,9800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R191,AZ,ITA Airways,Passenger,FCO,Italy,EU,NRT,Japan,APAC,international,B787-9,214,9900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R192,VS,Virgin Atlantic,Passenger,LHR,United Kingdom,EU,JFK,United States,US,international,A350-900,2251,5600.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R193,VS,Virgin Atlantic,Passenger,LHR,United Kingdom,EU,LAX,United States,US,international,A330-300,750,8700.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R194,VS,Virgin Atlantic,Passenger,LHR,United Kingdom,EU,ATL,United States,US,international,A330-300,750,7100.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R195,AC,Air Canada,Passenger,YYZ,Canada,US,LHR,United Kingdom,EU,international,B787-9,737,5700.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R196,AC,Air Canada,Passenger,YYZ,Canada,US,CDG,France,EU,international,B787-9,553,6000.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R197,AC,Air Canada,Passenger,YVR,Canada,US,NRT,Japan,APAC,international,B787-9,369,8200.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R198,B6,JetBlue Airways,Passenger,JFK,United States,US,LGW,United Kingdom,EU,international,A321neo,2665,5600.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R199,B6,JetBlue Airways,Passenger,JFK,United States,US,CDG,France,EU,international,A321neo,1333,5800.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R200,B6,JetBlue Airways,Passenger,JFK,United States,US,AMS,Netherlands,EU,international,A321neo,1333,5870.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R201,AS,Alaska Airlines,Passenger,SEA,United States,US,CUN,Mexico,LATAM,international,B737MAX8,2665,3900.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R202,AS,Alaska Airlines,Passenger,SEA,United States,US,MEX,Mexico,LATAM,international,B737MAX8,1333,3700.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R203,AS,Alaska Airlines,Passenger,SEA,United States,US,GDL,Mexico,LATAM,international,B737MAX8,1333,3200.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R204,AM,Aeromexico,Passenger,MEX,Mexico,LATAM,MAD,Spain,EU,international,B787-9,276,9000.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R205,AM,Aeromexico,Passenger,MEX,Mexico,LATAM,JFK,United States,US,international,B737MAX8,551,3400.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R206,AM,Aeromexico,Passenger,MEX,Mexico,LATAM,LAX,United States,US,international,B737MAX8,827,2600.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R207,CM,Copa Airlines,Passenger,PTY,Panama,LATAM,JFK,United States,US,international,B737MAX8,4437,3400.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R208,CM,Copa Airlines,Passenger,PTY,Panama,LATAM,MAD,Spain,EU,international,B787-9,1479,8500.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R209,CM,Copa Airlines,Passenger,PTY,Panama,LATAM,GRU,Brazil,LATAM,international,B737MAX8,2958,5800.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R210,AD,Azul Brazilian Airlines,Passenger,VCP,Brazil,LATAM,LIS,Portugal,EU,international,A330-300,222,8400.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R211,AD,Azul Brazilian Airlines,Passenger,VCP,Brazil,LATAM,FLL,United States,US,international,A321neo,333,6700.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R212,G3,GOL Airlines,Passenger,GRU,Brazil,LATAM,EZE,Argentina,LATAM,international,B737-800,444,2200.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R213,G3,GOL Airlines,Passenger,GRU,Brazil,LATAM,SCL,Chile,LATAM,international,B737-800,222,2600.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R214,G3,GOL Airlines,Passenger,GRU,Brazil,LATAM,MVD,Uruguay,LATAM,international,B737-800,222,2000.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R215,MS,EgyptAir,Passenger,CAI,Egypt,MENA,LHR,United Kingdom,EU,international,B777-300ER,3739,3500.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R216,MS,EgyptAir,Passenger,CAI,Egypt,MENA,JFK,United States,US,international,B777-300ER,1246,9000.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R217,MS,EgyptAir,Passenger,CAI,Egypt,MENA,PEK,China,APAC,international,B777-300ER,1246,7200.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R218,KQ,Kenya Airways,Passenger,NBO,Kenya,ROW,LHR,United Kingdom,EU,international,B787-9,2524,6800.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R219,KQ,Kenya Airways,Passenger,NBO,Kenya,ROW,CDG,France,EU,international,B787-9,1682,6300.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R220,KQ,Kenya Airways,Passenger,NBO,Kenya,ROW,JFK,United States,US,international,B787-9,841,11500.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R221,SA,South African Airways,Passenger,JNB,South Africa,ROW,LHR,United Kingdom,EU,international,A330-300,2129,9000.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R222,SA,South African Airways,Passenger,JNB,South Africa,ROW,IAD,United States,US,international,A330-300,1065,12600.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R223,SA,South African Airways,Passenger,JNB,South Africa,ROW,SIN,Singapore,APAC,international,A330-300,1065,9700.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R224,AT,Royal Air Maroc,Passenger,CMN,Morocco,MENA,CDG,France,EU,international,B737MAX8,8138,2100.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R225,AT,Royal Air Maroc,Passenger,CMN,Morocco,MENA,JFK,United States,US,international,B787-9,2713,5800.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R226,AT,Royal Air Maroc,Passenger,CMN,Morocco,MENA,CAI,Egypt,ROW,international,B737MAX8,2713,3700.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R227,LH,Lufthansa,Passenger,FRA,Germany,EU,ORD,United States,US,international,B787-9,3167,7400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R228,LH,Lufthansa,Passenger,FRA,Germany,EU,IAD,United States,US,international,B787-9,2377,6900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R229,LH,Lufthansa,Passenger,FRA,Germany,EU,EWR,United States,US,international,B787-9,2377,6350.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R230,LH,Lufthansa,Passenger,FRA,Germany,EU,MIA,United States,US,international,B787-9,2377,8750.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R231,LH,Lufthansa,Passenger,FRA,Germany,EU,LAX,United States,US,international,A350-900,2377,9350.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R232,LH,Lufthansa,Passenger,FRA,Germany,EU,SFO,United States,US,international,A350-900,1584,9500.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R233,LH,Lufthansa,Passenger,FRA,Germany,EU,YYZ,Canada,US,international,B787-9,2377,6400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R234,LH,Lufthansa,Passenger,FRA,Germany,EU,GRU,Brazil,LATAM,international,B787-9,2377,10000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R235,LH,Lufthansa,Passenger,FRA,Germany,EU,EZE,Argentina,LATAM,international,B787-9,1584,11900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R236,LH,Lufthansa,Passenger,FRA,Germany,EU,BOG,Colombia,LATAM,international,B787-9,1584,9600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R237,LH,Lufthansa,Passenger,FRA,Germany,EU,MEX,Mexico,LATAM,international,B787-9,1584,9600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R238,LH,Lufthansa,Passenger,FRA,Germany,EU,NRT,Japan,APAC,international,B787-9,2377,9400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R239,LH,Lufthansa,Passenger,FRA,Germany,EU,HND,Japan,APAC,international,B787-9,1584,9400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R240,LH,Lufthansa,Passenger,FRA,Germany,EU,ICN,South Korea,APAC,international,B787-9,2377,8900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R241,LH,Lufthansa,Passenger,FRA,Germany,EU,SYD,Australia,APAC,international,A350-900,1584,16500.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R242,LH,Lufthansa,Passenger,FRA,Germany,EU,MEL,Australia,APAC,international,A350-900,1584,16700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R243,LH,Lufthansa,Passenger,FRA,Germany,EU,BKK,Thailand,APAC,international,B787-9,2377,9100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R244,LH,Lufthansa,Passenger,FRA,Germany,EU,KUL,Malaysia,APAC,international,A350-900,1584,10600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R245,LH,Lufthansa,Passenger,FRA,Germany,EU,AUH,UAE,MENA,international,B787-9,1584,5000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R246,LH,Lufthansa,Passenger,FRA,Germany,EU,DOH,Qatar,MENA,international,B787-9,2377,4900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R247,LH,Lufthansa,Passenger,FRA,Germany,EU,RUH,Saudi Arabia,MENA,international,B787-9,2377,4800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R248,LH,Lufthansa,Passenger,FRA,Germany,EU,JED,Saudi Arabia,MENA,international,B787-9,1584,5200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R249,LH,Lufthansa,Passenger,FRA,Germany,EU,CAI,Egypt,MENA,international,A321neo,2377,2900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R250,LH,Lufthansa,Passenger,FRA,Germany,EU,NBO,Kenya,ROW,international,B787-9,1584,6550.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R251,LH,Lufthansa,Passenger,FRA,Germany,EU,JNB,South Africa,ROW,international,B787-9,2377,9000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R252,LH,Lufthansa,Passenger,FRA,Germany,EU,ACC,Ghana,ROW,international,A330-300,1584,5600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R253,LH,Lufthansa,Passenger,FRA,Germany,EU,LOS,Nigeria,ROW,international,A330-300,2377,5100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R254,LH,Lufthansa,Passenger,FRA,Germany,EU,ADD,Ethiopia,ROW,international,B787-9,1584,5600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R255,LH,Lufthansa,Passenger,MUC,Germany,EU,JFK,United States,US,international,B787-9,3167,8200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R256,LH,Lufthansa,Passenger,MUC,Germany,EU,ORD,United States,US,international,B787-9,2377,8000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R257,LH,Lufthansa,Passenger,MUC,Germany,EU,IAD,United States,US,international,B787-9,2377,7600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R258,LH,Lufthansa,Passenger,MUC,Germany,EU,LAX,United States,US,international,A350-900,1584,9800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R259,LH,Lufthansa,Passenger,MUC,Germany,EU,SFO,United States,US,international,A350-900,1584,9900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R260,LH,Lufthansa,Passenger,MUC,Germany,EU,YYZ,Canada,US,international,B787-9,1584,7100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R261,LH,Lufthansa,Passenger,MUC,Germany,EU,NRT,Japan,APAC,international,B787-9,2377,9300.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R262,LH,Lufthansa,Passenger,MUC,Germany,EU,ICN,South Korea,APAC,international,B787-9,1584,8750.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R263,LH,Lufthansa,Passenger,MUC,Germany,EU,SIN,Singapore,APAC,international,A350-900,1584,10100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R264,LH,Lufthansa,Passenger,MUC,Germany,EU,DXB,UAE,MENA,international,B787-9,3167,4800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R265,LH,Lufthansa,Passenger,MUC,Germany,EU,DOH,Qatar,MENA,international,B787-9,1584,4700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R266,LH,Lufthansa,Passenger,MUC,Germany,EU,AUH,UAE,MENA,international,B787-9,1584,4800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R267,LH,Lufthansa,Passenger,MUC,Germany,EU,JNB,South Africa,ROW,international,B787-9,1584,8700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R268,AF,Air France,Passenger,CDG,France,EU,ORD,United States,US,international,B787-9,1709,7340.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R269,AF,Air France,Passenger,CDG,France,EU,IAD,United States,US,international,B787-9,1283,6850.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R270,AF,Air France,Passenger,CDG,France,EU,EWR,United States,US,international,B787-9,1709,5830.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R271,AF,Air France,Passenger,CDG,France,EU,LAX,United States,US,international,A350-900,1283,9100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R272,AF,Air France,Passenger,CDG,France,EU,SFO,United States,US,international,A350-900,854,9000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R273,AF,Air France,Passenger,CDG,France,EU,MIA,United States,US,international,B787-9,1283,8750.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R274,AF,Air France,Passenger,CDG,France,EU,YYZ,Canada,US,international,B787-9,1283,6580.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R275,AF,Air France,Passenger,CDG,France,EU,YUL,Canada,US,international,B787-9,1283,5500.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R276,AF,Air France,Passenger,CDG,France,EU,ATL,United States,US,international,B787-9,1283,8060.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R277,AF,Air France,Passenger,CDG,France,EU,BOS,United States,US,international,B787-9,1283,5500.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R278,AF,Air France,Passenger,CDG,France,EU,SEA,United States,US,international,B787-9,854,8450.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R279,AF,Air France,Passenger,CDG,France,EU,GRU,Brazil,LATAM,international,B787-9,1709,9400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R280,AF,Air France,Passenger,CDG,France,EU,EZE,Argentina,LATAM,international,A350-900,854,11200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R281,AF,Air France,Passenger,CDG,France,EU,BOG,Colombia,LATAM,international,B787-9,1283,9050.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R282,AF,Air France,Passenger,CDG,France,EU,MEX,Mexico,LATAM,international,B787-9,854,9400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R283,AF,Air France,Passenger,CDG,France,EU,LIM,Peru,LATAM,international,B787-9,854,10500.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R284,AF,Air France,Passenger,CDG,France,EU,HND,Japan,APAC,international,B787-9,1709,9720.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R285,AF,Air France,Passenger,CDG,France,EU,ICN,South Korea,APAC,international,B787-9,1283,9200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R286,AF,Air France,Passenger,CDG,France,EU,SYD,Australia,APAC,international,A350-900,854,16900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R287,AF,Air France,Passenger,CDG,France,EU,BKK,Thailand,APAC,international,B787-9,1283,9600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R288,AF,Air France,Passenger,CDG,France,EU,DXB,UAE,MENA,international,B787-9,1709,5200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R289,AF,Air France,Passenger,CDG,France,EU,DOH,Qatar,MENA,international,B787-9,1283,5100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R290,AF,Air France,Passenger,CDG,France,EU,AUH,UAE,MENA,international,B787-9,854,5150.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R291,AF,Air France,Passenger,CDG,France,EU,CAI,Egypt,MENA,international,A321neo,1283,3200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R292,AF,Air France,Passenger,CDG,France,EU,RUH,Saudi Arabia,MENA,international,B787-9,1283,5300.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R293,AF,Air France,Passenger,CDG,France,EU,NBO,Kenya,ROW,international,B787-9,1283,6450.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R294,AF,Air France,Passenger,CDG,France,EU,JNB,South Africa,ROW,international,B787-9,1283,9000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R295,AF,Air France,Passenger,CDG,France,EU,ABJ,Ivory Coast,ROW,international,B787-9,1283,5000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R296,AF,Air France,Passenger,CDG,France,EU,DKR,Senegal,ROW,international,A330-300,1283,4200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R297,AF,Air France,Passenger,CDG,France,EU,CMN,Morocco,MENA,international,A321neo,1709,2140.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R298,AF,Air France,Passenger,CDG,France,EU,LOS,Nigeria,ROW,international,A330-300,1283,5250.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R299,AF,Air France,Passenger,CDG,France,EU,ADD,Ethiopia,ROW,international,B787-9,854,6200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R300,BA,British Airways,Passenger,LHR,United Kingdom,EU,ORD,United States,US,international,B787-9,1125,6350.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R301,BA,British Airways,Passenger,LHR,United Kingdom,EU,LAX,United States,US,international,A350-900,750,8760.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R302,BA,British Airways,Passenger,LHR,United Kingdom,EU,SFO,United States,US,international,B787-9,563,8630.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R303,BA,British Airways,Passenger,LHR,United Kingdom,EU,MIA,United States,US,international,B787-9,563,7120.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R304,BA,British Airways,Passenger,LHR,United Kingdom,EU,BOS,United States,US,international,B787-9,750,5240.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R305,BA,British Airways,Passenger,LHR,United Kingdom,EU,ATL,United States,US,international,B787-9,750,7120.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R306,BA,British Airways,Passenger,LHR,United Kingdom,EU,IAD,United States,US,international,B787-9,750,5770.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R307,BA,British Airways,Passenger,LHR,United Kingdom,EU,SEA,United States,US,international,B787-9,375,7830.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R308,BA,British Airways,Passenger,LHR,United Kingdom,EU,YYZ,Canada,US,international,B787-9,563,5730.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R309,BA,British Airways,Passenger,LHR,United Kingdom,EU,YVR,Canada,US,international,B787-9,375,7590.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R310,BA,British Airways,Passenger,LHR,United Kingdom,EU,YUL,Canada,US,international,B787-9,375,5250.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R311,BA,British Airways,Passenger,LHR,United Kingdom,EU,GRU,Brazil,LATAM,international,B787-9,563,9450.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R312,BA,British Airways,Passenger,LHR,United Kingdom,EU,EZE,Argentina,LATAM,international,A350-900,563,11650.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R313,BA,British Airways,Passenger,LHR,United Kingdom,EU,BOG,Colombia,LATAM,international,B787-9,375,9050.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R314,BA,British Airways,Passenger,LHR,United Kingdom,EU,MEX,Mexico,LATAM,international,B787-9,375,9020.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R315,BA,British Airways,Passenger,LHR,United Kingdom,EU,NRT,Japan,APAC,international,B787-9,750,9600.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R316,BA,British Airways,Passenger,LHR,United Kingdom,EU,ICN,South Korea,APAC,international,B787-9,563,9100.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R317,BA,British Airways,Passenger,LHR,United Kingdom,EU,SIN,Singapore,APAC,international,B787-9,750,10850.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R318,BA,British Airways,Passenger,LHR,United Kingdom,EU,BKK,Thailand,APAC,international,B787-9,563,9540.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R319,BA,British Airways,Passenger,LHR,United Kingdom,EU,KUL,Malaysia,APAC,international,B787-9,375,10580.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R320,BA,British Airways,Passenger,LHR,United Kingdom,EU,DOH,Qatar,MENA,international,B787-9,750,5200.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R321,BA,British Airways,Passenger,LHR,United Kingdom,EU,AUH,UAE,MENA,international,B787-9,750,5500.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R322,BA,British Airways,Passenger,LHR,United Kingdom,EU,RUH,Saudi Arabia,MENA,international,B787-9,563,5100.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R323,BA,British Airways,Passenger,LHR,United Kingdom,EU,JED,Saudi Arabia,MENA,international,B787-9,375,5330.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R324,BA,British Airways,Passenger,LHR,United Kingdom,EU,CAI,Egypt,MENA,international,A321neo,563,3500.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R325,BA,British Airways,Passenger,LHR,United Kingdom,EU,CMN,Morocco,MENA,international,A320neo,563,2100.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R326,BA,British Airways,Passenger,LHR,United Kingdom,EU,JNB,South Africa,ROW,international,B787-9,563,9060.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R327,BA,British Airways,Passenger,LHR,United Kingdom,EU,NBO,Kenya,ROW,international,B787-9,563,6820.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R328,BA,British Airways,Passenger,LHR,United Kingdom,EU,LOS,Nigeria,ROW,international,B787-9,563,5140.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R329,BA,British Airways,Passenger,LHR,United Kingdom,EU,ACC,Ghana,ROW,international,A330-300,375,5280.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R330,BA,British Airways,Passenger,LHR,United Kingdom,EU,CPT,South Africa,ROW,international,B787-9,375,9700.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R331,IB,Iberia,Passenger,MAD,Spain,EU,JFK,United States,US,international,A350-900,750,5760.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R332,IB,Iberia,Passenger,MAD,Spain,EU,MIA,United States,US,international,A350-900,750,7900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R333,IB,Iberia,Passenger,MAD,Spain,EU,ORD,United States,US,international,A330-300,563,8100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R334,IB,Iberia,Passenger,MAD,Spain,EU,LAX,United States,US,international,A350-900,375,9300.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R335,IB,Iberia,Passenger,MAD,Spain,EU,BOS,United States,US,international,A330-300,375,5800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R336,IB,Iberia,Passenger,MAD,Spain,EU,YYZ,Canada,US,international,A330-300,375,6500.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R337,IB,Iberia,Passenger,MAD,Spain,EU,EZE,Argentina,LATAM,international,A350-900,750,10400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R338,IB,Iberia,Passenger,MAD,Spain,EU,BOG,Colombia,LATAM,international,A350-900,750,8700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R339,IB,Iberia,Passenger,MAD,Spain,EU,MEX,Mexico,LATAM,international,A350-900,750,9200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R340,IB,Iberia,Passenger,MAD,Spain,EU,LIM,Peru,LATAM,international,A350-900,563,10300.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R341,IB,Iberia,Passenger,MAD,Spain,EU,SCL,Chile,LATAM,international,A350-900,563,11600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R342,IB,Iberia,Passenger,MAD,Spain,EU,GYE,Ecuador,LATAM,international,A330-300,375,9300.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R343,IB,Iberia,Passenger,MAD,Spain,EU,CCS,Venezuela,LATAM,international,A330-300,375,8600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R344,IB,Iberia,Passenger,MAD,Spain,EU,HAV,Cuba,LATAM,international,A330-300,375,8700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R345,IB,Iberia,Passenger,MAD,Spain,EU,DXB,UAE,MENA,international,A330-300,563,5700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R346,IB,Iberia,Passenger,MAD,Spain,EU,DOH,Qatar,MENA,international,A330-300,375,5600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R347,IB,Iberia,Passenger,MAD,Spain,EU,CAI,Egypt,MENA,international,A321neo,563,3600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R348,IB,Iberia,Passenger,MAD,Spain,EU,CMN,Morocco,MENA,international,A320neo,563,1600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R349,IB,Iberia,Passenger,MAD,Spain,EU,NRT,Japan,APAC,international,A350-900,375,12000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R350,IB,Iberia,Passenger,BCN,Spain,EU,JFK,United States,US,international,A330-300,375,6420.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R351,IB,Iberia,Passenger,BCN,Spain,EU,MIA,United States,US,international,A330-300,375,8220.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R352,IB,Iberia,Passenger,BCN,Spain,EU,EZE,Argentina,LATAM,international,A330-300,375,10600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R353,IB,Iberia,Passenger,BCN,Spain,EU,BOG,Colombia,LATAM,international,A330-300,375,8980.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R354,IB,Iberia,Passenger,BCN,Spain,EU,GRU,Brazil,LATAM,international,A330-300,375,9600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R355,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,ORD,United States,US,international,A330-300,336,7130.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R356,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,BOS,United States,US,international,A330-300,336,5400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R357,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,EWR,United States,US,international,A330-300,336,5710.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R358,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,YYZ,Canada,US,international,A330-300,223,5800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R359,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,YUL,Canada,US,international,A330-300,223,5400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R360,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,EZE,Argentina,LATAM,international,A330-300,336,10200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R361,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,SCL,Chile,LATAM,international,A330-300,223,10650.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R362,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,BOG,Colombia,LATAM,international,A330-300,336,8300.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R363,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,MEX,Mexico,LATAM,international,A330-300,223,9100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R364,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,LIM,Peru,LATAM,international,A330-300,223,9500.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R365,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,FOR,Brazil,LATAM,international,A330-300,223,6000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R366,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,REC,Brazil,LATAM,international,A330-300,336,6300.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R367,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,SSA,Brazil,LATAM,international,A330-300,223,7100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R368,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,CGH,Brazil,LATAM,international,A330-300,336,9100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R369,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,CAI,Egypt,MENA,international,A321neo,223,3900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R370,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,CMN,Morocco,MENA,international,A320neo,336,1600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R371,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,LOS,Nigeria,ROW,international,A330-300,223,5700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R372,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,DKR,Senegal,ROW,international,A321neo,336,3100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R373,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,LAD,Angola,ROW,international,A330-300,336,7100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R374,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,CPV,Cape Verde,ROW,international,A321neo,223,2600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R375,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,MPM,Mozambique,ROW,international,A330-300,223,9700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R376,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,NRT,Japan,APAC,international,A330-300,223,12300.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R377,KL,KLM,Passenger,AMS,Netherlands,EU,JFK,United States,US,international,B787-9,953,5850.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R378,KL,KLM,Passenger,AMS,Netherlands,EU,EWR,United States,US,international,B787-9,953,5880.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R379,KL,KLM,Passenger,AMS,Netherlands,EU,IAD,United States,US,international,B787-9,715,6000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R380,KL,KLM,Passenger,AMS,Netherlands,EU,ORD,United States,US,international,B787-9,715,7400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R381,KL,KLM,Passenger,AMS,Netherlands,EU,LAX,United States,US,international,B787-9,476,8870.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R382,KL,KLM,Passenger,AMS,Netherlands,EU,SFO,United States,US,international,B787-9,476,8950.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R383,KL,KLM,Passenger,AMS,Netherlands,EU,ATL,United States,US,international,B787-9,476,7610.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R384,KL,KLM,Passenger,AMS,Netherlands,EU,MIA,United States,US,international,B787-9,715,8100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R385,KL,KLM,Passenger,AMS,Netherlands,EU,BOS,United States,US,international,B787-9,715,5400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R386,KL,KLM,Passenger,AMS,Netherlands,EU,YYZ,Canada,US,international,B787-9,715,5880.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R387,KL,KLM,Passenger,AMS,Netherlands,EU,YVR,Canada,US,international,B787-9,476,8000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R388,KL,KLM,Passenger,AMS,Netherlands,EU,NRT,Japan,APAC,international,B787-9,715,9200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R389,KL,KLM,Passenger,AMS,Netherlands,EU,ICN,South Korea,APAC,international,B787-9,715,8850.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R390,KL,KLM,Passenger,AMS,Netherlands,EU,SIN,Singapore,APAC,international,B787-9,715,10700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R391,KL,KLM,Passenger,AMS,Netherlands,EU,KUL,Malaysia,APAC,international,B787-9,476,10900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R392,KL,KLM,Passenger,AMS,Netherlands,EU,SYD,Australia,APAC,international,B787-9,476,16700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R393,KL,KLM,Passenger,AMS,Netherlands,EU,BKK,Thailand,APAC,international,B787-9,715,9350.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R394,KL,KLM,Passenger,AMS,Netherlands,EU,DXB,UAE,MENA,international,B787-9,953,5100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R395,KL,KLM,Passenger,AMS,Netherlands,EU,DOH,Qatar,MENA,international,B787-9,715,5000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R396,KL,KLM,Passenger,AMS,Netherlands,EU,NBO,Kenya,ROW,international,B787-9,715,6530.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R397,KL,KLM,Passenger,AMS,Netherlands,EU,JNB,South Africa,ROW,international,B787-9,715,9100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R398,KL,KLM,Passenger,AMS,Netherlands,EU,LOS,Nigeria,ROW,international,B787-9,476,5200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R399,KL,KLM,Passenger,AMS,Netherlands,EU,ACC,Ghana,ROW,international,A330-300,476,5400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R400,KL,KLM,Passenger,AMS,Netherlands,EU,EZE,Argentina,LATAM,international,B787-9,476,12000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R401,KL,KLM,Passenger,AMS,Netherlands,EU,BOG,Colombia,LATAM,international,B787-9,476,9300.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R402,KL,KLM,Passenger,AMS,Netherlands,EU,CAI,Egypt,MENA,international,A321neo,715,3200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R403,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,ORD,United States,US,international,B787-9,1118,10130.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R404,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,IAD,United States,US,international,B787-9,1118,9750.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R405,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,EWR,United States,US,international,B787-9,1490,9380.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R406,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,LAX,United States,US,international,B787-9,745,11300.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R407,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,MIA,United States,US,international,B787-9,745,11250.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R408,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,BOS,United States,US,international,B787-9,745,9000.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R409,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,YYZ,Canada,US,international,B787-9,745,9660.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R410,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,GRU,Brazil,LATAM,international,B787-9,745,11000.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R411,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,EZE,Argentina,LATAM,international,B787-9,745,13200.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R412,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,BOG,Colombia,LATAM,international,B787-9,745,11200.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R413,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,MEX,Mexico,LATAM,international,B787-9,745,11500.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R414,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,NRT,Japan,APAC,international,B787-9,1118,9500.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R415,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,HND,Japan,APAC,international,B787-9,745,9500.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R416,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,ICN,South Korea,APAC,international,B787-9,1118,8800.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R417,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,SIN,Singapore,APAC,international,B787-9,1118,8300.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R418,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,BKK,Thailand,APAC,international,B787-9,1118,7100.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R419,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,KUL,Malaysia,APAC,international,B787-9,1118,8200.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R420,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,SYD,Australia,APAC,international,A350-900,745,15200.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R421,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,NBO,Kenya,ROW,international,B787-9,745,4850.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R422,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,JNB,South Africa,ROW,international,B787-9,1118,7100.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R423,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,LOS,Nigeria,ROW,international,A330-300,1118,4900.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R424,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,ACC,Ghana,ROW,international,A330-300,745,5200.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R425,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,ADD,Ethiopia,ROW,international,B787-9,1118,3400.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R426,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,CMN,Morocco,MENA,international,A321neo,1118,2900.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R427,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,CAI,Egypt,MENA,international,A321neo,1490,1600.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R428,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,DOH,Qatar,MENA,international,B787-9,1118,2950.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R429,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,RUH,Saudi Arabia,MENA,international,B787-9,1490,2400.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R430,TK,Turkish Airlines,Passenger,IST,Turkey,ROW,JED,Saudi Arabia,MENA,international,B787-9,1490,2600.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R431,AY,Finnair,Passenger,HEL,Finland,EU,ORD,United States,US,international,A350-900,101,8100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R432,AY,Finnair,Passenger,HEL,Finland,EU,LAX,United States,US,international,A350-900,101,9500.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R433,AY,Finnair,Passenger,HEL,Finland,EU,HND,Japan,APAC,international,A350-900,152,9100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R434,AY,Finnair,Passenger,HEL,Finland,EU,ICN,South Korea,APAC,international,A350-900,152,8500.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R435,AY,Finnair,Passenger,HEL,Finland,EU,SIN,Singapore,APAC,international,A350-900,152,9300.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R436,AY,Finnair,Passenger,HEL,Finland,EU,DXB,UAE,MENA,international,A350-900,152,4900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R437,AY,Finnair,Passenger,HEL,Finland,EU,DOH,Qatar,MENA,international,A350-900,101,4800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R438,LX,SWISS International Air Lines,Passenger,ZRH,Switzerland,EU,IAD,United States,US,international,A350-900,389,7700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R439,LX,SWISS International Air Lines,Passenger,ZRH,Switzerland,EU,ORD,United States,US,international,A350-900,389,7900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R440,LX,SWISS International Air Lines,Passenger,ZRH,Switzerland,EU,LAX,United States,US,international,A350-900,259,9650.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R441,LX,SWISS International Air Lines,Passenger,ZRH,Switzerland,EU,SFO,United States,US,international,A350-900,259,9600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R442,LX,SWISS International Air Lines,Passenger,ZRH,Switzerland,EU,YYZ,Canada,US,international,A330-300,259,6700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R443,LX,SWISS International Air Lines,Passenger,ZRH,Switzerland,EU,GRU,Brazil,LATAM,international,A350-900,389,9750.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R444,LX,SWISS International Air Lines,Passenger,ZRH,Switzerland,EU,EZE,Argentina,LATAM,international,A350-900,259,11500.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R445,LX,SWISS International Air Lines,Passenger,ZRH,Switzerland,EU,BOG,Colombia,LATAM,international,A330-300,259,9400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R446,LX,SWISS International Air Lines,Passenger,ZRH,Switzerland,EU,DXB,UAE,MENA,international,B787-9,518,5000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R447,LX,SWISS International Air Lines,Passenger,ZRH,Switzerland,EU,DOH,Qatar,MENA,international,B787-9,389,4900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R448,LX,SWISS International Air Lines,Passenger,ZRH,Switzerland,EU,JNB,South Africa,ROW,international,B787-9,259,9400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R449,LX,SWISS International Air Lines,Passenger,ZRH,Switzerland,EU,NBO,Kenya,ROW,international,B787-9,259,6600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R450,OS,Austrian Airlines,Passenger,VIE,Austria,EU,IAD,United States,US,international,A350-900,155,7400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R451,OS,Austrian Airlines,Passenger,VIE,Austria,EU,ORD,United States,US,international,A350-900,155,8100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R452,OS,Austrian Airlines,Passenger,VIE,Austria,EU,GRU,Brazil,LATAM,international,A350-900,155,10200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R453,OS,Austrian Airlines,Passenger,VIE,Austria,EU,DXB,UAE,MENA,international,B787-9,233,4600.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R454,OS,Austrian Airlines,Passenger,VIE,Austria,EU,DOH,Qatar,MENA,international,B787-9,155,4500.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R455,OS,Austrian Airlines,Passenger,VIE,Austria,EU,JNB,South Africa,ROW,international,B787-9,155,8800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R456,OS,Austrian Airlines,Passenger,VIE,Austria,EU,NBO,Kenya,ROW,international,B787-9,155,6200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R457,SK,SAS Scandinavian Airlines,Passenger,CPH,Denmark,EU,EWR,United States,US,international,A330-300,220,6720.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R458,SK,SAS Scandinavian Airlines,Passenger,CPH,Denmark,EU,LAX,United States,US,international,A330-300,146,9110.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R459,SK,SAS Scandinavian Airlines,Passenger,CPH,Denmark,EU,IAD,United States,US,international,A330-300,146,6580.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R460,SK,SAS Scandinavian Airlines,Passenger,ARN,Sweden,EU,JFK,United States,US,international,A330-300,1995,6780.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R461,SK,SAS Scandinavian Airlines,Passenger,ARN,Sweden,EU,ORD,United States,US,international,A330-300,1995,7870.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R462,SK,SAS Scandinavian Airlines,Passenger,ARN,Sweden,EU,NRT,Japan,APAC,international,A330-300,1995,8800.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R463,SK,SAS Scandinavian Airlines,Passenger,ARN,Sweden,EU,SIN,Singapore,APAC,international,A330-300,1995,10200.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R464,SK,SAS Scandinavian Airlines,Passenger,CPH,Denmark,EU,NRT,Japan,APAC,international,A330-300,220,8900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R465,SK,SAS Scandinavian Airlines,Passenger,CPH,Denmark,EU,DXB,UAE,MENA,international,A330-300,220,5200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R466,SK,SAS Scandinavian Airlines,Passenger,CPH,Denmark,EU,DOH,Qatar,MENA,international,A330-300,146,5100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R467,DY,Norwegian Air Shuttle,Passenger,OSL,Norway,EU,JFK,United States,US,international,B787-9,288,5900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R468,DY,Norwegian Air Shuttle,Passenger,OSL,Norway,EU,LAX,United States,US,international,B787-9,144,8700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R469,DY,Norwegian Air Shuttle,Passenger,OSL,Norway,EU,SFO,United States,US,international,B787-9,144,8700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R470,DY,Norwegian Air Shuttle,Passenger,OSL,Norway,EU,ORD,United States,US,international,B787-9,144,7700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R471,DY,Norwegian Air Shuttle,Passenger,OSL,Norway,EU,BOS,United States,US,international,B787-9,144,5500.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R472,DY,Norwegian Air Shuttle,Passenger,OSL,Norway,EU,MIA,United States,US,international,B787-9,144,8200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R473,AZ,ITA Airways,Passenger,FCO,Italy,EU,MIA,United States,US,international,A330-300,322,8700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R474,AZ,ITA Airways,Passenger,FCO,Italy,EU,ORD,United States,US,international,A330-300,214,8300.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R475,AZ,ITA Airways,Passenger,FCO,Italy,EU,BOS,United States,US,international,A330-300,214,6700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R476,AZ,ITA Airways,Passenger,FCO,Italy,EU,YYZ,Canada,US,international,A330-300,214,7100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R477,AZ,ITA Airways,Passenger,FCO,Italy,EU,EZE,Argentina,LATAM,international,B787-9,322,11200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R478,AZ,ITA Airways,Passenger,FCO,Italy,EU,GRU,Brazil,LATAM,international,B787-9,214,9800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R479,AZ,ITA Airways,Passenger,FCO,Italy,EU,SIN,Singapore,APAC,international,B787-9,214,10100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R480,AZ,ITA Airways,Passenger,FCO,Italy,EU,DXB,UAE,MENA,international,B787-9,322,4500.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R481,AZ,ITA Airways,Passenger,FCO,Italy,EU,DOH,Qatar,MENA,international,B787-9,214,4400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R482,AZ,ITA Airways,Passenger,FCO,Italy,EU,CAI,Egypt,MENA,international,A321neo,322,2200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R483,EI,Aer Lingus,Passenger,DUB,Ireland,EU,JFK,United States,US,international,A330-300,539,5100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R484,EI,Aer Lingus,Passenger,DUB,Ireland,EU,BOS,United States,US,international,A321neo,539,5200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R485,EI,Aer Lingus,Passenger,DUB,Ireland,EU,ORD,United States,US,international,A330-300,404,6350.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R486,EI,Aer Lingus,Passenger,DUB,Ireland,EU,LAX,United States,US,international,A330-300,269,8400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R487,EI,Aer Lingus,Passenger,DUB,Ireland,EU,SFO,United States,US,international,A321neo,404,8350.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R488,EI,Aer Lingus,Passenger,DUB,Ireland,EU,MIA,United States,US,international,A321neo,404,7300.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R489,EI,Aer Lingus,Passenger,DUB,Ireland,EU,SEA,United States,US,international,A321neo,269,7700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R490,EI,Aer Lingus,Passenger,DUB,Ireland,EU,ATL,United States,US,international,A321neo,269,6900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R491,EI,Aer Lingus,Passenger,DUB,Ireland,EU,YYZ,Canada,US,international,A330-300,269,5400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R492,VS,Virgin Atlantic,Passenger,LHR,United Kingdom,EU,BOS,United States,US,international,B787-9,563,5240.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R493,VS,Virgin Atlantic,Passenger,LHR,United Kingdom,EU,SFO,United States,US,international,B787-9,375,8700.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R494,VS,Virgin Atlantic,Passenger,LHR,United Kingdom,EU,ORD,United States,US,international,B787-9,375,6350.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R495,VS,Virgin Atlantic,Passenger,LHR,United Kingdom,EU,MIA,United States,US,international,B787-9,563,7200.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R496,VS,Virgin Atlantic,Passenger,LHR,United Kingdom,EU,SEA,United States,US,international,B787-9,375,7830.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R497,VS,Virgin Atlantic,Passenger,LHR,United Kingdom,EU,YYZ,Canada,US,international,A330-300,375,5730.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R498,VS,Virgin Atlantic,Passenger,LHR,United Kingdom,EU,NRT,Japan,APAC,international,A350-900,563,9600.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R499,VS,Virgin Atlantic,Passenger,LHR,United Kingdom,EU,SIN,Singapore,APAC,international,A350-900,563,10850.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R500,SN,Brussels Airlines,Passenger,BRU,Belgium,EU,JFK,United States,US,international,A330-300,4665,5900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R501,SN,Brussels Airlines,Passenger,BRU,Belgium,EU,IAD,United States,US,international,A330-300,3107,6100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R502,SN,Brussels Airlines,Passenger,BRU,Belgium,EU,NBO,Kenya,ROW,international,A330-300,4665,6250.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R503,SN,Brussels Airlines,Passenger,BRU,Belgium,EU,JNB,South Africa,ROW,international,A330-300,3107,8900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R504,SN,Brussels Airlines,Passenger,BRU,Belgium,EU,LOS,Nigeria,ROW,international,A330-300,3107,5100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R505,SN,Brussels Airlines,Passenger,BRU,Belgium,EU,ACC,Ghana,ROW,international,A330-300,3107,5300.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R506,SN,Brussels Airlines,Passenger,BRU,Belgium,EU,ABJ,Ivory Coast,ROW,international,A330-300,3107,5100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R507,SN,Brussels Airlines,Passenger,BRU,Belgium,EU,DKR,Senegal,ROW,international,A330-300,4665,4000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R508,SN,Brussels Airlines,Passenger,BRU,Belgium,EU,CMN,Morocco,MENA,international,A321neo,4665,1900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R509,SN,Brussels Airlines,Passenger,BRU,Belgium,EU,DXB,UAE,MENA,international,A330-300,4665,5100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R510,LO,LOT Polish Airlines,Passenger,WAW,Poland,EU,JFK,United States,US,international,B787-9,542,7700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R511,LO,LOT Polish Airlines,Passenger,WAW,Poland,EU,ORD,United States,US,international,B787-9,407,8500.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R512,LO,LOT Polish Airlines,Passenger,WAW,Poland,EU,LAX,United States,US,international,B787-9,271,9800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R513,LO,LOT Polish Airlines,Passenger,WAW,Poland,EU,YYZ,Canada,US,international,B787-9,271,8100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R514,LO,LOT Polish Airlines,Passenger,WAW,Poland,EU,NRT,Japan,APAC,international,B787-9,271,8800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R515,LO,LOT Polish Airlines,Passenger,WAW,Poland,EU,DXB,UAE,MENA,international,B787-9,407,4200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R516,A3,Aegean Airlines,Passenger,ATH,Greece,EU,JFK,United States,US,international,A330-300,3298,8950.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R517,A3,Aegean Airlines,Passenger,ATH,Greece,EU,ORD,United States,US,international,A330-300,3298,9400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R518,A3,Aegean Airlines,Passenger,ATH,Greece,EU,BOS,United States,US,international,A330-300,3298,8550.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R519,A3,Aegean Airlines,Passenger,ATH,Greece,EU,DXB,UAE,MENA,international,A321neo,4952,2800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R520,A3,Aegean Airlines,Passenger,ATH,Greece,EU,DOH,Qatar,MENA,international,A321neo,3298,2700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R521,A3,Aegean Airlines,Passenger,ATH,Greece,EU,JED,Saudi Arabia,MENA,international,A321neo,3298,2500.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R522,A3,Aegean Airlines,Passenger,ATH,Greece,EU,CAI,Egypt,MENA,international,A321neo,6597,1350.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R523,A3,Aegean Airlines,Passenger,ATH,Greece,EU,NRT,Japan,APAC,international,A330-300,3298,9400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R524,BT,airBaltic,Passenger,RIX,Latvia,EU,DXB,UAE,MENA,international,A220-300,120,4400.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R525,BT,airBaltic,Passenger,RIX,Latvia,EU,DOH,Qatar,MENA,international,A220-300,80,4300.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R526,BT,airBaltic,Passenger,RIX,Latvia,EU,AUH,UAE,MENA,international,A220-300,80,4400.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R527,BT,airBaltic,Passenger,RIX,Latvia,EU,CMN,Morocco,MENA,international,A220-300,80,3700.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R528,FR,Ryanair,Passenger,STN,United Kingdom,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,390553,2200.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R529,FR,Ryanair,Passenger,CIA,Italy,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,164336,2000.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R530,FR,Ryanair,Passenger,BGY,Italy,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,152598,1950.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R531,FR,Ryanair,Passenger,MAD,Spain,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,184885,1800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R532,FR,Ryanair,Passenger,DUB,Ireland,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,88555,1950.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R533,FR,Ryanair,Passenger,WRO,Poland,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,44584,2100.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R534,U2,easyJet,Passenger,LGW,United Kingdom,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,267221,2100.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R535,U2,easyJet,Passenger,LTN,United Kingdom,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,184999,2000.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R536,U2,easyJet,Passenger,CDG,France,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,351163,2000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R537,U2,easyJet,Passenger,AMS,Netherlands,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,156613,2100.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R538,U2,easyJet,Passenger,MXP,Italy,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,58692,2000.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R539,W6,Wizz Air,Passenger,BUD,Hungary,EU,MULTI,MULTI,MULTI,international-fleet,A321neo,28602,2400.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R540,W6,Wizz Air,Passenger,WAW,Poland,EU,MULTI,MULTI,MULTI,international-fleet,A321neo,37153,2200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R541,W6,Wizz Air,Passenger,LTN,United Kingdom,EU,MULTI,MULTI,MULTI,international-fleet,A321neo,102777,2400.0,0.025,0.02,0.1,0.15,0.3,0.4,0.5
+R542,W6,Wizz Air,Passenger,VIE,Austria,EU,MULTI,MULTI,MULTI,international-fleet,A321neo,34000,2300.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R543,W6,Wizz Air,Passenger,ABU,UAE,MENA,MULTI,MULTI,MULTI,international-fleet,A321neo,162729,3800.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R544,VY,Vueling Airlines,Passenger,BCN,Spain,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,184885,1800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R545,VY,Vueling Airlines,Passenger,MAD,Spain,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,92443,1900.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R546,VY,Vueling Airlines,Passenger,FCO,Italy,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,35215,1700.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R547,UA,United Airlines,Passenger,EWR,United States,US,CDG,France,EU,international,B767-300ER,2001,5840.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R548,UA,United Airlines,Passenger,EWR,United States,US,FRA,Germany,EU,international,B767-300ER,2001,6370.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R549,UA,United Airlines,Passenger,EWR,United States,US,AMS,Netherlands,EU,international,B767-300ER,1333,5870.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R550,UA,United Airlines,Passenger,EWR,United States,US,MAD,Spain,EU,international,B767-300ER,1333,5770.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R551,UA,United Airlines,Passenger,EWR,United States,US,DUB,Ireland,EU,international,B767-300ER,1333,5120.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R552,UA,United Airlines,Passenger,EWR,United States,US,LIS,Portugal,EU,international,B767-300ER,949,5440.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R553,UA,United Airlines,Passenger,EWR,United States,US,GRU,Brazil,LATAM,international,B767-300ER,1333,7700.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R554,UA,United Airlines,Passenger,EWR,United States,US,EZE,Argentina,LATAM,international,B787-9,949,8500.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R555,UA,United Airlines,Passenger,EWR,United States,US,TLV,Israel,MENA,international,B787-9,1333,9230.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R556,UA,United Airlines,Passenger,ORD,United States,US,LHR,United Kingdom,EU,international,B767-300ER,2001,6360.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R557,UA,United Airlines,Passenger,ORD,United States,US,FRA,Germany,EU,international,B767-300ER,1333,7080.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R558,UA,United Airlines,Passenger,ORD,United States,US,CDG,France,EU,international,B767-300ER,1333,6640.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R559,UA,United Airlines,Passenger,ORD,United States,US,PEK,China,APAC,international,B787-9,1333,10360.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R560,UA,United Airlines,Passenger,ORD,United States,US,GRU,Brazil,LATAM,international,B787-9,949,9380.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R561,UA,United Airlines,Passenger,IAH,United States,US,LHR,United Kingdom,EU,international,B787-9,1333,7820.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R562,UA,United Airlines,Passenger,IAH,United States,US,FRA,Germany,EU,international,B787-9,949,8600.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R563,UA,United Airlines,Passenger,IAH,United States,US,GRU,Brazil,LATAM,international,B767-300ER,2001,8060.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R564,UA,United Airlines,Passenger,IAH,United States,US,EZE,Argentina,LATAM,international,B767-300ER,1333,8870.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R565,UA,United Airlines,Passenger,IAH,United States,US,BOG,Colombia,LATAM,international,B737-900ER,2001,2860.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R566,UA,United Airlines,Passenger,IAH,United States,US,MEX,Mexico,LATAM,international,B737-900ER,2665,1500.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R567,UA,United Airlines,Passenger,IAH,United States,US,PTY,Panama,LATAM,international,B737-900ER,1333,2260.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R568,UA,United Airlines,Passenger,IAH,United States,US,SCL,Chile,LATAM,international,B767-300ER,1333,7150.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R569,UA,United Airlines,Passenger,IAH,United States,US,LIM,Peru,LATAM,international,B767-300ER,1333,5560.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R570,UA,United Airlines,Passenger,SFO,United States,US,NRT,Japan,APAC,international,B787-9,2665,8270.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R571,UA,United Airlines,Passenger,SFO,United States,US,ICN,South Korea,APAC,international,B787-9,2001,9200.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R572,UA,United Airlines,Passenger,SFO,United States,US,SYD,Australia,APAC,international,B787-9,1333,12070.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R573,UA,United Airlines,Passenger,SFO,United States,US,SIN,Singapore,APAC,international,B787-9,1333,14130.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R574,UA,United Airlines,Passenger,SFO,United States,US,LHR,United Kingdom,EU,international,B787-9,1333,8630.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R575,UA,United Airlines,Passenger,SFO,United States,US,FRA,Germany,EU,international,B787-9,1333,9390.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R576,UA,United Airlines,Passenger,SFO,United States,US,CDG,France,EU,international,B787-9,949,9090.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R577,UA,United Airlines,Passenger,SFO,United States,US,MEX,Mexico,LATAM,international,B737-900ER,2665,3130.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R578,UA,United Airlines,Passenger,LAX,United States,US,NRT,Japan,APAC,international,B777-200ER,2665,8740.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R579,UA,United Airlines,Passenger,LAX,United States,US,SYD,Australia,APAC,international,B787-9,1333,12080.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R580,UA,United Airlines,Passenger,LAX,United States,US,ICN,South Korea,APAC,international,B787-9,1333,9620.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R581,UA,United Airlines,Passenger,LAX,United States,US,LHR,United Kingdom,EU,international,B787-9,1333,8770.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R582,UA,United Airlines,Passenger,LAX,United States,US,MEX,Mexico,LATAM,international,B737-900ER,2665,2560.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R583,UA,United Airlines,Passenger,LAX,United States,US,GRU,Brazil,LATAM,international,B787-9,949,10090.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R584,AA,American Airlines,Passenger,JFK,United States,US,LHR,United Kingdom,EU,international,B777-300ER,2665,5570.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R585,AA,American Airlines,Passenger,JFK,United States,US,MAD,Spain,EU,international,B777-300ER,2001,5770.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R586,AA,American Airlines,Passenger,JFK,United States,US,BCN,Spain,EU,international,B767-300ER,1333,6170.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R587,AA,American Airlines,Passenger,JFK,United States,US,FCO,Italy,EU,international,B767-300ER,1333,6890.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R588,AA,American Airlines,Passenger,JFK,United States,US,MXP,Italy,EU,international,B767-300ER,949,6740.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R589,AA,American Airlines,Passenger,JFK,United States,US,GRU,Brazil,LATAM,international,B777-300ER,1333,7700.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R590,AA,American Airlines,Passenger,JFK,United States,US,EZE,Argentina,LATAM,international,B767-300ER,949,8500.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R591,AA,American Airlines,Passenger,JFK,United States,US,LIM,Peru,LATAM,international,B767-300ER,949,5770.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R592,AA,American Airlines,Passenger,MIA,United States,US,LHR,United Kingdom,EU,international,B777-300ER,2665,7130.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R593,AA,American Airlines,Passenger,MIA,United States,US,MAD,Spain,EU,international,B777-300ER,2001,7660.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R594,AA,American Airlines,Passenger,MIA,United States,US,GRU,Brazil,LATAM,international,B777-300ER,2665,6950.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R595,AA,American Airlines,Passenger,MIA,United States,US,BOG,Colombia,LATAM,international,B737 MAX 8,2665,2690.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R596,AA,American Airlines,Passenger,MIA,United States,US,EZE,Argentina,LATAM,international,B767-300ER,2001,8540.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R597,AA,American Airlines,Passenger,MIA,United States,US,LIM,Peru,LATAM,international,B767-300ER,2001,5260.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R598,AA,American Airlines,Passenger,MIA,United States,US,MEX,Mexico,LATAM,international,B737 MAX 8,2665,2090.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R599,AA,American Airlines,Passenger,MIA,United States,US,SCL,Chile,LATAM,international,B767-300ER,1333,7260.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R600,AA,American Airlines,Passenger,MIA,United States,US,PTY,Panama,LATAM,international,B737 MAX 8,2001,2160.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R601,AA,American Airlines,Passenger,MIA,United States,US,GUA,Guatemala,LATAM,international,B737 MAX 8,1333,2490.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R602,AA,American Airlines,Passenger,DFW,United States,US,CDG,France,EU,international,B777-200ER,1333,9220.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R603,AA,American Airlines,Passenger,DFW,United States,US,FRA,Germany,EU,international,B777-300ER,1333,9550.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R604,AA,American Airlines,Passenger,DFW,United States,US,MAD,Spain,EU,international,B777-300ER,1333,9270.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R605,AA,American Airlines,Passenger,DFW,United States,US,MEX,Mexico,LATAM,international,B737 MAX 8,2665,1630.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R606,AA,American Airlines,Passenger,DFW,United States,US,BOG,Colombia,LATAM,international,B737 MAX 8,2001,3230.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R607,AA,American Airlines,Passenger,DFW,United States,US,SCL,Chile,LATAM,international,B767-300ER,949,8220.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R608,AA,American Airlines,Passenger,DFW,United States,US,GRU,Brazil,LATAM,international,B777-200ER,949,9360.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R609,AA,American Airlines,Passenger,LAX,United States,US,NRT,Japan,APAC,international,B777-300ER,2665,8740.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R610,AA,American Airlines,Passenger,LAX,United States,US,LHR,United Kingdom,EU,international,B777-300ER,2001,8770.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R611,AA,American Airlines,Passenger,LAX,United States,US,SYD,Australia,APAC,international,B787-9,1333,12080.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R612,AA,American Airlines,Passenger,LAX,United States,US,ICN,South Korea,APAC,international,B787-9,1333,9620.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R613,AA,American Airlines,Passenger,LAX,United States,US,HKG,Hong Kong,APAC,international,B777-300ER,1333,11640.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R614,AA,American Airlines,Passenger,LAX,United States,US,MEX,Mexico,LATAM,international,B737 MAX 8,2665,2560.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R615,AA,American Airlines,Passenger,PHL,United States,US,LHR,United Kingdom,EU,international,B777-200ER,2001,5700.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R616,AA,American Airlines,Passenger,PHL,United States,US,CDG,France,EU,international,B767-300ER,1333,5930.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R617,AA,American Airlines,Passenger,PHL,United States,US,FCO,Italy,EU,international,B767-300ER,949,7080.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R618,AA,American Airlines,Passenger,PHL,United States,US,MAD,Spain,EU,international,B767-300ER,949,5940.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R619,DL,Delta Air Lines,Passenger,JFK,United States,US,LHR,United Kingdom,EU,international,A330-900neo,2665,5570.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R620,DL,Delta Air Lines,Passenger,JFK,United States,US,CDG,France,EU,international,A330-900neo,2665,5840.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R621,DL,Delta Air Lines,Passenger,JFK,United States,US,AMS,Netherlands,EU,international,A330-300,2001,5870.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R622,DL,Delta Air Lines,Passenger,JFK,United States,US,FCO,Italy,EU,international,A330-300,1333,6890.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R623,DL,Delta Air Lines,Passenger,JFK,United States,US,ATH,Greece,EU,international,A330-300,1333,9120.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R624,DL,Delta Air Lines,Passenger,JFK,United States,US,GRU,Brazil,LATAM,international,A330-300,1333,7700.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R625,DL,Delta Air Lines,Passenger,ATL,United States,US,LHR,United Kingdom,EU,international,A350-900,2665,7130.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R626,DL,Delta Air Lines,Passenger,ATL,United States,US,AMS,Netherlands,EU,international,A330-300,1333,7780.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R627,DL,Delta Air Lines,Passenger,ATL,United States,US,FRA,Germany,EU,international,A330-300,1333,8590.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R628,DL,Delta Air Lines,Passenger,ATL,United States,US,MEX,Mexico,LATAM,international,B737-900ER,2665,2150.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R629,DL,Delta Air Lines,Passenger,ATL,United States,US,BOG,Colombia,LATAM,international,B737-900ER,2001,2850.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R630,DL,Delta Air Lines,Passenger,ATL,United States,US,SCL,Chile,LATAM,international,A330-300,949,7560.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R631,DL,Delta Air Lines,Passenger,LAX,United States,US,NRT,Japan,APAC,international,A350-900,2665,8740.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R632,DL,Delta Air Lines,Passenger,LAX,United States,US,ICN,South Korea,APAC,international,A350-900,2001,9620.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R633,DL,Delta Air Lines,Passenger,LAX,United States,US,SYD,Australia,APAC,international,A350-900,1333,12080.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R634,DL,Delta Air Lines,Passenger,LAX,United States,US,SIN,Singapore,APAC,international,A350-900,1333,14130.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R635,DL,Delta Air Lines,Passenger,LAX,United States,US,MEX,Mexico,LATAM,international,B737-900ER,2665,2560.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R636,DL,Delta Air Lines,Passenger,SEA,United States,US,NRT,Japan,APAC,international,A350-900,2001,8280.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R637,DL,Delta Air Lines,Passenger,SEA,United States,US,ICN,South Korea,APAC,international,A350-900,1333,9170.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R638,DL,Delta Air Lines,Passenger,SEA,United States,US,LHR,United Kingdom,EU,international,A330-300,949,8130.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R639,DL,Delta Air Lines,Passenger,SEA,United States,US,CDG,France,EU,international,A330-300,949,8920.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R640,DL,Delta Air Lines,Passenger,BOS,United States,US,LHR,United Kingdom,EU,international,A330-300,2001,5270.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R641,DL,Delta Air Lines,Passenger,BOS,United States,US,CDG,France,EU,international,A330-300,1333,5570.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R642,DL,Delta Air Lines,Passenger,BOS,United States,US,AMS,Netherlands,EU,international,A330-300,949,5580.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R643,DL,Delta Air Lines,Passenger,BOS,United States,US,LIS,Portugal,EU,international,A330-300,949,5420.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R644,DL,Delta Air Lines,Passenger,BOS,United States,US,DUB,Ireland,EU,international,A330-300,949,4850.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R645,AC,Air Canada,Passenger,YYZ,Canada,US,FRA,Germany,EU,international,B787-9,277,6540.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R646,AC,Air Canada,Passenger,YYZ,Canada,US,AMS,Netherlands,EU,international,B787-9,184,6000.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R647,AC,Air Canada,Passenger,YYZ,Canada,US,DUB,Ireland,EU,international,B787-9,184,5290.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R648,AC,Air Canada,Passenger,YYZ,Canada,US,ZRH,Switzerland,EU,international,B787-9,131,6330.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R649,AC,Air Canada,Passenger,YYZ,Canada,US,FCO,Italy,EU,international,B787-9,131,7060.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R650,AC,Air Canada,Passenger,YYZ,Canada,US,NRT,Japan,APAC,international,B787-9,277,10390.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R651,AC,Air Canada,Passenger,YYZ,Canada,US,PEK,China,APAC,international,B787-9,184,10590.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R652,AC,Air Canada,Passenger,YYZ,Canada,US,HKG,Hong Kong,APAC,international,B787-9,131,12910.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R653,AC,Air Canada,Passenger,YYZ,Canada,US,GRU,Brazil,LATAM,international,B787-9,131,9080.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R654,AC,Air Canada,Passenger,YYZ,Canada,US,MEX,Mexico,LATAM,international,B737 MAX 8,184,3240.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R655,AC,Air Canada,Passenger,YVR,Canada,US,SYD,Australia,APAC,international,B787-9,131,12560.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R656,AC,Air Canada,Passenger,YVR,Canada,US,ICN,South Korea,APAC,international,B787-9,184,8440.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R657,AC,Air Canada,Passenger,YVR,Canada,US,PVG,China,APAC,international,B787-9,131,9280.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R658,AC,Air Canada,Passenger,YVR,Canada,US,LHR,United Kingdom,EU,international,B787-9,131,7530.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R659,AC,Air Canada,Passenger,YUL,Canada,US,LHR,United Kingdom,EU,international,A330-300,277,5220.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R660,AC,Air Canada,Passenger,YUL,Canada,US,CDG,France,EU,international,A330-300,277,5530.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R661,AC,Air Canada,Passenger,YUL,Canada,US,FRA,Germany,EU,international,A330-300,131,6080.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R662,AC,Air Canada,Passenger,YUL,Canada,US,LIS,Portugal,EU,international,A330-300,131,5660.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R663,WS,WestJet,Passenger,YYZ,Canada,US,LGW,United Kingdom,EU,international,B767-300ER,184,5720.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R664,WS,WestJet,Passenger,YYZ,Canada,US,DUB,Ireland,EU,international,B767-300ER,131,5290.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R665,WS,WestJet,Passenger,YVR,Canada,US,LHR,United Kingdom,EU,international,B767-300ER,131,7530.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R666,WS,WestJet,Passenger,YYC,Canada,US,LGW,United Kingdom,EU,international,B767-300ER,131,7260.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R667,B6,JetBlue Airways,Passenger,JFK,United States,US,LHR,United Kingdom,EU,international,A321XLR,2001,5570.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R668,B6,JetBlue Airways,Passenger,BOS,United States,US,LHR,United Kingdom,EU,international,A321XLR,1333,5270.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R669,B6,JetBlue Airways,Passenger,BOS,United States,US,LGW,United Kingdom,EU,international,A321XLR,949,5270.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R670,B6,JetBlue Airways,Passenger,FLL,United States,US,LGW,United Kingdom,EU,international,A321XLR,949,7190.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R671,AS,Alaska Airlines,Passenger,SEA,United States,US,LHR,United Kingdom,EU,international,B787-9,949,8130.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R672,AS,Alaska Airlines,Passenger,SEA,United States,US,NRT,Japan,APAC,international,B787-9,1333,8280.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R673,AS,Alaska Airlines,Passenger,SEA,United States,US,CDG,France,EU,international,B787-9,949,8920.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R674,AS,Alaska Airlines,Passenger,LAX,United States,US,NRT,Japan,APAC,international,B787-9,949,8740.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R675,AS,Alaska Airlines,Passenger,LAX,United States,US,SYD,Australia,APAC,international,B787-9,949,12080.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R676,HA,Hawaiian Airlines,Passenger,HNL,United States,US,NRT,Japan,APAC,international,A330-200,2001,6190.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R677,HA,Hawaiian Airlines,Passenger,HNL,United States,US,ICN,South Korea,APAC,international,A330-200,1333,7210.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R678,HA,Hawaiian Airlines,Passenger,HNL,United States,US,SYD,Australia,APAC,international,A330-200,949,8160.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R679,HA,Hawaiian Airlines,Passenger,HNL,United States,US,PPT,French Polynesia,APAC,international,A330-200,1333,4400.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R680,HA,Hawaiian Airlines,Passenger,HNL,United States,US,MEL,Australia,APAC,international,A330-200,949,8640.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R681,EK,Emirates,Passenger,DXB,UAE,MENA,LGW,United Kingdom,EU,international,B777-300ER,1320,5500.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R682,EK,Emirates,Passenger,DXB,UAE,MENA,MAN,United Kingdom,EU,international,A380,1320,5740.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R683,EK,Emirates,Passenger,DXB,UAE,MENA,BHX,United Kingdom,EU,international,A380,660,5730.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R684,EK,Emirates,Passenger,DXB,UAE,MENA,CDG,France,EU,international,A380,2640,5250.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R685,EK,Emirates,Passenger,DXB,UAE,MENA,NCE,France,EU,international,B777-300ER,1320,5140.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R686,EK,Emirates,Passenger,DXB,UAE,MENA,FRA,Germany,EU,international,A380,2640,5130.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R687,EK,Emirates,Passenger,DXB,UAE,MENA,MUC,Germany,EU,international,A380,2640,4940.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R688,EK,Emirates,Passenger,DXB,UAE,MENA,DUS,Germany,EU,international,B777-300ER,1320,5070.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R689,EK,Emirates,Passenger,DXB,UAE,MENA,HAM,Germany,EU,international,B777-300ER,991,5150.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R690,EK,Emirates,Passenger,DXB,UAE,MENA,AMS,Netherlands,EU,international,A380,2640,5470.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R691,EK,Emirates,Passenger,DXB,UAE,MENA,MAD,Spain,EU,international,A380,1980,5840.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R692,EK,Emirates,Passenger,DXB,UAE,MENA,BCN,Spain,EU,international,B777-300ER,1320,5530.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R693,EK,Emirates,Passenger,DXB,UAE,MENA,FCO,Italy,EU,international,A380,1980,4640.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R694,EK,Emirates,Passenger,DXB,UAE,MENA,MXP,Italy,EU,international,B777-300ER,1320,4770.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R695,EK,Emirates,Passenger,DXB,UAE,MENA,ZRH,Switzerland,EU,international,A380,1320,4880.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R696,EK,Emirates,Passenger,DXB,UAE,MENA,VIE,Austria,EU,international,B777-300ER,1320,4680.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R697,EK,Emirates,Passenger,DXB,UAE,MENA,BRU,Belgium,EU,international,B777-300ER,991,5250.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R698,EK,Emirates,Passenger,DXB,UAE,MENA,CPH,Denmark,EU,international,B777-300ER,991,5330.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R699,EK,Emirates,Passenger,DXB,UAE,MENA,ARN,Sweden,EU,international,B777-300ER,991,5380.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R700,EK,Emirates,Passenger,DXB,UAE,MENA,OSL,Norway,EU,international,B777-300ER,660,5430.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R701,EK,Emirates,Passenger,DXB,UAE,MENA,HEL,Finland,EU,international,B777-300ER,660,5020.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R702,EK,Emirates,Passenger,DXB,UAE,MENA,ATH,Greece,EU,international,B777-300ER,1320,3620.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R703,EK,Emirates,Passenger,DXB,UAE,MENA,IST,Turkey,ROW,international,B777-300ER,1320,2960.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R704,EK,Emirates,Passenger,DXB,UAE,MENA,WAW,Poland,EU,international,B777-300ER,660,4790.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R705,EK,Emirates,Passenger,DXB,UAE,MENA,PRG,Czechia,EU,international,B777-300ER,660,4760.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R706,EK,Emirates,Passenger,DXB,UAE,MENA,BUD,Hungary,EU,international,B777-300ER,660,4450.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R707,EK,Emirates,Passenger,DXB,UAE,MENA,LIS,Portugal,EU,international,B777-300ER,660,6070.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R708,EK,Emirates,Passenger,DXB,UAE,MENA,NBO,Kenya,ROW,international,B777-300ER,1320,3720.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R709,EK,Emirates,Passenger,DXB,UAE,MENA,JNB,South Africa,ROW,international,A380,1320,6390.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R710,EK,Emirates,Passenger,DXB,UAE,MENA,CPT,South Africa,ROW,international,A380,660,6650.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R711,EK,Emirates,Passenger,DXB,UAE,MENA,LOS,Nigeria,ROW,international,B777-300ER,991,5810.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R712,EK,Emirates,Passenger,DXB,UAE,MENA,ACC,Ghana,ROW,international,B777-300ER,660,6490.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R713,EK,Emirates,Passenger,DXB,UAE,MENA,ADD,Ethiopia,ROW,international,B777-300ER,991,3020.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R714,EK,Emirates,Passenger,DXB,UAE,MENA,DAR,Tanzania,ROW,international,B777-300ER,991,3810.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R715,EK,Emirates,Passenger,DXB,UAE,MENA,EBB,Uganda,ROW,international,B777-300ER,660,3610.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R716,EK,Emirates,Passenger,DXB,UAE,MENA,CMN,Morocco,MENA,international,B777-300ER,991,5610.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R717,EK,Emirates,Passenger,DXB,UAE,MENA,BOM,India,APAC,international,A380,5280,1930.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R718,EK,Emirates,Passenger,DXB,UAE,MENA,DEL,India,APAC,international,A380,5280,2190.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R719,EK,Emirates,Passenger,DXB,UAE,MENA,BLR,India,APAC,international,B777-300ER,2640,2030.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R720,EK,Emirates,Passenger,DXB,UAE,MENA,MAA,India,APAC,international,B777-300ER,1980,2190.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R721,EK,Emirates,Passenger,DXB,UAE,MENA,HYD,India,APAC,international,B777-300ER,1320,2090.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R722,EK,Emirates,Passenger,DXB,UAE,MENA,CCU,India,APAC,international,B777-300ER,1320,2750.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R723,EK,Emirates,Passenger,DXB,UAE,MENA,COK,India,APAC,international,B777-300ER,1320,1870.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R724,EK,Emirates,Passenger,DXB,UAE,MENA,PNQ,India,APAC,international,B777-300ER,991,1980.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R725,EK,Emirates,Passenger,DXB,UAE,MENA,SIN,Singapore,APAC,international,A380,2640,5840.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R726,EK,Emirates,Passenger,DXB,UAE,MENA,KUL,Malaysia,APAC,international,A380,1980,5790.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R727,EK,Emirates,Passenger,DXB,UAE,MENA,BKK,Thailand,APAC,international,A380,1980,4910.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R728,EK,Emirates,Passenger,DXB,UAE,MENA,CGK,Indonesia,APAC,international,B777-300ER,991,6280.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R729,EK,Emirates,Passenger,DXB,UAE,MENA,MNL,Philippines,APAC,international,B777-300ER,1320,6900.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R730,EK,Emirates,Passenger,DXB,UAE,MENA,MEL,Australia,APAC,international,A380,1320,12380.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R731,EK,Emirates,Passenger,DXB,UAE,MENA,PER,Australia,APAC,international,A380,1320,8630.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R732,EK,Emirates,Passenger,DXB,UAE,MENA,BNE,Australia,APAC,international,B777-300ER,660,13040.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R733,EK,Emirates,Passenger,DXB,UAE,MENA,AKL,New Zealand,APAC,international,B777-200LR,660,14200.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R734,EK,Emirates,Passenger,DXB,UAE,MENA,KIX,Japan,APAC,international,B777-300ER,991,7890.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R735,EK,Emirates,Passenger,DXB,UAE,MENA,NGO,Japan,APAC,international,B777-300ER,660,7870.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R736,EK,Emirates,Passenger,DXB,UAE,MENA,PEK,China,APAC,international,A380,1320,5790.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R737,EK,Emirates,Passenger,DXB,UAE,MENA,PVG,China,APAC,international,A380,1320,6740.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R738,EK,Emirates,Passenger,DXB,UAE,MENA,CAN,China,APAC,international,B777-300ER,991,6580.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R739,EK,Emirates,Passenger,DXB,UAE,MENA,ICN,South Korea,APAC,international,B777-300ER,1320,6780.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R740,EK,Emirates,Passenger,DXB,UAE,MENA,HKG,Hong Kong,APAC,international,A380,1320,6230.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R741,EK,Emirates,Passenger,DXB,UAE,MENA,IAD,United States,US,international,B777-200LR,991,11100.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R742,EK,Emirates,Passenger,DXB,UAE,MENA,ORD,United States,US,international,B777-200LR,991,11980.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R743,EK,Emirates,Passenger,DXB,UAE,MENA,LAX,United States,US,international,A380,991,13420.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R744,EK,Emirates,Passenger,DXB,UAE,MENA,SFO,United States,US,international,B777-200LR,660,13040.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R745,EK,Emirates,Passenger,DXB,UAE,MENA,BOS,United States,US,international,B777-200LR,660,11270.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R746,EK,Emirates,Passenger,DXB,UAE,MENA,GRU,Brazil,LATAM,international,B777-200LR,660,11090.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R747,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,CDG,France,EU,international,B777-300ER,1716,5030.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R748,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,FRA,Germany,EU,international,B777-300ER,1716,4870.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R749,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,MUC,Germany,EU,international,A350-900,1144,4680.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R750,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,AMS,Netherlands,EU,international,B777-300ER,1144,5220.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R751,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,MAD,Spain,EU,international,B777-300ER,1144,5600.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R752,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,BCN,Spain,EU,international,A350-900,859,5300.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R753,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,FCO,Italy,EU,international,B777-300ER,1144,4410.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R754,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,MXP,Italy,EU,international,A350-900,859,4530.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R755,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,ZRH,Switzerland,EU,international,A350-900,859,4620.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R756,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,VIE,Austria,EU,international,A350-900,859,4440.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R757,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,ATH,Greece,EU,international,B777-300ER,1144,3380.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R758,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,IST,Turkey,ROW,international,A350-900,859,2720.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R759,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,CPH,Denmark,EU,international,A350-900,572,5110.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R760,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,BRU,Belgium,EU,international,A350-900,572,5010.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R761,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,WAW,Poland,EU,international,A350-900,572,4560.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R762,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,ARN,Sweden,EU,international,A350-900,572,5140.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R763,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,OSL,Norway,EU,international,A350-900,408,5200.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R764,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,HEL,Finland,EU,international,A350-900,408,4800.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R765,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,DUB,Ireland,EU,international,A350-900,572,5900.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R766,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,LIS,Portugal,EU,international,A350-900,572,5830.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R767,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,NBO,Kenya,ROW,international,B787-9,859,3480.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R768,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,JNB,South Africa,ROW,international,B777-300ER,859,6140.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R769,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,ADD,Ethiopia,ROW,international,B787-9,859,2820.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R770,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,DAR,Tanzania,ROW,international,B787-9,572,3620.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R771,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,LOS,Nigeria,ROW,international,B777-300ER,572,5600.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R772,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,BOM,India,APAC,international,B777-300ER,3433,1890.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R773,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,DEL,India,APAC,international,B777-300ER,2861,2100.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R774,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,BLR,India,APAC,international,B777-300ER,1716,1990.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R775,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,MAA,India,APAC,international,B777-300ER,1144,2100.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R776,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,HYD,India,APAC,international,A350-900,1144,2000.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R777,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,COK,India,APAC,international,A350-900,1144,1790.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R778,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,SIN,Singapore,APAC,international,A350-900,1716,5580.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R779,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,KUL,Malaysia,APAC,international,A350-900,1144,5530.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R780,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,BKK,Thailand,APAC,international,B777-300ER,1144,4680.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R781,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,CGK,Indonesia,APAC,international,A350-900,859,6030.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R782,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,MNL,Philippines,APAC,international,A350-900,859,6680.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R783,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,SYD,Australia,APAC,international,A350-900,859,11770.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R784,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,MEL,Australia,APAC,international,A350-900,572,12060.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R785,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,PER,Australia,APAC,international,A350-900,572,8310.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R786,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,NRT,Japan,APAC,international,B777-300ER,1144,7620.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R787,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,HND,Japan,APAC,international,A350-900,572,7620.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R788,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,ICN,South Korea,APAC,international,A350-900,859,6520.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R789,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,PEK,China,APAC,international,B777-300ER,859,5560.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R790,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,PVG,China,APAC,international,B787-9,859,6510.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R791,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,HKG,Hong Kong,APAC,international,B777-300ER,859,5990.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R792,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,ORD,United States,US,international,B777-300ER,859,11620.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R793,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,IAD,United States,US,international,B777-300ER,572,10960.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R794,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,LAX,United States,US,international,B777-300ER,572,13190.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R795,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,MIA,United States,US,international,B777-300ER,572,11770.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R796,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,BOS,United States,US,international,B787-9,572,11050.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R797,QR,Qatar Airways,Passenger,DOH,Qatar,MENA,GRU,Brazil,LATAM,international,B777-300ER,572,10820.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R798,EY,Etihad Airways,Passenger,AUH,UAE,MENA,LHR,United Kingdom,EU,international,A380,1980,5450.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R799,EY,Etihad Airways,Passenger,AUH,UAE,MENA,MAN,United Kingdom,EU,international,B787-9,660,5680.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R800,EY,Etihad Airways,Passenger,AUH,UAE,MENA,CDG,France,EU,international,B787-9,991,5180.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R801,EY,Etihad Airways,Passenger,AUH,UAE,MENA,FRA,Germany,EU,international,B787-9,1320,5060.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R802,EY,Etihad Airways,Passenger,AUH,UAE,MENA,MUC,Germany,EU,international,B787-9,991,4880.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R803,EY,Etihad Airways,Passenger,AUH,UAE,MENA,AMS,Netherlands,EU,international,A380,991,5410.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R804,EY,Etihad Airways,Passenger,AUH,UAE,MENA,ZRH,Switzerland,EU,international,B787-9,660,4830.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R805,EY,Etihad Airways,Passenger,AUH,UAE,MENA,FCO,Italy,EU,international,B787-9,991,4580.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R806,EY,Etihad Airways,Passenger,AUH,UAE,MENA,MAD,Spain,EU,international,B787-9,660,5790.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R807,EY,Etihad Airways,Passenger,AUH,UAE,MENA,ATH,Greece,EU,international,B787-9,991,3560.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R808,EY,Etihad Airways,Passenger,AUH,UAE,MENA,IST,Turkey,ROW,international,B787-9,991,2900.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R809,EY,Etihad Airways,Passenger,AUH,UAE,MENA,BOM,India,APAC,international,B787-9,3300,1880.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R810,EY,Etihad Airways,Passenger,AUH,UAE,MENA,DEL,India,APAC,international,B787-9,2640,2130.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R811,EY,Etihad Airways,Passenger,AUH,UAE,MENA,BLR,India,APAC,international,B787-9,1320,2000.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R812,EY,Etihad Airways,Passenger,AUH,UAE,MENA,MAA,India,APAC,international,B787-9,991,2150.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R813,EY,Etihad Airways,Passenger,AUH,UAE,MENA,SIN,Singapore,APAC,international,A380,1320,5780.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R814,EY,Etihad Airways,Passenger,AUH,UAE,MENA,KUL,Malaysia,APAC,international,B787-9,991,5730.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R815,EY,Etihad Airways,Passenger,AUH,UAE,MENA,BKK,Thailand,APAC,international,B787-9,991,4840.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R816,EY,Etihad Airways,Passenger,AUH,UAE,MENA,SYD,Australia,APAC,international,A380,660,12040.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R817,EY,Etihad Airways,Passenger,AUH,UAE,MENA,MEL,Australia,APAC,international,B787-9,660,12340.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R818,EY,Etihad Airways,Passenger,AUH,UAE,MENA,NRT,Japan,APAC,international,B787-9,660,7870.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R819,EY,Etihad Airways,Passenger,AUH,UAE,MENA,PEK,China,APAC,international,B787-9,660,5730.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R820,EY,Etihad Airways,Passenger,AUH,UAE,MENA,PVG,China,APAC,international,B787-9,660,6680.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R821,EY,Etihad Airways,Passenger,AUH,UAE,MENA,JFK,United States,US,international,B777-300ER,991,11020.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R822,EY,Etihad Airways,Passenger,AUH,UAE,MENA,IAD,United States,US,international,B787-9,660,11110.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R823,EY,Etihad Airways,Passenger,AUH,UAE,MENA,ORD,United States,US,international,B787-9,660,12010.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R824,EY,Etihad Airways,Passenger,AUH,UAE,MENA,LAX,United States,US,international,A380,660,13430.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R825,EY,Etihad Airways,Passenger,AUH,UAE,MENA,JNB,South Africa,Africa,international,B787-9,660,6340.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R826,EY,Etihad Airways,Passenger,AUH,UAE,MENA,NBO,Kenya,Africa,international,B787-9,660,3680.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R827,SV,Saudia,Passenger,JED,Saudi Arabia,MENA,LHR,United Kingdom,EU,international,B777-300ER,811,5850.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R828,SV,Saudia,Passenger,JED,Saudi Arabia,MENA,CDG,France,EU,international,B777-300ER,811,5530.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R829,SV,Saudia,Passenger,JED,Saudi Arabia,MENA,FRA,Germany,EU,international,B777-300ER,540,5320.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R830,SV,Saudia,Passenger,JED,Saudi Arabia,MENA,AMS,Netherlands,EU,international,B777-300ER,540,5730.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R831,SV,Saudia,Passenger,JED,Saudi Arabia,MENA,IST,Turkey,ROW,international,B777-300ER,811,3200.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R832,SV,Saudia,Passenger,JED,Saudi Arabia,MENA,ATH,Greece,EU,international,A330-300,540,3950.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R833,SV,Saudia,Passenger,JED,Saudi Arabia,MENA,BOM,India,APAC,international,B777-300ER,1080,2480.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R834,SV,Saudia,Passenger,JED,Saudi Arabia,MENA,DEL,India,APAC,international,B777-300ER,811,2760.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R835,SV,Saudia,Passenger,RUH,Saudi Arabia,MENA,CDG,France,EU,international,B777-300ER,540,5980.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R836,SV,Saudia,Passenger,RUH,Saudi Arabia,MENA,FRA,Germany,EU,international,A330-300,540,5780.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R837,SV,Saudia,Passenger,RUH,Saudi Arabia,MENA,JNB,South Africa,Africa,international,B777-300ER,385,6820.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R838,SV,Saudia,Passenger,RUH,Saudi Arabia,MENA,NBO,Kenya,Africa,international,A330-300,540,3420.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R839,SV,Saudia,Passenger,RUH,Saudi Arabia,MENA,BOM,India,APAC,international,B777-300ER,811,2940.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R840,SV,Saudia,Passenger,RUH,Saudi Arabia,MENA,DEL,India,APAC,international,B777-300ER,540,3060.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R841,SV,Saudia,Passenger,RUH,Saudi Arabia,MENA,KUL,Malaysia,APAC,international,A330-300,540,5810.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R842,GF,Gulf Air,Passenger,BAH,Bahrain,MENA,LHR,United Kingdom,EU,international,B787-9,716,5260.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R843,GF,Gulf Air,Passenger,BAH,Bahrain,MENA,CDG,France,EU,international,B787-9,358,5040.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R844,GF,Gulf Air,Passenger,BAH,Bahrain,MENA,FRA,Germany,EU,international,B787-9,358,4880.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R845,GF,Gulf Air,Passenger,BAH,Bahrain,MENA,ATH,Greece,EU,international,A320neo,358,3360.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R846,GF,Gulf Air,Passenger,BAH,Bahrain,MENA,IST,Turkey,ROW,international,A320neo,358,2720.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R847,GF,Gulf Air,Passenger,BAH,Bahrain,MENA,BOM,India,APAC,international,B787-9,716,1850.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R848,GF,Gulf Air,Passenger,BAH,Bahrain,MENA,DEL,India,APAC,international,B787-9,538,2060.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R849,GF,Gulf Air,Passenger,BAH,Bahrain,MENA,COK,India,APAC,international,A320neo,538,1760.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R850,FZ,flydubai,Passenger,DXB,UAE,MENA,IST,Turkey,ROW,international,B737 MAX 8,2640,2960.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R851,FZ,flydubai,Passenger,DXB,UAE,MENA,ATH,Greece,EU,international,B737 MAX 8,1320,3620.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R852,FZ,flydubai,Passenger,DXB,UAE,MENA,WAW,Poland,EU,international,B737 MAX 8,660,4790.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R853,FZ,flydubai,Passenger,DXB,UAE,MENA,BEG,Serbia,EU,international,B737 MAX 8,660,4000.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R854,FZ,flydubai,Passenger,DXB,UAE,MENA,OTP,Romania,EU,international,B737 MAX 8,660,4100.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R855,FZ,flydubai,Passenger,DXB,UAE,MENA,SOF,Bulgaria,EU,international,B737 MAX 8,660,3840.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R856,FZ,flydubai,Passenger,DXB,UAE,MENA,NBO,Kenya,Africa,international,B737 MAX 8,991,3720.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R857,FZ,flydubai,Passenger,DXB,UAE,MENA,DAR,Tanzania,Africa,international,B737 MAX 8,660,3810.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R858,FZ,flydubai,Passenger,DXB,UAE,MENA,MBA,Kenya,Africa,international,B737 MAX 8,660,3620.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R859,G9,Air Arabia,Passenger,SHJ,UAE,MENA,IST,Turkey,ROW,international,A320neo,1320,2960.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R860,G9,Air Arabia,Passenger,SHJ,UAE,MENA,ATH,Greece,EU,international,A320neo,660,3590.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R861,G9,Air Arabia,Passenger,SHJ,UAE,MENA,BCN,Spain,EU,international,A320neo,470,5500.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R862,G9,Air Arabia,Passenger,SHJ,UAE,MENA,BOM,India,APAC,international,A320neo,1320,1900.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R863,G9,Air Arabia,Passenger,SHJ,UAE,MENA,DEL,India,APAC,international,A320neo,991,2160.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R864,G9,Air Arabia,Passenger,SHJ,UAE,MENA,COK,India,APAC,international,A320neo,991,1820.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R865,WY,Oman Air,Passenger,MCT,Oman,MENA,LHR,United Kingdom,EU,international,B787-9,1899,5850.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R866,WY,Oman Air,Passenger,MCT,Oman,MENA,FRA,Germany,EU,international,B787-9,1265,5310.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R867,WY,Oman Air,Passenger,MCT,Oman,MENA,CDG,France,EU,international,B787-9,901,5530.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R868,WY,Oman Air,Passenger,MCT,Oman,MENA,BOM,India,APAC,international,B737 MAX 8,2529,1680.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R869,WY,Oman Air,Passenger,MCT,Oman,MENA,DEL,India,APAC,international,B787-9,1899,2080.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R870,WY,Oman Air,Passenger,MCT,Oman,MENA,BLR,India,APAC,international,B737 MAX 8,1899,1830.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R871,WY,Oman Air,Passenger,MCT,Oman,MENA,KUL,Malaysia,APAC,international,B787-9,1265,5300.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R872,WY,Oman Air,Passenger,MCT,Oman,MENA,BKK,Thailand,APAC,international,B787-9,1265,4580.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R873,WY,Oman Air,Passenger,MCT,Oman,MENA,NBO,Kenya,Africa,international,B737 MAX 8,1265,3290.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R874,MS,EgyptAir,Passenger,CAI,Egypt,MENA,CDG,France,EU,international,B777-200ER,1246,4360.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R875,MS,EgyptAir,Passenger,CAI,Egypt,MENA,FRA,Germany,EU,international,A330-200,1246,4210.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R876,MS,EgyptAir,Passenger,CAI,Egypt,MENA,NBO,Kenya,Africa,international,B737-800,1246,3250.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R877,MS,EgyptAir,Passenger,CAI,Egypt,MENA,JNB,South Africa,Africa,international,B777-200ER,888,6660.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R878,MS,EgyptAir,Passenger,CAI,Egypt,MENA,BOM,India,APAC,international,A330-200,1246,2970.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R879,RJ,Royal Jordanian,Passenger,AMM,Jordan,MENA,LHR,United Kingdom,EU,international,B787-8,315,4310.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R880,RJ,Royal Jordanian,Passenger,AMM,Jordan,MENA,CDG,France,EU,international,A321neo,315,4070.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R881,RJ,Royal Jordanian,Passenger,AMM,Jordan,MENA,FRA,Germany,EU,international,A321neo,224,3930.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R882,RJ,Royal Jordanian,Passenger,AMM,Jordan,MENA,JFK,United States,US,international,B787-8,224,9640.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R883,RJ,Royal Jordanian,Passenger,AMM,Jordan,MENA,ORD,United States,US,international,B787-8,224,10360.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R884,RJ,Royal Jordanian,Passenger,AMM,Jordan,MENA,BOM,India,APAC,international,B787-8,224,3100.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R885,NH,ANA,Passenger,NRT,Japan,APAC,SFO,United States,US,international,B787-9,982,8280.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R886,NH,ANA,Passenger,NRT,Japan,APAC,ORD,United States,US,international,B787-9,982,10140.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R887,NH,ANA,Passenger,NRT,Japan,APAC,JFK,United States,US,international,B787-9,982,10840.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R888,NH,ANA,Passenger,NRT,Japan,APAC,IAD,United States,US,international,B787-9,491,10870.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R889,NH,ANA,Passenger,NRT,Japan,APAC,HNL,United States,US,international,B787-9,1473,6170.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R890,NH,ANA,Passenger,NRT,Japan,APAC,FRA,Germany,EU,international,B787-9,982,9310.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R891,NH,ANA,Passenger,NRT,Japan,APAC,CDG,France,EU,international,B787-9,982,9710.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R892,NH,ANA,Passenger,NRT,Japan,APAC,MUC,Germany,EU,international,B787-9,491,9190.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R893,NH,ANA,Passenger,NRT,Japan,APAC,ICN,South Korea,APAC,international,A320neo,2455,1240.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R894,NH,ANA,Passenger,NRT,Japan,APAC,HKG,Hong Kong,APAC,international,A320neo,1473,2900.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R895,NH,ANA,Passenger,NRT,Japan,APAC,SIN,Singapore,APAC,international,B787-9,1473,5350.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R896,NH,ANA,Passenger,NRT,Japan,APAC,BKK,Thailand,APAC,international,A321neo,982,4660.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R897,NH,ANA,Passenger,NRT,Japan,APAC,SYD,Australia,APAC,international,A330-300,982,7820.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R898,NH,ANA,Passenger,NRT,Japan,APAC,DEL,India,APAC,international,B787-9,982,5860.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R899,NH,ANA,Passenger,NRT,Japan,APAC,BOM,India,APAC,international,B787-9,491,6750.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R900,NH,ANA,Passenger,HND,Japan,APAC,LAX,United States,US,international,B787-9,982,8800.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R901,NH,ANA,Passenger,HND,Japan,APAC,LHR,United Kingdom,EU,international,B787-9,982,9560.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R902,NH,ANA,Passenger,HND,Japan,APAC,CDG,France,EU,international,B787-9,491,9720.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R903,NH,ANA,Passenger,HND,Japan,APAC,SIN,Singapore,APAC,international,B787-9,982,5340.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R904,NH,ANA,Passenger,HND,Japan,APAC,BKK,Thailand,APAC,international,A321neo,1473,4630.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R905,NH,ANA,Passenger,HND,Japan,APAC,ICN,South Korea,APAC,international,A320neo,4909,1230.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R906,JL,Japan Airlines,Passenger,NRT,Japan,APAC,LAX,United States,US,international,B787-9,1473,8750.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R907,JL,Japan Airlines,Passenger,NRT,Japan,APAC,SFO,United States,US,international,B787-9,982,8280.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R908,JL,Japan Airlines,Passenger,NRT,Japan,APAC,JFK,United States,US,international,B787-9,982,10840.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R909,JL,Japan Airlines,Passenger,NRT,Japan,APAC,ORD,United States,US,international,B787-9,982,10140.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R910,JL,Japan Airlines,Passenger,NRT,Japan,APAC,LHR,United Kingdom,EU,international,B787-9,982,9570.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R911,JL,Japan Airlines,Passenger,NRT,Japan,APAC,FRA,Germany,EU,international,B787-9,491,9310.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R912,JL,Japan Airlines,Passenger,NRT,Japan,APAC,CDG,France,EU,international,B787-9,491,9710.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R913,JL,Japan Airlines,Passenger,NRT,Japan,APAC,HNL,United States,US,international,A330-300,1473,6170.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R914,JL,Japan Airlines,Passenger,NRT,Japan,APAC,BKK,Thailand,APAC,international,A321neo,982,4660.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R915,JL,Japan Airlines,Passenger,NRT,Japan,APAC,SIN,Singapore,APAC,international,B787-9,982,5350.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R916,JL,Japan Airlines,Passenger,NRT,Japan,APAC,SYD,Australia,APAC,international,B787-9,982,7820.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R917,JL,Japan Airlines,Passenger,NRT,Japan,APAC,ICN,South Korea,APAC,international,A320neo,2455,1240.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R918,JL,Japan Airlines,Passenger,NRT,Japan,APAC,HKG,Hong Kong,APAC,international,A320neo,1473,2900.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R919,JL,Japan Airlines,Passenger,NRT,Japan,APAC,BOM,India,APAC,international,B787-9,491,6750.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R920,JL,Japan Airlines,Passenger,NRT,Japan,APAC,DEL,India,APAC,international,B787-9,491,5860.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R921,JL,Japan Airlines,Passenger,HND,Japan,APAC,LAX,United States,US,international,B787-9,982,8800.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R922,JL,Japan Airlines,Passenger,HND,Japan,APAC,LHR,United Kingdom,EU,international,B787-9,491,9560.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R923,JL,Japan Airlines,Passenger,HND,Japan,APAC,BKK,Thailand,APAC,international,A321neo,982,4630.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R924,JL,Japan Airlines,Passenger,HND,Japan,APAC,SIN,Singapore,APAC,international,B787-9,491,5340.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R925,KE,Korean Air,Passenger,ICN,South Korea,APAC,SFO,United States,US,international,B777-300ER,3014,8950.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R926,KE,Korean Air,Passenger,ICN,South Korea,APAC,ORD,United States,US,international,B777-300ER,3014,10280.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R927,KE,Korean Air,Passenger,ICN,South Korea,APAC,DFW,United States,US,international,B787-9,1507,11280.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R928,KE,Korean Air,Passenger,ICN,South Korea,APAC,SEA,United States,US,international,B777-300ER,1507,8650.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R929,KE,Korean Air,Passenger,ICN,South Korea,APAC,YVR,Canada,US,international,B787-9,3014,8240.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R930,KE,Korean Air,Passenger,ICN,South Korea,APAC,YYZ,Canada,US,international,B777-300ER,1507,10660.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R931,KE,Korean Air,Passenger,ICN,South Korea,APAC,CDG,France,EU,international,A380-800,3014,8990.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R932,KE,Korean Air,Passenger,ICN,South Korea,APAC,FRA,Germany,EU,international,B747-8,3014,8650.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R933,KE,Korean Air,Passenger,ICN,South Korea,APAC,AMS,Netherlands,EU,international,B777-300ER,1507,8750.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R934,KE,Korean Air,Passenger,ICN,South Korea,APAC,MAD,Spain,EU,international,B777-300ER,1507,10220.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R935,KE,Korean Air,Passenger,ICN,South Korea,APAC,NRT,Japan,APAC,international,B737MAX8,15068,1240.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R936,KE,Korean Air,Passenger,ICN,South Korea,APAC,HKG,Hong Kong,APAC,international,B737MAX8,9041,2070.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R937,KE,Korean Air,Passenger,ICN,South Korea,APAC,SIN,Singapore,APAC,international,A330-300,4520,4690.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R938,KE,Korean Air,Passenger,ICN,South Korea,APAC,BKK,Thailand,APAC,international,A330-300,4520,3720.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R939,KE,Korean Air,Passenger,ICN,South Korea,APAC,MEL,Australia,APAC,international,B777-300ER,1507,8510.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R940,KE,Korean Air,Passenger,ICN,South Korea,APAC,DEL,India,APAC,international,B787-9,3014,5250.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R941,KE,Korean Air,Passenger,ICN,South Korea,APAC,BOM,India,APAC,international,B787-9,1507,6560.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R942,OZ,Asiana Airlines,Passenger,ICN,South Korea,APAC,SFO,United States,US,international,B777-300ER,1507,8950.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R943,OZ,Asiana Airlines,Passenger,ICN,South Korea,APAC,NRT,Japan,APAC,international,A320neo,9041,1240.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R944,OZ,Asiana Airlines,Passenger,ICN,South Korea,APAC,HKG,Hong Kong,APAC,international,A320neo,4520,2070.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R945,OZ,Asiana Airlines,Passenger,ICN,South Korea,APAC,SIN,Singapore,APAC,international,A330-300,3014,4690.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R946,OZ,Asiana Airlines,Passenger,ICN,South Korea,APAC,BKK,Thailand,APAC,international,A321neo,3014,3720.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R947,OZ,Asiana Airlines,Passenger,ICN,South Korea,APAC,SYD,Australia,APAC,international,B777-300ER,1507,8280.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R948,OZ,Asiana Airlines,Passenger,ICN,South Korea,APAC,BOM,India,APAC,international,B787-9,1507,6560.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R949,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,FRA,Germany,EU,international,B787-9,1476,10160.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R950,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,CDG,France,EU,international,B787-9,984,10730.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R951,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,AMS,Netherlands,EU,international,B787-9,984,10340.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R952,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,ZUR,Switzerland,EU,international,B787-9,492,10225.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R953,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,MAN,United Kingdom,EU,international,B787-9,492,10870.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R954,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,LAX,United States,US,international,A350-900,1476,14100.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R955,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,SFO,United States,US,international,B787-9,984,13600.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R956,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,EWR,United States,US,international,A350-900,984,15350.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R957,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,ORD,United States,US,international,A350-900,492,15000.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R958,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,SEA,United States,US,international,A350-900,492,14040.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R959,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,HNL,United States,US,international,B787-9,492,8980.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R960,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,NRT,Japan,APAC,international,B787-9,2461,5350.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R961,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,ICN,South Korea,APAC,international,B787-9,1476,4690.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R962,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,HKG,Hong Kong,APAC,international,B787-9,2461,2580.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R963,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,SYD,Australia,APAC,international,B787-9,2461,6290.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R964,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,MEL,Australia,APAC,international,B787-9,1476,6020.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R965,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,AKL,New Zealand,APAC,international,B787-9,984,8820.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R966,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,BKK,Thailand,APAC,international,A320neo,3445,1440.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R967,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,CGK,Indonesia,APAC,international,A320neo,2953,890.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R968,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,KUL,Malaysia,APAC,international,A320neo,4922,350.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R969,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,DEL,India,APAC,international,A321neo,1476,4150.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R970,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,BOM,India,APAC,international,A321neo,984,4960.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R971,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,DOH,Qatar,MENA,international,B787-9,984,6120.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R972,SQ,Singapore Airlines,Passenger,SIN,Singapore,APAC,JNB,South Africa,Africa,international,B787-9,492,8270.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R973,MH,Malaysia Airlines,Passenger,KUL,Malaysia,APAC,AMS,Netherlands,EU,international,B787-9,70,10365.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R974,MH,Malaysia Airlines,Passenger,KUL,Malaysia,APAC,ICN,South Korea,APAC,international,A330-300,140,4590.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R975,MH,Malaysia Airlines,Passenger,KUL,Malaysia,APAC,HKG,Hong Kong,APAC,international,A330-300,210,2620.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R976,MH,Malaysia Airlines,Passenger,KUL,Malaysia,APAC,SYD,Australia,APAC,international,B787-9,140,6570.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R977,MH,Malaysia Airlines,Passenger,KUL,Malaysia,APAC,MEL,Australia,APAC,international,B787-9,70,6280.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R978,MH,Malaysia Airlines,Passenger,KUL,Malaysia,APAC,CGK,Indonesia,APAC,international,A320neo,210,1160.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R979,MH,Malaysia Airlines,Passenger,KUL,Malaysia,APAC,BKK,Thailand,APAC,international,A320neo,280,1180.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R980,MH,Malaysia Airlines,Passenger,KUL,Malaysia,APAC,DEL,India,APAC,international,A320neo,140,3680.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R981,MH,Malaysia Airlines,Passenger,KUL,Malaysia,APAC,BOM,India,APAC,international,A320neo,140,3890.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R982,MH,Malaysia Airlines,Passenger,KUL,Malaysia,APAC,DXB,UAE,MENA,international,B787-9,140,5620.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R983,GA,Garuda Indonesia,Passenger,CGK,Indonesia,APAC,ICN,South Korea,APAC,international,B787-9,89,5220.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R984,GA,Garuda Indonesia,Passenger,CGK,Indonesia,APAC,SIN,Singapore,APAC,international,A320neo,267,890.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R985,GA,Garuda Indonesia,Passenger,CGK,Indonesia,APAC,HKG,Hong Kong,APAC,international,A330-300,89,3250.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R986,GA,Garuda Indonesia,Passenger,CGK,Indonesia,APAC,MEL,Australia,APAC,international,B787-9,89,5570.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R987,GA,Garuda Indonesia,Passenger,CGK,Indonesia,APAC,AMS,Netherlands,EU,international,B787-9,45,11780.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R988,GA,Garuda Indonesia,Passenger,CGK,Indonesia,APAC,DXB,UAE,MENA,international,B787-9,89,6290.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R989,GA,Garuda Indonesia,Passenger,CGK,Indonesia,APAC,DEL,India,APAC,international,A330-300,45,4440.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R990,GA,Garuda Indonesia,Passenger,CGK,Indonesia,APAC,BKK,Thailand,APAC,international,A320neo,134,2270.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R991,GA,Garuda Indonesia,Passenger,CGK,Indonesia,APAC,KUL,Malaysia,APAC,international,A320neo,178,1160.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R992,CI,China Airlines,Passenger,TPE,Taiwan,APAC,SFO,United States,US,international,B777-300ER,480,10400.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R993,CI,China Airlines,Passenger,TPE,Taiwan,APAC,JFK,United States,US,international,B777-300ER,480,12850.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R994,CI,China Airlines,Passenger,TPE,Taiwan,APAC,LHR,United Kingdom,EU,international,B777-300ER,480,9790.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R995,CI,China Airlines,Passenger,TPE,Taiwan,APAC,AMS,Netherlands,EU,international,B787-9,480,9420.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R996,CI,China Airlines,Passenger,TPE,Taiwan,APAC,ICN,South Korea,APAC,international,A321neo,2883,1440.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R997,CI,China Airlines,Passenger,TPE,Taiwan,APAC,SIN,Singapore,APAC,international,A330-300,1441,3280.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R998,CI,China Airlines,Passenger,TPE,Taiwan,APAC,HKG,Hong Kong,APAC,international,A320neo,1922,810.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R999,CI,China Airlines,Passenger,TPE,Taiwan,APAC,BKK,Thailand,APAC,international,A320neo,1441,2500.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1000,CI,China Airlines,Passenger,TPE,Taiwan,APAC,SYD,Australia,APAC,international,A330-300,480,7270.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1001,CI,China Airlines,Passenger,TPE,Taiwan,APAC,SEA,United States,US,international,B787-9,480,9060.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1002,BR,EVA Air,Passenger,TPE,Taiwan,APAC,SFO,United States,US,international,B777-300ER,480,10400.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1003,BR,EVA Air,Passenger,TPE,Taiwan,APAC,AMS,Netherlands,EU,international,B787-9,480,9420.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1004,BR,EVA Air,Passenger,TPE,Taiwan,APAC,FRA,Germany,EU,international,B787-9,480,9380.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1005,BR,EVA Air,Passenger,TPE,Taiwan,APAC,NRT,Japan,APAC,international,A321neo,2883,2130.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1006,BR,EVA Air,Passenger,TPE,Taiwan,APAC,ICN,South Korea,APAC,international,A320neo,1922,1440.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1007,BR,EVA Air,Passenger,TPE,Taiwan,APAC,SIN,Singapore,APAC,international,A330-300,961,3280.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1008,BR,EVA Air,Passenger,TPE,Taiwan,APAC,HKG,Hong Kong,APAC,international,A320neo,1441,810.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1009,BR,EVA Air,Passenger,TPE,Taiwan,APAC,BKK,Thailand,APAC,international,A320neo,961,2500.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1010,BR,EVA Air,Passenger,TPE,Taiwan,APAC,SEA,United States,US,international,B787-9,480,9060.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1011,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,MAN,United Kingdom,EU,international,B777-300ER,2878,9340.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1012,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,FRA,Germany,EU,international,A350-900,2878,9440.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1013,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,CDG,France,EU,international,B777-300ER,2878,9700.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1014,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,AMS,Netherlands,EU,international,A350-900,2878,9380.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1015,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,ZUR,Switzerland,EU,international,B777-300ER,1439,9385.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1016,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,LAX,United States,US,international,B777-300ER,2878,11640.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1017,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,SFO,United States,US,international,B777-300ER,2878,11120.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1018,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,JFK,United States,US,international,B777-300ER,2878,12970.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1019,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,ORD,United States,US,international,B777-300ER,2878,12540.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1020,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,YVR,Canada,US,international,B777-300ER,2878,9900.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1021,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,NRT,Japan,APAC,international,A330-300,8635,2900.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1022,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,ICN,South Korea,APAC,international,A330-300,7196,2070.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1023,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,SIN,Singapore,APAC,international,A330-300,8635,2580.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1024,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,BKK,Thailand,APAC,international,A320neo,8635,1700.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1025,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,SYD,Australia,APAC,international,A350-900,5757,7380.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1026,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,MEL,Australia,APAC,international,A350-900,2878,7370.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1027,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,DXB,UAE,MENA,international,B777-300ER,4317,5960.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1028,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,DOH,Qatar,MENA,international,A330-300,2878,6350.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1029,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,DEL,India,APAC,international,A330-300,4317,3780.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1030,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,BOM,India,APAC,international,A330-300,2878,4220.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1031,CX,Cathay Pacific,Passenger,HKG,Hong Kong,APAC,AKL,New Zealand,APAC,international,B777-300ER,1439,9010.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1032,QF,Qantas,Passenger,SYD,Australia,APAC,LAX,United States,US,international,B787-9,733,12070.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1033,QF,Qantas,Passenger,SYD,Australia,APAC,SFO,United States,US,international,B787-9,367,11960.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1034,QF,Qantas,Passenger,SYD,Australia,APAC,JFK,United States,US,international,A380-800,367,16230.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1035,QF,Qantas,Passenger,SYD,Australia,APAC,DFW,United States,US,international,A350-900,367,13810.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1036,QF,Qantas,Passenger,SYD,Australia,APAC,NRT,Japan,APAC,international,B787-9,367,7820.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1037,QF,Qantas,Passenger,SYD,Australia,APAC,HKG,Hong Kong,APAC,international,B787-9,367,7380.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1038,QF,Qantas,Passenger,SYD,Australia,APAC,SIN,Singapore,APAC,international,A330-300,917,6290.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1039,QF,Qantas,Passenger,SYD,Australia,APAC,BKK,Thailand,APAC,international,A330-300,367,7560.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1040,QF,Qantas,Passenger,SYD,Australia,APAC,DXB,UAE,MENA,international,A380-800,367,12050.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1041,QF,Qantas,Passenger,SYD,Australia,APAC,DOH,Qatar,MENA,international,B787-9,367,12140.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1042,QF,Qantas,Passenger,MEL,Australia,APAC,LAX,United States,US,international,B787-9,367,12750.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1043,QF,Qantas,Passenger,MEL,Australia,APAC,LHR,United Kingdom,EU,international,A380-800,367,16900.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1044,QF,Qantas,Passenger,MEL,Australia,APAC,SIN,Singapore,APAC,international,A330-300,550,6020.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1045,QF,Qantas,Passenger,MEL,Australia,APAC,BKK,Thailand,APAC,international,A330-300,183,7570.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1046,QF,Qantas,Passenger,MEL,Australia,APAC,DXB,UAE,MENA,international,B787-9,183,11640.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1047,QF,Qantas,Passenger,MEL,Australia,APAC,NRT,Japan,APAC,international,B787-9,183,8150.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1048,QF,Qantas,Passenger,PER,Australia,APAC,LHR,United Kingdom,EU,international,B787-9,367,14490.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1049,NZ,Air New Zealand,Passenger,AKL,New Zealand,APAC,LHR,United Kingdom,EU,international,A350-900,1231,18330.0,0.04,0.0,0.02,0.05,0.15,0.2,0.3
+R1050,NZ,Air New Zealand,Passenger,AKL,New Zealand,APAC,HNL,United States,US,international,B787-9,616,7090.0,0.04,0.0,0.02,0.05,0.15,0.2,0.3
+R1051,NZ,Air New Zealand,Passenger,AKL,New Zealand,APAC,SYD,Australia,APAC,international,A320neo,9235,2160.0,0.04,0.0,0.02,0.05,0.15,0.2,0.3
+R1052,NZ,Air New Zealand,Passenger,AKL,New Zealand,APAC,MEL,Australia,APAC,international,A320neo,6157,2590.0,0.04,0.0,0.02,0.05,0.15,0.2,0.3
+R1053,NZ,Air New Zealand,Passenger,AKL,New Zealand,APAC,HKG,Hong Kong,APAC,international,B787-9,1231,9010.0,0.04,0.0,0.02,0.05,0.15,0.2,0.3
+R1054,NZ,Air New Zealand,Passenger,AKL,New Zealand,APAC,NRT,Japan,APAC,international,B787-9,616,9510.0,0.04,0.0,0.02,0.05,0.15,0.2,0.3
+R1055,NZ,Air New Zealand,Passenger,AKL,New Zealand,APAC,ICN,South Korea,APAC,international,B787-9,616,9780.0,0.04,0.0,0.02,0.05,0.15,0.2,0.3
+R1056,TG,Thai Airways,Passenger,BKK,Thailand,APAC,CDG,France,EU,international,B777-300ER,324,9290.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1057,TG,Thai Airways,Passenger,BKK,Thailand,APAC,ZUR,Switzerland,EU,international,B777-300ER,324,9140.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1058,TG,Thai Airways,Passenger,BKK,Thailand,APAC,MUC,Germany,EU,international,A380-800,324,9010.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1059,TG,Thai Airways,Passenger,BKK,Thailand,APAC,ICN,South Korea,APAC,international,A330-300,649,3720.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1060,TG,Thai Airways,Passenger,BKK,Thailand,APAC,SIN,Singapore,APAC,international,A330-300,1297,1440.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1061,TG,Thai Airways,Passenger,BKK,Thailand,APAC,HKG,Hong Kong,APAC,international,A330-300,973,1700.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1062,TG,Thai Airways,Passenger,BKK,Thailand,APAC,SYD,Australia,APAC,international,B777-300ER,649,7560.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1063,TG,Thai Airways,Passenger,BKK,Thailand,APAC,MEL,Australia,APAC,international,B777-300ER,324,7570.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1064,TG,Thai Airways,Passenger,BKK,Thailand,APAC,DXB,UAE,MENA,international,B777-300ER,973,4940.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1065,TG,Thai Airways,Passenger,BKK,Thailand,APAC,DEL,India,APAC,international,A330-300,649,2870.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1066,TG,Thai Airways,Passenger,BKK,Thailand,APAC,BOM,India,APAC,international,A330-300,649,3085.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1067,VN,Vietnam Airlines,Passenger,HAN,Vietnam,APAC,FRA,Germany,EU,international,B787-9,154,8840.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1068,VN,Vietnam Airlines,Passenger,HAN,Vietnam,APAC,LHR,United Kingdom,EU,international,B787-9,154,9110.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1069,VN,Vietnam Airlines,Passenger,HAN,Vietnam,APAC,ICN,South Korea,APAC,international,A321neo,615,2840.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1070,VN,Vietnam Airlines,Passenger,HAN,Vietnam,APAC,SIN,Singapore,APAC,international,A321neo,615,2150.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1071,VN,Vietnam Airlines,Passenger,HAN,Vietnam,APAC,HKG,Hong Kong,APAC,international,A321neo,307,1760.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1072,VN,Vietnam Airlines,Passenger,HAN,Vietnam,APAC,BKK,Thailand,APAC,international,A320neo,461,1040.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1073,VN,Vietnam Airlines,Passenger,SGN,Vietnam,APAC,CDG,France,EU,international,B787-9,154,9700.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1074,VN,Vietnam Airlines,Passenger,SGN,Vietnam,APAC,NRT,Japan,APAC,international,A330-300,307,4330.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1075,VN,Vietnam Airlines,Passenger,SGN,Vietnam,APAC,ICN,South Korea,APAC,international,A321neo,461,3230.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1076,VN,Vietnam Airlines,Passenger,SGN,Vietnam,APAC,SIN,Singapore,APAC,international,A320neo,922,1150.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1077,VN,Vietnam Airlines,Passenger,SGN,Vietnam,APAC,HKG,Hong Kong,APAC,international,A320neo,461,1670.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1078,VN,Vietnam Airlines,Passenger,SGN,Vietnam,APAC,BKK,Thailand,APAC,international,A320neo,615,945.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1079,PR,Philippine Airlines,Passenger,MNL,Philippines,APAC,SFO,United States,US,international,B787-9,447,11100.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1080,PR,Philippine Airlines,Passenger,MNL,Philippines,APAC,ICN,South Korea,APAC,international,A330-300,1342,2660.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1081,PR,Philippine Airlines,Passenger,MNL,Philippines,APAC,HKG,Hong Kong,APAC,international,A320neo,2685,1120.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1082,PR,Philippine Airlines,Passenger,MNL,Philippines,APAC,SIN,Singapore,APAC,international,A320neo,1790,2400.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1083,PR,Philippine Airlines,Passenger,MNL,Philippines,APAC,DXB,UAE,MENA,international,B787-9,895,6510.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1084,PR,Philippine Airlines,Passenger,MNL,Philippines,APAC,SYD,Australia,APAC,international,B787-9,447,6190.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1085,PR,Philippine Airlines,Passenger,MNL,Philippines,APAC,DEL,India,APAC,international,A330-300,447,3760.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1086,PR,Philippine Airlines,Passenger,MNL,Philippines,APAC,BOM,India,APAC,international,A330-300,447,4040.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1087,LA,LATAM Airlines,Passenger,SCL,Chile,LATAM,MIA,United States,US,international,B787-9,579,8660.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1088,LA,LATAM Airlines,Passenger,SCL,Chile,LATAM,JFK,United States,US,international,B787-9,386,8780.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1089,LA,LATAM Airlines,Passenger,SCL,Chile,LATAM,LHR,United Kingdom,EU,international,B787-9,193,11640.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1090,LA,LATAM Airlines,Passenger,SCL,Chile,LATAM,LIM,Peru,LATAM,international,A320neo,966,2450.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1091,LA,LATAM Airlines,Passenger,SCL,Chile,LATAM,MVD,Uruguay,LATAM,international,A320neo,772,1960.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1092,LA,LATAM Airlines,Passenger,SCL,Chile,LATAM,PMC,Chile,LATAM,international,A320neo,1159,880.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1093,LA,LATAM Airlines,Passenger,LIM,Peru,LATAM,MIA,United States,US,international,B787-9,5315,5430.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1094,LA,LATAM Airlines,Passenger,LIM,Peru,LATAM,JFK,United States,US,international,B787-9,3544,5700.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1095,LA,LATAM Airlines,Passenger,LIM,Peru,LATAM,LAX,United States,US,international,B787-9,1772,7240.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1096,LA,LATAM Airlines,Passenger,LIM,Peru,LATAM,BOG,Colombia,LATAM,international,A320neo,7087,1870.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1097,LA,LATAM Airlines,Passenger,BOG,Colombia,LATAM,MIA,United States,US,international,B737MAX8,4603,3870.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1098,LA,LATAM Airlines,Passenger,BOG,Colombia,LATAM,JFK,United States,US,international,B787-9,1841,4490.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1099,LA,LATAM Airlines,Passenger,BOG,Colombia,LATAM,MAD,Spain,EU,international,B787-9,921,8740.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1100,LA,LATAM Airlines,Passenger,GRU,Brazil,LATAM,SCL,Chile,LATAM,international,A321neo,1111,2820.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1101,LA,LATAM Airlines,Passenger,GRU,Brazil,LATAM,LIM,Peru,LATAM,international,A321neo,666,3330.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1102,LA,LATAM Airlines,Passenger,GRU,Brazil,LATAM,BOG,Colombia,LATAM,international,A321neo,333,3930.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1103,LA,LATAM Airlines,Passenger,GRU,Brazil,LATAM,JFK,United States,US,international,B787-9,555,7800.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1104,LA,LATAM Airlines,Passenger,GRU,Brazil,LATAM,MAD,Spain,EU,international,B787-9,444,9680.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1105,LA,LATAM Airlines,Passenger,GRU,Brazil,LATAM,CDG,France,EU,international,B787-9,222,9220.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1106,LA,LATAM Airlines,Passenger,GRU,Brazil,LATAM,FRA,Germany,EU,international,B787-9,111,9750.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1107,LA,LATAM Airlines,Passenger,GRU,Brazil,LATAM,EZE,Argentina,LATAM,international,A321neo,1777,1660.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1108,LA,LATAM Airlines,Passenger,GRU,Brazil,LATAM,FOR,Brazil,LATAM,international,A320neo,888,2370.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1109,G3,GOL Airlines,Passenger,GRU,Brazil,LATAM,GIG,Brazil,LATAM,international,B737MAX8,2221,360.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1110,G3,GOL Airlines,Passenger,GRU,Brazil,LATAM,CNF,Brazil,LATAM,international,B737MAX8,1555,510.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1111,G3,GOL Airlines,Passenger,GRU,Brazil,LATAM,BSB,Brazil,LATAM,international,B737MAX8,1333,870.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1112,G3,GOL Airlines,Passenger,GRU,Brazil,LATAM,SSA,Brazil,LATAM,international,B737MAX8,1111,1240.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1113,G3,GOL Airlines,Passenger,GRU,Brazil,LATAM,FOR,Brazil,LATAM,international,B737MAX8,888,2280.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1114,G3,GOL Airlines,Passenger,GRU,Brazil,LATAM,BEL,Brazil,LATAM,international,B737MAX8,555,2480.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1115,G3,GOL Airlines,Passenger,GRU,Brazil,LATAM,MAO,Brazil,LATAM,international,B737MAX8,444,2700.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1116,G3,GOL Airlines,Passenger,GRU,Brazil,LATAM,CWB,Brazil,LATAM,international,B737MAX8,1777,400.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1117,G3,GOL Airlines,Passenger,BSB,Brazil,LATAM,GIG,Brazil,LATAM,international,B737MAX8,1111,1120.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1118,G3,GOL Airlines,Passenger,BSB,Brazil,LATAM,SSA,Brazil,LATAM,international,B737MAX8,666,1090.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1119,G3,GOL Airlines,Passenger,BSB,Brazil,LATAM,FOR,Brazil,LATAM,international,B737MAX8,555,1500.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1120,G3,GOL Airlines,Passenger,GRU,Brazil,LATAM,MIA,United States,US,international,B737MAX8,333,7880.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1121,G3,GOL Airlines,Passenger,GRU,Brazil,LATAM,MCO,United States,US,international,B737MAX8,222,7930.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1122,AD,Azul Brazilian Airlines,Passenger,VCP,Brazil,LATAM,GIG,Brazil,LATAM,international,A320neo,1777,390.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1123,AD,Azul Brazilian Airlines,Passenger,VCP,Brazil,LATAM,BSB,Brazil,LATAM,international,A320neo,1333,900.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1124,AD,Azul Brazilian Airlines,Passenger,VCP,Brazil,LATAM,SSA,Brazil,LATAM,international,A320neo,1111,1300.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1125,AD,Azul Brazilian Airlines,Passenger,VCP,Brazil,LATAM,FOR,Brazil,LATAM,international,A320neo,888,2350.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1126,AD,Azul Brazilian Airlines,Passenger,VCP,Brazil,LATAM,BEL,Brazil,LATAM,international,A320neo,555,2500.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1127,AD,Azul Brazilian Airlines,Passenger,VCP,Brazil,LATAM,MCZ,Brazil,LATAM,international,A320neo,666,2040.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1128,AD,Azul Brazilian Airlines,Passenger,VCP,Brazil,LATAM,LIS,Portugal,EU,international,B787-9,222,9570.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1129,AD,Azul Brazilian Airlines,Passenger,VCP,Brazil,LATAM,OPO,Portugal,EU,international,B787-9,111,9650.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1130,AV,Avianca,Passenger,BOG,Colombia,LATAM,MIA,United States,US,international,B787-9,4603,3870.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1131,AV,Avianca,Passenger,BOG,Colombia,LATAM,JFK,United States,US,international,B787-9,2762,4490.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1132,AV,Avianca,Passenger,BOG,Colombia,LATAM,LAX,United States,US,international,B787-9,1841,5830.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1133,AV,Avianca,Passenger,BOG,Colombia,LATAM,LHR,United Kingdom,EU,international,B787-9,921,8550.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1134,AV,Avianca,Passenger,BOG,Colombia,LATAM,LIM,Peru,LATAM,international,A320neo,5523,1870.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1135,AV,Avianca,Passenger,BOG,Colombia,LATAM,PTY,Panama,LATAM,international,A320neo,7365,1450.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1136,AV,Avianca,Passenger,BOG,Colombia,LATAM,CUN,Mexico,LATAM,international,A320neo,3682,3010.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1137,CM,Copa Airlines,Passenger,PTY,Panama,LATAM,MIA,United States,US,international,B737MAX8,11832,2140.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1138,CM,Copa Airlines,Passenger,PTY,Panama,LATAM,JFK,United States,US,international,B737MAX8,7395,3420.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1139,CM,Copa Airlines,Passenger,PTY,Panama,LATAM,LAX,United States,US,international,B737MAX8,4437,4200.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1140,CM,Copa Airlines,Passenger,PTY,Panama,LATAM,BOG,Colombia,LATAM,international,B737MAX8,8874,1450.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1141,CM,Copa Airlines,Passenger,PTY,Panama,LATAM,LIM,Peru,LATAM,international,B737MAX8,5916,2960.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1142,CM,Copa Airlines,Passenger,PTY,Panama,LATAM,EZE,Argentina,LATAM,international,B737MAX8,2958,5570.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1143,CM,Copa Airlines,Passenger,PTY,Panama,LATAM,MAD,Spain,EU,international,B787-9,1479,9260.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1144,ET,Ethiopian Airlines,Passenger,ADD,Ethiopia,ROW,LHR,United Kingdom,EU,international,B787-9,3451,6660.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1145,ET,Ethiopian Airlines,Passenger,ADD,Ethiopia,ROW,CDG,France,EU,international,B787-9,2301,6140.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1146,ET,Ethiopian Airlines,Passenger,ADD,Ethiopia,ROW,BRU,Belgium,EU,international,B787-9,1150,6020.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1147,ET,Ethiopian Airlines,Passenger,ADD,Ethiopia,ROW,DXB,UAE,MENA,international,B787-9,5752,3160.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1148,ET,Ethiopian Airlines,Passenger,ADD,Ethiopia,ROW,NBO,Kenya,Africa,international,B737MAX8,11505,1160.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1149,ET,Ethiopian Airlines,Passenger,ADD,Ethiopia,ROW,JNB,South Africa,Africa,international,B787-9,4602,4070.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1150,SA,South African Airways,Passenger,JNB,South Africa,ROW,LHR,United Kingdom,EU,international,A330-300,3194,9050.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1151,SA,South African Airways,Passenger,JNB,South Africa,ROW,FRA,Germany,EU,international,A330-300,2129,9050.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1152,SA,South African Airways,Passenger,JNB,South Africa,ROW,AMS,Netherlands,EU,international,A330-300,1065,9560.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1153,SA,South African Airways,Passenger,JNB,South Africa,ROW,NBO,Kenya,Africa,international,B737MAX8,5323,2840.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1154,SA,South African Airways,Passenger,JNB,South Africa,ROW,CPT,South Africa,Africa,international,A320neo,17033,1270.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1155,SA,South African Airways,Passenger,JNB,South Africa,ROW,DUR,South Africa,Africa,international,A320neo,10645,480.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1156,SA,South African Airways,Passenger,JNB,South Africa,ROW,PLZ,South Africa,Africa,international,A320neo,8516,740.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1157,KQ,Kenya Airways,Passenger,NBO,Kenya,ROW,LHR,United Kingdom,EU,international,B787-9,1682,8320.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1158,KQ,Kenya Airways,Passenger,NBO,Kenya,ROW,CDG,France,EU,international,B787-9,841,8060.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1159,KQ,Kenya Airways,Passenger,NBO,Kenya,ROW,ADD,Ethiopia,Africa,international,B737MAX8,6730,1160.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1160,KQ,Kenya Airways,Passenger,NBO,Kenya,ROW,JNB,South Africa,Africa,international,B737MAX8,4206,2840.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1161,KQ,Kenya Airways,Passenger,NBO,Kenya,ROW,DXB,UAE,MENA,international,B787-9,2524,3170.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1162,MS,EgyptAir,Passenger,CAI,Egypt,MENA,LHR,United Kingdom,EU,international,B787-9,3739,4995.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R1163,MS,EgyptAir,Passenger,CAI,Egypt,MENA,FRA,Germany,EU,international,B787-9,2492,4000.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R1164,MS,EgyptAir,Passenger,CAI,Egypt,MENA,FCO,Italy,EU,international,A330-300,4985,2100.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R1165,MS,EgyptAir,Passenger,CAI,Egypt,MENA,JFK,United States,US,international,B787-9,1246,9450.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R1166,MS,EgyptAir,Passenger,CAI,Egypt,MENA,DXB,UAE,MENA,international,A330-300,7477,2400.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R1167,AT,Royal Air Maroc,Passenger,CMN,Morocco,MENA,CDG,France,EU,international,B787-9,6781,2110.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R1168,AT,Royal Air Maroc,Passenger,CMN,Morocco,MENA,ORY,France,EU,international,B787-9,8138,2110.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R1169,AT,Royal Air Maroc,Passenger,CMN,Morocco,MENA,LHR,United Kingdom,EU,international,B787-9,4069,2570.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R1170,AT,Royal Air Maroc,Passenger,CMN,Morocco,MENA,MAD,Spain,EU,international,A320neo,10850,870.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R1171,AT,Royal Air Maroc,Passenger,CMN,Morocco,MENA,BCN,Spain,EU,international,A320neo,5425,1070.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R1172,AT,Royal Air Maroc,Passenger,CMN,Morocco,MENA,JFK,United States,US,international,B787-9,2713,5690.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R1173,AT,Royal Air Maroc,Passenger,CMN,Morocco,MENA,IAD,United States,US,international,B787-9,1356,5730.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R1174,HV,Transavia,Passenger,AMS,Netherlands,EU,MULTI,MULTI,MULTI,international-fleet,B737MAX8,143562,1650.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R1175,DY,Norwegian Air Shuttle,Passenger,OSL,Norway,EU,MULTI,MULTI,MULTI,international-fleet,B737MAX8,35450,3200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R1176,EI,Aer Lingus,Passenger,DUB,Ireland,EU,MULTI,MULTI,MULTI,international-fleet,A321neo,22139,2800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R1177,D8,Norwegian Int'l,Passenger,CPH,Denmark,EU,MULTI,MULTI,MULTI,international-fleet,B737MAX8,28085,2200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R1178,LS,Jet2,Passenger,BRS,United Kingdom,EU,MULTI,MULTI,MULTI,international-fleet,B737MAX8,61666,2800.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R1179,PC,Pegasus Airlines,Passenger,SAW,Turkey,ROW,MULTI,MULTI,MULTI,international-fleet,B737MAX8,244920,2600.0,0.03,0.0,0.015,0.075,0.15,0.2,0.3
+R1180,XU,ITA Airways,Passenger,FCO,Italy,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,29346,1800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R1181,LX,SWISS International Air Lines,Passenger,ZRH,Switzerland,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,63855,5200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R1182,SK,SAS Scandinavian Airlines,Passenger,CPH,Denmark,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,44134,2800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R1183,TP,TAP Air Portugal,Passenger,LIS,Portugal,EU,MULTI,MULTI,MULTI,international-fleet,A321neo,110218,2500.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R1184,AY,Finnair,Passenger,HEL,Finland,EU,MULTI,MULTI,MULTI,international-fleet,A330-300,19420,3200.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R1185,FI,Icelandair,Passenger,KEF,Iceland,EU,MULTI,MULTI,MULTI,international-fleet,B757-200,13200,2800.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R1186,OS,Austrian Airlines,Passenger,VIE,Austria,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,25500,4000.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R1187,LO,LOT Polish Airlines,Passenger,WAW,Poland,EU,MULTI,MULTI,MULTI,international-fleet,B737-800,44584,1800.0,0.025,0.02,0.06,0.15,0.3,0.4,0.5
+R1188,OK,Czech Airlines,Passenger,PRG,Czechia,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,34242,2500.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R1189,BT,airBaltic,Passenger,RIX,Latvia,EU,MULTI,MULTI,MULTI,international-fleet,A220-300,6550,2200.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R1190,EW,Eurowings,Passenger,DUS,Germany,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,347076,1900.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R1191,TS,Air Transat,Passenger,YYZ,Canada,US,MULTI,MULTI,MULTI,international-fleet,A330-300,40384,6800.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R1192,WS,WestJet,Passenger,YYC,Canada,US,MULTI,MULTI,MULTI,international-fleet,B737MAX8,111056,2800.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R1193,PD,Porter Airlines,Passenger,YVR,Canada,US,MULTI,MULTI,MULTI,international-fleet,B737MAX8,30288,3500.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R1194,WN,Southwest Airlines,Passenger,DAL,United States,US,MULTI,MULTI,MULTI,international-fleet,B737MAX8,438092,2500.0,0.02,0.0,0.015,0.075,0.15,0.2,0.3
+R1195,F9,Frontier Airlines,Passenger,DEN,United States,US,MULTI,MULTI,MULTI,international-fleet,A320neo,292062,2200.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R1196,NK,Spirit Airlines,Passenger,FLL,United States,US,MULTI,MULTI,MULTI,international-fleet,A320neo,255554,2400.0,0.02,0.005,0.03,0.1,0.2,0.3,0.4
+R1197,AM,Aeromexico,Passenger,MEX,Mexico,LATAM,MULTI,MULTI,MULTI,international-fleet,B787-9,41534,3800.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1198,Y4,Volaris,Passenger,MEX,Mexico,LATAM,MULTI,MULTI,MULTI,international-fleet,A320neo,64190,2200.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1199,VB,VivaAerobus,Passenger,MEX,Mexico,LATAM,MULTI,MULTI,MULTI,international-fleet,B737MAX8,37759,1800.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1200,2Z,Interjet,Passenger,MEX,Mexico,LATAM,MULTI,MULTI,MULTI,international-fleet,A320neo,30207,2000.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1201,AR,Aerolineas Argentinas,Passenger,EZE,Argentina,LATAM,MULTI,MULTI,MULTI,international-fleet,B737MAX8,68764,2500.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1202,JA,JETSMART,Passenger,EZE,Argentina,LATAM,MULTI,MULTI,MULTI,international-fleet,A320neo,41259,1800.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1203,JJ,LATAM Chile,Passenger,SCL,Chile,LATAM,MULTI,MULTI,MULTI,international-fleet,A320neo,42328,2200.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1204,H2,Sky Airline,Passenger,SCL,Chile,LATAM,MULTI,MULTI,MULTI,international-fleet,A320neo,31746,1500.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1205,IT,Tigerair Taiwan,Passenger,TPE,Taiwan,APAC,MULTI,MULTI,MULTI,international-fleet,B737MAX8,157953,3200.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1206,MM,Peach Aviation,Passenger,NRT,Japan,APAC,MULTI,MULTI,MULTI,international-fleet,A320neo,242101,2800.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R1207,GK,Jetstar Japan,Passenger,NRT,Japan,APAC,MULTI,MULTI,MULTI,international-fleet,A320neo,201751,2500.0,0.04,0.0,0.1,0.15,0.3,0.4,0.5
+R1208,ZL,Rex Regional Express,Passenger,SYD,Australia,APAC,MULTI,MULTI,MULTI,international-fleet,B717-200,40192,1800.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1209,JQ,Jetstar Airways,Passenger,MEL,Australia,APAC,MULTI,MULTI,MULTI,international-fleet,A320neo,100479,2800.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1210,VA,Virgin Australia,Passenger,MEL,Australia,APAC,MULTI,MULTI,MULTI,international-fleet,B737MAX8,80384,2200.0,0.04,0.0,0.05,0.1,0.2,0.3,0.4
+R1211,FD,Thai AirAsia,Passenger,DMK,Thailand,APAC,MULTI,MULTI,MULTI,international-fleet,A320neo,115521,2500.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1212,AK,AirAsia,Passenger,KUL,Malaysia,APAC,MULTI,MULTI,MULTI,international-fleet,A320neo,67177,2200.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1213,D7,AirAsia X,Passenger,KUL,Malaysia,APAC,MULTI,MULTI,MULTI,international-fleet,A330-300,15355,6500.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1214,Z2,Philippines AirAsia,Passenger,MNL,Philippines,APAC,MULTI,MULTI,MULTI,international-fleet,A320neo,122597,2800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1215,OD,Batik Air Malaysia,Passenger,KUL,Malaysia,APAC,MULTI,MULTI,MULTI,international-fleet,A320neo,19193,3000.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1216,TR,Scoot,Passenger,SIN,Singapore,APAC,MULTI,MULTI,MULTI,international-fleet,B787-9,121356,4500.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R1217,XW,NokScoot,Passenger,BKK,Thailand,APAC,MULTI,MULTI,MULTI,international-fleet,B737MAX8,62203,3200.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1218,VZ,Thai Vietjet,Passenger,BKK,Thailand,APAC,MULTI,MULTI,MULTI,international-fleet,A320neo,71090,2500.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1219,MI,SilkAir,Passenger,SIN,Singapore,APAC,MULTI,MULTI,MULTI,international-fleet,B737MAX8,80904,2200.0,0.04,0.0,0.03,0.1,0.2,0.3,0.4
+R1220,XY,flynas,Passenger,RUH,Saudi Arabia,MENA,MULTI,MULTI,MULTI,international-fleet,B737MAX8,177483,2800.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R1221,F3,flyadeal,Passenger,RUH,Saudi Arabia,MENA,MULTI,MULTI,MULTI,international-fleet,A320neo,118322,2500.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R1222,J9,Jazeera Airways,Passenger,KWI,Kuwait,MENA,MULTI,MULTI,MULTI,international-fleet,A320neo,72891,3500.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R1223,G5,Gulf Air,Passenger,BAH,Bahrain,MENA,MULTI,MULTI,MULTI,international-fleet,A320neo,39241,3000.0,0.045,0.0,0.015,0.075,0.15,0.2,0.3
+R1224,QZ,AirAsia Indonesia,Passenger,CGK,Indonesia,APAC,MULTI,MULTI,MULTI,international-fleet,A320neo,24404,2200.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1225,GA,Garuda Indonesia,Passenger,CGK,Indonesia,APAC,MULTI,MULTI,MULTI,international-fleet,B737MAX8,18303,3000.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1226,SJ,Sriwijaya Air,Passenger,CGK,Indonesia,APAC,MULTI,MULTI,MULTI,international-fleet,B737MAX8,14642,2000.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1227,ID,Operator Name,Passenger,CGK,Indonesia,APAC,MULTI,MULTI,MULTI,international-fleet,B737MAX8,9762,1800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1228,CA,Air China,Passenger,PEK,China,APAC,MULTI,MULTI,MULTI,international-fleet,B777-300ER,21198,8200.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1229,MU,China Eastern,Passenger,PVG,China,APAC,MULTI,MULTI,MULTI,international-fleet,B777-300ER,19951,7800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1230,CZ,China Southern,Passenger,CAN,China,APAC,MULTI,MULTI,MULTI,international-fleet,B777-300ER,18704,7000.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1231,HU,Hainan Airlines,Passenger,PEK,China,APAC,MULTI,MULTI,MULTI,international-fleet,B787-9,11223,7200.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1232,3U,Sichuan Airlines,Passenger,CTU,China,APAC,MULTI,MULTI,MULTI,international-fleet,B737MAX8,29927,1800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1233,ZH,Shenzhen Airlines,Passenger,SZX,China,APAC,MULTI,MULTI,MULTI,international-fleet,B737MAX8,24939,1600.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1234,9C,Spring Airlines,Passenger,PVG,China,APAC,MULTI,MULTI,MULTI,international-fleet,B737MAX8,37409,1400.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1235,PN,West Air,Passenger,WUH,China,APAC,MULTI,MULTI,MULTI,international-fleet,B737MAX8,19951,1500.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1236,GS,Tianjin Airline,Passenger,TNA,China,APAC,MULTI,MULTI,MULTI,international-fleet,A320neo,14964,1700.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1237,KN,China United Airlines,Passenger,WUH,China,APAC,MULTI,MULTI,MULTI,international-fleet,A320neo,19951,1600.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1238,FM,Shanghai Airlines,Passenger,PVG,China,APAC,MULTI,MULTI,MULTI,international-fleet,B737MAX8,24939,1700.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1239,SC,Shandong Airlines,Passenger,TAO,China,APAC,MULTI,MULTI,MULTI,international-fleet,B737MAX8,17457,1900.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1240,AI,Air India,Passenger,DEL,India,APAC,MULTI,MULTI,MULTI,international-fleet,B787-9,21950,6800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1241,IX,Air India Express,Passenger,COK,India,APAC,MULTI,MULTI,MULTI,international-fleet,B737MAX8,31927,3200.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1242,6E,IndiGo,Passenger,DEL,India,APAC,MULTI,MULTI,MULTI,international-fleet,A321neo,13968,4200.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1243,SG,SpiceJet,Passenger,DEL,India,APAC,MULTI,MULTI,MULTI,international-fleet,B737MAX8,79818,1300.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1244,G8,Go First,Passenger,DEL,India,APAC,MULTI,MULTI,MULTI,international-fleet,A320neo,59864,1200.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1245,QP,Akasa Air,Passenger,BOM,India,APAC,MULTI,MULTI,MULTI,international-fleet,A320neo,39909,1500.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1246,AI,Air India,Passenger,BOM,India,APAC,MULTI,MULTI,MULTI,international-fleet,B777-300ER,15964,7500.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1247,VJ,VietJet Air,Passenger,SGN,Vietnam,APAC,MULTI,MULTI,MULTI,international-fleet,A320neo,92639,1100.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1248,BL,Jetstar Pacific,Passenger,DAD,Vietnam,APAC,MULTI,MULTI,MULTI,international-fleet,A320neo,33687,1800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1249,QH,Bamboo Airways,Passenger,HAN,Vietnam,APAC,MULTI,MULTI,MULTI,international-fleet,A320neo,42108,1500.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1250,VN,Vietnam Airlines,Passenger,HAN,Vietnam,APAC,MULTI,MULTI,MULTI,international-fleet,A321neo,63163,1800.0,0.04,0.0,0.015,0.075,0.15,0.2,0.3
+R1251,SU,Aeroflot,Passenger,SVO,Russia,EU,MULTI,MULTI,MULTI,international-fleet,A330-300,17730,4500.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R1252,U6,Ural Airlines,Passenger,SVX,Russia,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,29550,2800.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R1253,S7,S7 Airlines,Passenger,OVB,Russia,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,35459,3200.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R1254,DP,Pobeda Airlines,Passenger,VKO,Russia,EU,MULTI,MULTI,MULTI,international-fleet,B737MAX8,23640,2500.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R1255,FV,Rossiya Airlines,Passenger,LED,Russia,EU,MULTI,MULTI,MULTI,international-fleet,A320neo,17730,2200.0,0.025,0.0,0.015,0.075,0.15,0.2,0.3
+R1256,G3,GOL Airlines,Passenger,GRU,Brazil,LATAM,MULTI,MULTI,MULTI,international-fleet,B737MAX8,106486,1500.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1257,AD,Azul Brazilian Airlines,Passenger,VCP,Brazil,LATAM,MULTI,MULTI,MULTI,international-fleet,A320neo,85189,1600.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3
+R1258,LA,LATAM Airlines,Passenger,GRU,Brazil,LATAM,MULTI,MULTI,MULTI,international-fleet,B737MAX8,76062,1700.0,0.035,0.0,0.015,0.075,0.15,0.2,0.3

@@ -1,0 +1,13 @@
+{
+  "scenario_name": "C2_AM_policy",
+  "demand_mode": "route_targets",
+  "include_domestic": false,
+  "route_sample_fraction": 1.0,
+  "demand_scale_factor": 1.0,
+  "efficiency_improvement_rate": 0.015,
+  "start_year": 2025,
+  "end_year": 2050,
+  "run_completed": false,
+  "saved_at": "2026-06-18T09:59:02.931676+00:00",
+  "source": "SAF_CORSIA_Demand_Model_v2.3.xlsx"
+}

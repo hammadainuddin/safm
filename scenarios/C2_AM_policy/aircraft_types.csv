@@ -1,0 +1,28 @@
+aircraft_type,fuel_efficiency_t_per_km,category
+A220-300,0.0082,Unknown
+A320neo,0.0039,Narrowbody
+A321XLR,0.0082,Unknown
+A321neo,0.0042,Widebody
+A330-200,0.0082,Unknown
+A330-300,0.0085,Widebody
+A330-900neo,0.0082,Unknown
+A350-900,0.0079,Widebody
+A380,0.0082,Unknown
+A380-800,0.0105,Widebody
+B717-200,0.0082,Unknown
+B737 MAX 8,0.0082,Unknown
+B737-800,0.0041,Narrowbody
+B737-900ER,0.0082,Unknown
+B737MAX8,0.0039,Narrowbody
+B747-8,0.01,Widebody
+B747-8F,0.0096,Very large widebody cargo freighter
+B757-200,0.0082,Unknown
+B757F,0.0046,Medium narrowbody cargo freighter
+B767-300ER,0.0082,Unknown
+B767F,0.0068,Medium-large widebody cargo freighter
+B777-200ER,0.0082,Unknown
+B777-200LR,0.0082,Unknown
+B777-300ER,0.0089,Widebody
+B777F,0.0082,Large widebody cargo freighter
+B787-8,0.0082,Unknown
+B787-9,0.0079,Widebody
